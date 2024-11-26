@@ -29,7 +29,7 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Base = {
-			Main = Util.Colors.Black,
+			Main = Color3.fromHex("191b1d"),
 		},
 		BaseContent = {
 			Main = Util.Colors.White,
@@ -59,7 +59,7 @@ return Themer.NewTheme(Scope, {
 		Heading = Enum.FontWeight.Bold,
 	},
 	TextSize = {
-		Base = 17,
+		Base = 18,
 	},
 	CornerRadius = {
 		Base = 6,

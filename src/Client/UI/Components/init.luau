@@ -1,26 +1,7 @@
 local STORY_EXTENSION = ".story"
 
 local Components = {
-	CategoriesSidebar = require(script.CategoriesSidebar),
-	CategoryButton = require(script.CategoryButton),
-	CustomButton = require(script.CustomButton),
-	EmoteButton = require(script.EmoteButton),
-	EmoteCategoriesSidebar = require(script.EmoteCategoriesSidebar),
-	EmotesCategory = require(script.EmotesCategory),
-	FriendButton = require(script.FriendButton),
-	ItemButton = require(script.ItemButton),
-	ItemCategoriesSidebar = require(script.ItemCategoriesSidebar),
-	ItemsCategory = require(script.ItemsCategory),
-	SettingToggle = require(script.SettingToggle),
-	TopbarButton = require(script.TopbarButton),
-	WorldButton = require(script.WorldButton),
-	WorldsCategory = require(script.WorldsCategory),
 	Menu = require(script.Menu),
-	EditableText = require(script.EditableText),
-	PlayerAvatar = require(script.PlayerAvatar),
-	ProfileBadges = require(script.ProfileBadges),
-	LevelBadge = require(script.LevelBadge),
-	AvalogLogo = require(script.AvalogLogo),
 }
 
 for _, Child in ipairs(script:GetChildren()) do
