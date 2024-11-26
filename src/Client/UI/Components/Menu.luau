@@ -28,6 +28,58 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 		[Children] = {
 			Scope:Frame {
+				Name = "NavigationBar",
+				ListEnabled = true,
+				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListHorizontalFlex = Enum.UIFlexAlignment.SpaceBetween,
+				ListVerticalAlignment = Enum.VerticalAlignment.Center,
+
+				[Children] = {
+					Scope:IconButton {
+						Name = "ExitButton",
+						Image = "rbxassetid://13846120661",
+						SizeVariant = "ExtraLarge",
+						Style = "Ghost",
+						Color = Theme.Colors.BaseContent.Main,
+						PaddingLeft = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingRight = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingTop = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingBottom = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+					},
+					Scope:SwapInput {
+						Name = "ModeSwapper",
+						Options = { "Marketplace", "Inventory" },
+					},
+					Scope:IconButton {
+						Name = "SearchButton",
+						Image = "rbxassetid://13850026502",
+						SizeVariant = "ExtraLarge",
+						Style = "Ghost",
+						Color = Theme.Colors.BaseContent.Main,
+						PaddingLeft = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingRight = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingTop = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingBottom = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+					},
+				},
+			},
+			Scope:Frame {
 				Name = "Categories",
 				ListEnabled = true,
 				ListPadding = Scope:Computed(function(Use)
@@ -57,11 +109,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
 						BackgroundTransparency = 0,
-						BackgroundColor3 = Theme.Colors.Neutral.Dark,
+						BackgroundColor3 = Theme.Colors.Base.Dark,
 					},
 				},
 			},
-			Scope:Frame {
+			Scope:Scroller {
 				Name = "Items",
 				Padding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["1"]))
@@ -69,15 +121,26 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				FlexMode = Enum.UIFlexMode.Fill,
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListWraps = true,
+				ListPadding = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["0.75"]))
+				end),
+				ScrollBarImageColor3 = Theme.Colors.Neutral.Light,
 
 				[Children] = {
-					Scope:ItemButton {
-						AssetId = 111478038776562,
-					},
-					Scope:ItemButton {
-						AssetId = 11999247,
-						Equipped = true,
-					},
+					Scope:ForValues({
+						111478038776562,
+						111478038776562,
+						111478038776562,
+						111478038776562,
+						111478038776562,
+						111478038776562,
+						111478038776562,
+					}, function(Use, Scope, AssetId)
+						return Scope:ItemButton {
+							AssetId = AssetId,
+						}
+					end),
 				},
 			},
 		},
