@@ -13,16 +13,10 @@
             "SourceCode": {
               "$className": "Folder",
               "Shared": {
-                "$path": "src/Shared",
-                "ExtPackages": {
-                  "$path": "ExtPackages"
-                }
+                "$path": "src/Shared"
               },
               "Storage": {
                 "$path": "src/Storage",
-                "ExtPackages": {
-                  "$path": "ExtServerPackages"
-                },
                 "Packages": {
                   "$path": "ServerPackages"
                 }
