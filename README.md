@@ -1,8 +1,8 @@
 <p align="center">
   <a href="https://avafe.me/Avalog">
     <picture>
-      <source srcset="/gh-assets/BannerThin.svg"></source>
-      <img alt="Avalog" src="/gh-assets/BannerThin.svg" height="70"></img>
+      <source srcset="/gh-assets/LogoStamp.svg"></source>
+      <img alt="Avalog" src="/gh-assets/LogoStamp.svg" height="80"></img>
     </picture>
   </a>
 </p>
