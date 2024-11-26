@@ -2,6 +2,9 @@ local STORY_EXTENSION = ".story"
 
 local Components = {
 	Menu = require(script.Menu),
+	Tabs = require(script.Tabs),
+	ItemButton = require(script.ItemButton),
+	CustomButton = require(script.CustomButton),
 }
 
 for _, Child in ipairs(script:GetChildren()) do
