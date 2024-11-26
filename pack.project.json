@@ -1,0 +1,42 @@
+{
+  "name": "Avalog",
+  "tree": {
+    "$path": "Include/Linking.luau",
+    "Packages": {
+      "$path": "Packages",
+      "Avalog": {
+        "$path": "Include/Linking.luau",
+        "Packages": {
+          "$path": "Packages",
+          "Avalog": {
+            "$path": "src/API",
+            "SourceCode": {
+              "$className": "Folder",
+              "Shared": {
+                "$path": "src/Shared",
+                "ExtPackages": {
+                  "$path": "ExtPackages"
+                }
+              },
+              "Storage": {
+                "$path": "src/Storage",
+                "ExtPackages": {
+                  "$path": "ExtServerPackages"
+                },
+                "Packages": {
+                  "$path": "ServerPackages"
+                }
+              },
+              "Server": {
+                "$path": "src/Server"
+              },
+              "Client": {
+                "$path": "src/Client"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
