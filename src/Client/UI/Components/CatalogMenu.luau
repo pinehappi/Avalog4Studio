@@ -16,7 +16,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Theme = OnyxUI.Themer.Theme:now()
 
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
-		Name = "Menu",
+		Name = "CatalogMenu",
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 0,
 		BackgroundColor3 = Theme.Colors.Base.Main,

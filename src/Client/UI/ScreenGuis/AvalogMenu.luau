@@ -17,7 +17,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Parent = Props.Parent,
 
 		[Children] = {
-			Scope:Menu {},
+			Scope:CatalogMenu {},
 		},
 	}
 end

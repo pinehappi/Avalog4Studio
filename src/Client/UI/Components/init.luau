@@ -1,7 +1,7 @@
 local STORY_EXTENSION = ".story"
 
 local Components = {
-	Menu = require(script.Menu),
+	CatalogMenu = require(script.CatalogMenu),
 	Tabs = require(script.Tabs),
 	ItemButton = require(script.ItemButton),
 	CustomButton = require(script.CustomButton),
