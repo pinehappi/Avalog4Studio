@@ -1,6 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -57,6 +58,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					Scope:SwapInput {
 						Name = "ModeSwapper",
 						Options = { "Marketplace", "Inventory" },
+						Selection = States.Catalog.Tab,
 					},
 					Scope:IconButton {
 						Name = "SearchButton",
@@ -89,6 +91,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 				[Children] = {
 					Scope:Tabs {
+						Name = "Categories",
 						Options = {
 							"Characters",
 							"Head & Body",
@@ -97,6 +100,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							"Emotes",
 							"Animation",
 						},
+						Selection = States.Catalog.Category,
 						Padding = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
@@ -104,7 +108,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						BackgroundColor3 = Theme.Colors.Neutral.Main,
 					},
 					Scope:Tabs {
+						Name = "SubCategories",
 						Options = { "Head", "Face", "Neck", "Shoulder", "Front", "Back", "Waist", "Gear" },
+						Selection = States.Catalog.SubCategory,
 						Padding = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
