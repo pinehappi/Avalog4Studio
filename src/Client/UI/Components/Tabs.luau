@@ -19,7 +19,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Options = OnyxUI.Util.Fallback(Props.Options, {})
 	local Selection = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Selection, 1))
 
-	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
+	local Tabs = Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
@@ -63,4 +63,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			end),
 		},
 	}))
+
+	Scope:Observer(Options):onChange(function()
+		Tabs.CanvasPosition = Vector2.new(0, 0)
+	end)
+
+	return Tabs
 end
