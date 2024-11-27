@@ -11,7 +11,7 @@ local Scope = Fusion.scoped(Fusion)
 local States = {
 	Services = {},
 	Catalog = {
-		Tab = Scope:Value(1),
+		Mode = Scope:Value(1),
 		Category = Scope:Value(1),
 		SubCategory = Scope:Value(1),
 	},
