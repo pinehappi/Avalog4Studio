@@ -17,10 +17,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
-		Enabled = States.Open,
 
 		[Children] = {
-			Scope:Frame {
+			Scope:Group {
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.5),
 				Size = UDim2.fromScale(1, 1),
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
@@ -29,6 +30,22 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListPadding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0"]))
 				end),
+				GroupTransparency = Scope:Spring(
+					Scope:Computed(function(Use)
+						return (Use(States.Open) and 0) or 1
+					end),
+					Theme.SpringSpeed["1.5"],
+					Theme.SpringDampening["1.5"]
+				),
+				Scale = Scope:Spring(
+					Scope:Computed(function(Use)
+						return (Use(States.Open) and 1) or 0.75
+					end),
+					Theme.SpringSpeed["1.5"],
+					Theme.SpringDampening["1.5"]
+				),
+				Active = States.Open,
+				Interactable = States.Open,
 
 				[Children] = {
 					Scope:CatalogMenu {},

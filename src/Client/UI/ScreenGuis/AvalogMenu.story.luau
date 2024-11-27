@@ -7,9 +7,10 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 local AvalogMenu = require(script.Parent.AvalogMenu)
 
 return function(Target: Instance)
-	local Scope = Fusion.scoped(Fusion, {
+	local Scope = Fusion.scoped(Fusion, OnyxUI.Components, {
 		AvalogMenu = AvalogMenu,
 	})
+	local Theme = OnyxUI.Themer.Theme:now()
 
 	States.Open:set(true)
 
@@ -18,6 +19,19 @@ return function(Target: Instance)
 			Parent = Target,
 		}
 	end)
+
+	Scope:Button {
+		Content = { "Toggle" },
+		Parent = Target,
+		AnchorPoint = Vector2.new(0, 0),
+		Position = Scope:Computed(function(Use)
+			return UDim2.new(0, Use(Theme.Spacing["1"]), 0, Use(Theme.Spacing["1"]))
+		end),
+
+		OnActivated = function()
+			States.Open:set(not Fusion.peek(States.Open))
+		end,
+	}
 
 	return function()
 		Scope:doCleanup()

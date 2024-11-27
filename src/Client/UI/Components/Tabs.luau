@@ -31,6 +31,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		AutomaticCanvasSize = Enum.AutomaticSize.X,
 		CanvasSize = UDim2.fromScale(1.5, 0),
 		ScrollBarThickness = 0,
+		ScrollBarImageTransparency = 1,
 
 		[Children] = {
 			Scope:ForValues(Options, function(Use, Scope, Option)
