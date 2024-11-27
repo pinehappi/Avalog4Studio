@@ -2,6 +2,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -16,6 +17,23 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
+	local Items = Scope:Value({})
+
+	local function LoadItems()
+		local LoadedItems = {}
+
+		for _ = 1, 20 do
+			table.insert(LoadedItems, math.random(10000, 100000000))
+		end
+
+		Items:set(LoadedItems)
+	end
+
+	Scope:Observer(States.Catalog.SubCategory):onChange(function()
+		LoadItems()
+	end)
+	LoadItems()
+
 	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
@@ -28,16 +46,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ClipsDescendants = false,
 
 		[Children] = {
-
-			Scope:ForValues({
-				111478038776562,
-				111478038776562,
-				111478038776562,
-				111478038776562,
-				111478038776562,
-				111478038776562,
-				111478038776562,
-			}, function(Use, Scope, AssetId)
+			Scope:ForValues(Items, function(Use, Scope, AssetId)
 				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
 					return Scope:ItemButton {
 						AssetId = AssetId,
