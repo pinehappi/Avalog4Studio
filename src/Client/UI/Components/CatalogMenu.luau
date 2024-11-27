@@ -108,6 +108,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						end),
 						BackgroundTransparency = 0,
 						BackgroundColor3 = Theme.Colors.Neutral.Dark,
+						AutomaticSize = Enum.AutomaticSize.Y,
 					},
 					Scope:Tabs {
 						Name = "SubCategories",
@@ -118,6 +119,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						end),
 						BackgroundTransparency = 0,
 						BackgroundColor3 = Theme.Colors.Neutral.Main,
+						AutomaticSize = Enum.AutomaticSize.Y,
 					},
 				},
 			},

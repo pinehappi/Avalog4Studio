@@ -15,13 +15,14 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
-		Size = Scope:Computed(function(Use)
-			return UDim2.fromOffset(Use(Theme.Spacing["24"]) * 1.1, 0)
+		MaxSize = Scope:Computed(function(Use)
+			return Vector2.new(Use(Theme.Spacing["24"]), math.huge)
 		end),
 		BackgroundTransparency = 0,
 		BackgroundColor3 = Theme.Colors.Base.Dark,
 		Image = "rbxassetid://140363116814273",
 		ScaleType = Enum.ScaleType.Crop,
+		AutomaticSize = Enum.AutomaticSize.XY,
 
 		[Children] = {
 			Scope:Frame {

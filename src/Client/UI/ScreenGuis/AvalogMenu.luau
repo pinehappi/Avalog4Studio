@@ -23,14 +23,13 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
 				ListVerticalFlex = Enum.UIFlexAlignment.Fill,
+				ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 				ListPadding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0"]))
 				end),
 
 				[Children] = {
-					Scope:CatalogMenu {
-						FlexMode = Enum.UIFlexMode.Fill,
-					},
+					Scope:CatalogMenu {},
 					Scope:AvatarViewport {},
 				},
 			},
