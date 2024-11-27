@@ -26,18 +26,20 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local ProductInfo = Scope:Value(nil)
 
 	local function UpdateProductInfo()
-		local AssetIdValue = Fusion.peek(AssetId)
+		task.spawn(function()
+			local AssetIdValue = Fusion.peek(AssetId)
 
-		if AssetIdValue == nil then
-			return
-		end
-
-		Future.Try(function()
-			return MarketplaceService:GetProductInfo(AssetIdValue)
-		end):After(function(Success, Result)
-			if Success then
-				ProductInfo:set(Result)
+			if AssetIdValue == nil then
+				return
 			end
+
+			Future.Try(function()
+				return MarketplaceService:GetProductInfo(AssetIdValue)
+			end):After(function(Success, Result)
+				if Success then
+					ProductInfo:set(Result)
+				end
+			end)
 		end)
 	end
 	Scope:Observer(function()

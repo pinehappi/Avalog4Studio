@@ -29,6 +29,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Items:set(LoadedItems)
 	end
 
+	Scope:Observer(States.Catalog.Category):onChange(function()
+		Items:set({})
+	end)
 	Scope:Observer(States.Catalog.SubCategory):onChange(function()
 		LoadItems()
 	end)

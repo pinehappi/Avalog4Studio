@@ -49,9 +49,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					local ActiveModeValue = Use(ActiveMode)
 					local CategoryValue = Use(ActiveCategory)
 
-					if ActiveModeValue == "Marketplace" then
-						return Scope:ItemsTab {}
-					elseif ActiveModeValue == "Inventory" then
+					if (ActiveModeValue == "Marketplace") or (ActiveModeValue == "Inventory") then
 						return Scope:ItemsTab {}
 					elseif ActiveModeValue == "Build" then
 						if CategoryValue and CategoryValue.Name then
