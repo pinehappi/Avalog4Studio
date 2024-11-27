@@ -51,10 +51,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		StrokeThickness = Theme.StrokeThickness["2"],
 		StrokeColor = Theme.Colors.BaseContent.Main,
 		ListEnabled = false,
-		Size = Scope:Computed(function(Use)
-			return UDim2.fromOffset(Use(Theme.Spacing["8"]) * 1.25, 0)
-		end),
-		AutomaticSize = Enum.AutomaticSize.Y,
 
 		OnActivated = function()
 			Equipped:set(not Fusion.peek(Equipped))
@@ -69,17 +65,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListPadding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0.5"]))
 				end),
-				PaddingLeft = Scope:Computed(function(Use)
+				Padding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0.5"]))
-				end),
-				PaddingRight = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["0.5"]))
-				end),
-				PaddingTop = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["0.5"]))
-				end),
-				PaddingBottom = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1.5"]))
 				end),
 				Size = UDim2.fromScale(1, 0),
 
@@ -90,7 +77,13 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							local AssetIdValue = Use(AssetId)
 							return `rbxthumb://id={AssetIdValue}&type=Asset&w=150&h=150`
 						end),
-						AspectRatio = 1,
+						CornerRadius = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.CornerRadius["1"]))
+						end),
+						Size = Scope:Computed(function(Use)
+							local Offset = Use(Theme.Spacing["8"])
+							return UDim2.fromOffset(Offset, Offset)
+						end),
 					},
 					Scope:Frame {
 						Name = "Text",
@@ -113,6 +106,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								Size = Scope:Computed(function(Use)
 									return UDim2.fromOffset(0, Use(Theme.TextSize["1"]) * 2)
 								end),
+								AutomaticSize = Enum.AutomaticSize.X,
+								ClipsDescendants = true,
+								RichText = false,
 							},
 							Scope:IconText {
 								Name = "Price",
@@ -127,6 +123,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								ListPadding = Scope:Computed(function(Use)
 									return UDim.new(0, Use(Theme.Spacing["0.25"]))
 								end),
+								ListWraps = false,
+								ContentWrapped = false,
 							},
 						},
 					},
