@@ -24,56 +24,66 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		BackgroundTransparency = 0,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
-		ListHorizontalFlex = Enum.UIFlexAlignment.SpaceBetween,
-		ListVerticalAlignment = Enum.VerticalAlignment.Center,
+		ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 
 		[Children] = {
-			Scope:IconButton {
-				Name = "ExitButton",
-				Image = "rbxassetid://13846120661",
-				SizeVariant = "ExtraLarge",
-				Style = "Ghost",
-				Color = Theme.Colors.BaseContent.Main,
-				PaddingLeft = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingRight = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingTop = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingBottom = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
+			Scope:Frame {
+				Name = "Controls",
+				ListEnabled = true,
+				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListHorizontalFlex = Enum.UIFlexAlignment.SpaceBetween,
+				ListVerticalAlignment = Enum.VerticalAlignment.Center,
+				AutomaticSize = Enum.AutomaticSize.Y,
 
-				OnActivated = function()
-					States.Open:set(false)
-				end,
-			},
-			Scope:SwapInput {
-				Name = "ModeSwapper",
-				Options = MODES,
-				Selection = States.Catalog.Mode,
-			},
-			Scope:IconButton {
-				Name = "SearchButton",
-				Image = "rbxassetid://13850026502",
-				SizeVariant = "ExtraLarge",
-				Style = "Ghost",
-				Color = Theme.Colors.BaseContent.Main,
-				PaddingLeft = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingRight = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingTop = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
-				PaddingBottom = Scope:Computed(function(Use)
-					return UDim.new(0, Use(Theme.Spacing["1"]))
-				end),
+				[Children] = {
+					Scope:IconButton {
+						Name = "ExitButton",
+						Image = "rbxassetid://13846120661",
+						SizeVariant = "ExtraLarge",
+						Style = "Ghost",
+						Color = Theme.Colors.BaseContent.Main,
+						PaddingLeft = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingRight = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingTop = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingBottom = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+
+						OnActivated = function()
+							States.Open:set(false)
+						end,
+					},
+					Scope:SwapInput {
+						Name = "ModeSwapper",
+						Options = MODES,
+						Selection = States.Catalog.Mode,
+					},
+					Scope:IconButton {
+						Name = "SearchButton",
+						Image = "rbxassetid://13850026502",
+						SizeVariant = "ExtraLarge",
+						Style = "Ghost",
+						Color = Theme.Colors.BaseContent.Main,
+						PaddingLeft = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingRight = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingTop = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						PaddingBottom = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+					},
+				},
 			},
 		},
 	}))
