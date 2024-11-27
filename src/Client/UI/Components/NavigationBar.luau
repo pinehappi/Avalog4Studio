@@ -1,0 +1,80 @@
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local OnyxUI = require(Avalog.Parent.OnyxUI)
+local Fusion = require(Avalog.Parent.Fusion)
+local States = require(Avalog.SourceCode.Client.UI.States)
+local Children = Fusion.Children
+
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
+local Frame = require(OnyxUIFolder.Components.Frame)
+
+local MODES = { "Marketplace", "Inventory", "Build" }
+
+export type Props = Frame.Props & {}
+
+return function(Scope: Fusion.Scope<any>, Props: Props)
+	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
+		Tabs = require(script.Parent.Tabs),
+		CategoryBar = require(script.Parent.CategoryBar),
+	})
+	local Theme = OnyxUI.Themer.Theme:now()
+
+	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
+		Name = script.Name,
+		BackgroundColor3 = Theme.Colors.Neutral.Dark,
+		BackgroundTransparency = 0,
+		ListEnabled = true,
+		ListFillDirection = Enum.FillDirection.Horizontal,
+		ListHorizontalFlex = Enum.UIFlexAlignment.SpaceBetween,
+		ListVerticalAlignment = Enum.VerticalAlignment.Center,
+
+		[Children] = {
+			Scope:IconButton {
+				Name = "ExitButton",
+				Image = "rbxassetid://13846120661",
+				SizeVariant = "ExtraLarge",
+				Style = "Ghost",
+				Color = Theme.Colors.BaseContent.Main,
+				PaddingLeft = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingRight = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingTop = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingBottom = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+
+				OnActivated = function()
+					States.Open:set(false)
+				end,
+			},
+			Scope:SwapInput {
+				Name = "ModeSwapper",
+				Options = MODES,
+				Selection = States.Catalog.Mode,
+			},
+			Scope:IconButton {
+				Name = "SearchButton",
+				Image = "rbxassetid://13850026502",
+				SizeVariant = "ExtraLarge",
+				Style = "Ghost",
+				Color = Theme.Colors.BaseContent.Main,
+				PaddingLeft = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingRight = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingTop = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+				PaddingBottom = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["1"]))
+				end),
+			},
+		},
+	}))
+end

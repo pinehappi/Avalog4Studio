@@ -30,6 +30,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		return Categories[ActiveModeValue][CategoryValue]
 	end)
 
+	Scope:Observer(States.Catalog.Mode):onChange(function()
+		States.Catalog.Category:set(1)
+		States.Catalog.SubCategory:set(1)
+	end)
+
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,

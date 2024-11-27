@@ -10,6 +10,8 @@ local Components = {
 	CategoryBar = require(script.CategoryBar),
 	SkinTab = require(script.SkinTab),
 	BuildTab = require(script.BuildTab),
+	NavigationBar = require(script.NavigationBar),
+	TabDisplay = require(script.TabDisplay),
 }
 
 for _, Child in ipairs(script:GetChildren()) do
