@@ -15,6 +15,7 @@ local States = {
 		Category = Scope:Value(1),
 		SubCategory = Scope:Value(1),
 	},
+	Open = Scope:Value(false),
 }
 
 function States:_StartExtensions()

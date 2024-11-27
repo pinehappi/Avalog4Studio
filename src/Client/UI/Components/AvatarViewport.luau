@@ -1,6 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -45,13 +46,19 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 						[Children] = {
 							Scope:Button {
+								Name = "BuyButton",
 								Content = { "rbxassetid://13846738861", "Buy" },
 								SizeVariant = "Large",
 							},
 							Scope:Button {
+								Name = "DoneButton",
 								Content = { "rbxassetid://13846852950", "Done" },
 								Color = Theme.Colors.Success.Main,
 								SizeVariant = "Large",
+
+								OnActivated = function()
+									States.Open:set(false)
+								end,
 							},
 						},
 					},

@@ -2,6 +2,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local Components = require(Avalog.SourceCode.Client.UI.Components)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -16,6 +17,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
+		Enabled = States.Open,
 
 		[Children] = {
 			Scope:Frame {

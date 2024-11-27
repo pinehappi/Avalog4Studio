@@ -56,6 +56,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						PaddingBottom = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["1"]))
 						end),
+
+						OnActivated = function()
+							States.Open:set(false)
+						end,
 					},
 					Scope:SwapInput {
 						Name = "ModeSwapper",
