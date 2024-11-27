@@ -19,13 +19,18 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Options = OnyxUI.Util.Fallback(Props.Options, {})
 	local Selected = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Selected, 1))
 
-	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
+	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
 		ListPadding = Scope:Computed(function(Use)
 			return UDim.new(0, Use(Theme.Spacing["0"]))
 		end),
+		ScrollingDirection = Enum.ScrollingDirection.X,
+		AutomaticSize = Enum.AutomaticSize.XY,
+		AutomaticCanvasSize = Enum.AutomaticSize.X,
+		CanvasSize = UDim2.fromScale(1.5, 0),
+		ScrollBarThickness = 0,
 
 		[Children] = {
 			Scope:ForValues(Options, function(Use, Scope, Option)

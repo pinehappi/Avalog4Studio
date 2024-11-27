@@ -11,13 +11,29 @@ export type Props = {
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, OnyxUI.Util, OnyxUI.Components, Components)
+	local Theme = OnyxUI.Themer.Theme:now()
 
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
 
 		[Children] = {
-			Scope:CatalogMenu {},
+			Scope:Frame {
+				Size = UDim2.fromScale(1, 1),
+				ListEnabled = true,
+				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListVerticalFlex = Enum.UIFlexAlignment.Fill,
+				ListPadding = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["0"]))
+				end),
+
+				[Children] = {
+					Scope:CatalogMenu {
+						FlexMode = Enum.UIFlexMode.Fill,
+					},
+					Scope:AvatarViewport {},
+				},
+			},
 		},
 	}
 end

@@ -5,9 +5,10 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
-export type Props = {
-	Parent: Fusion.UsedAs<Instance>?,
-}
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
+local Frame = require(OnyxUIFolder.Components.Frame)
+
+export type Props = Frame.Props & {}
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
@@ -18,7 +19,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
 		Name = "CatalogMenu",
-		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 0,
 		BackgroundColor3 = Theme.Colors.Base.Main,
 		ListEnabled = true,
@@ -30,6 +30,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		[Children] = {
 			Scope:Frame {
 				Name = "NavigationBar",
+				BackgroundColor3 = Theme.Colors.Neutral.Dark,
+				BackgroundTransparency = 0,
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
 				ListHorizontalFlex = Enum.UIFlexAlignment.SpaceBetween,

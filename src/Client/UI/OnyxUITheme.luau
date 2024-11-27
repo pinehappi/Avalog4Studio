@@ -68,7 +68,7 @@ return Themer.NewTheme(Scope, {
 		Base = 1,
 	},
 	Spacing = {
-		Base = 14,
+		Base = 16,
 	},
 	SpringSpeed = {
 		Base = 60,
