@@ -6,6 +6,10 @@ local Components = {
 	ItemButton = require(script.ItemButton),
 	CustomButton = require(script.CustomButton),
 	AvatarViewport = require(script.AvatarViewport),
+	ItemsTab = require(script.ItemsTab),
+	CategoryBar = require(script.CategoryBar),
+	SkinTab = require(script.SkinTab),
+	BuildTab = require(script.BuildTab),
 }
 
 for _, Child in ipairs(script:GetChildren()) do
