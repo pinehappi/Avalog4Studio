@@ -105,7 +105,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
 						BackgroundTransparency = 0,
-						BackgroundColor3 = Theme.Colors.Neutral.Main,
+						BackgroundColor3 = Theme.Colors.Neutral.Dark,
 					},
 					Scope:Tabs {
 						Name = "SubCategories",
@@ -115,7 +115,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
 						BackgroundTransparency = 0,
-						BackgroundColor3 = Theme.Colors.Base.Dark,
+						BackgroundColor3 = Theme.Colors.Neutral.Main,
 					},
 				},
 			},
