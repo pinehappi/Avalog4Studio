@@ -9,13 +9,17 @@ local Children = Fusion.Children
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 
-export type Props = Frame.Props & {}
+export type Props = Frame.Props & {
+	Shown: Fusion.UsedAs<boolean>?,
+}
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
 		ItemButton = require(script.Parent.ItemButton),
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
+
+	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 
 	local Items = Scope:Value({})
 
@@ -30,10 +34,14 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end
 
 	Scope:Observer(States.Catalog.Category):onChange(function()
-		Items:set({})
+		if Fusion.peek(Shown) then
+			LoadItems()
+		end
 	end)
 	Scope:Observer(States.Catalog.SubCategory):onChange(function()
-		LoadItems()
+		if Fusion.peek(Shown) then
+			LoadItems()
+		end
 	end)
 	LoadItems()
 
@@ -47,6 +55,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		end),
 		ScrollBarImageColor3 = Theme.Colors.Neutral.Light,
 		ClipsDescendants = false,
+		Visible = Shown,
 
 		[Children] = {
 			Scope:ForValues(Items, function(Use, Scope, AssetId)

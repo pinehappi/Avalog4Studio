@@ -3,7 +3,6 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Categories = require(Avalog.SourceCode.Shared.Categories)
-local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 
 local Children = Fusion.Children
 
@@ -23,13 +22,32 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Theme = OnyxUI.Themer.Theme:now()
 
 	local ActiveMode = Scope:Computed(function(Use)
-		return MODES[Use(States.Catalog.Mode)]
+		local ModeValue = Use(States.Catalog.Mode)
+		return MODES[ModeValue]
 	end)
 	local ActiveCategory = Scope:Computed(function(Use)
 		local ActiveModeValue = Use(ActiveMode)
 		local CategoryValue = Use(States.Catalog.Category)
 
 		return Categories[ActiveModeValue][CategoryValue]
+	end)
+	local ActiveTab = Scope:Computed(function(Use)
+		local ActiveModeValue = Use(ActiveMode)
+		local CategoryValue = Use(ActiveCategory)
+
+		if (ActiveModeValue == "Marketplace") or (ActiveModeValue == "Inventory") then
+			return "ItemsTab"
+		elseif ActiveModeValue == "Build" then
+			if CategoryValue and CategoryValue.Name then
+				if CategoryValue.Name == "Skin" then
+					return "SkinTab"
+				elseif CategoryValue.Name == "Build" then
+					return "BuildTab"
+				end
+			end
+		end
+
+		return nil
 	end)
 
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
@@ -44,26 +62,24 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ClipsDescendants = true,
 
 		[Children] = {
-			OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
-				return Scope:Computed(function(Use)
-					local ActiveModeValue = Use(ActiveMode)
-					local CategoryValue = Use(ActiveCategory)
-
-					if (ActiveModeValue == "Marketplace") or (ActiveModeValue == "Inventory") then
-						return Scope:ItemsTab {}
-					elseif ActiveModeValue == "Build" then
-						if CategoryValue and CategoryValue.Name then
-							if CategoryValue.Name == "Skin" then
-								return Scope:SkinTab {}
-							elseif CategoryValue.Name == "Build" then
-								return Scope:BuildTab {}
-							end
-						end
-					end
-
-					return nil
-				end)
-			end),
+			Scope:ItemsTab {
+				Shown = Scope:Computed(function(Use)
+					local ActiveTabValue = Use(ActiveTab)
+					return ActiveTabValue == "ItemsTab"
+				end),
+			},
+			Scope:SkinTab {
+				Shown = Scope:Computed(function(Use)
+					local ActiveTabValue = Use(ActiveTab)
+					return ActiveTabValue == "SkinTab"
+				end),
+			},
+			Scope:BuildTab {
+				Shown = Scope:Computed(function(Use)
+					local ActiveTabValue = Use(ActiveTab)
+					return ActiveTabValue == "BuildTab"
+				end),
+			},
 		},
 	}))
 end
