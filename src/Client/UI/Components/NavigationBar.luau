@@ -18,6 +18,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
+	local SearchBarText = Scope:Value("")
+
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		BackgroundColor3 = Theme.Colors.Neutral.Dark,
@@ -63,6 +65,24 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						Name = "ModeSwapper",
 						Options = MODES,
 						Selection = States.Catalog.Mode,
+						Visible = Scope:Computed(function(Use)
+							return not Use(States.Catalog.Searching)
+						end),
+					},
+					Scope:TextInput {
+						Name = "SearchBar",
+						PlaceholderText = "Search",
+						Visible = States.Catalog.Searching,
+						MaxSize = Scope:Computed(function(Use)
+							return Vector2.new(Use(Theme.Spacing["16"]), math.huge)
+						end),
+						FlexMode = Enum.UIFlexMode.Fill,
+						AutomaticSize = Enum.AutomaticSize.XY,
+						Text = SearchBarText,
+
+						OnFocusLost = function()
+							States.Catalog.SearchQuery:set(Fusion.peek(SearchBarText))
+						end,
 					},
 					Scope:IconButton {
 						Name = "SearchButton",
@@ -82,6 +102,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						PaddingBottom = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["1"]))
 						end),
+
+						OnActivated = function()
+							local SearchingValue = Fusion.peek(States.Catalog.Searching)
+							States.Catalog.Searching:set(not SearchingValue)
+						end,
 					},
 				},
 			},

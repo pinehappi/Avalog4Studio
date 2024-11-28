@@ -6,7 +6,7 @@ local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
 local Signal = require(Avalog.Parent.Signal)
 
 export type SearchParams = {
-	String: string?,
+	SearchKeyword: string?,
 	MinPrice: number?,
 	MaxPrice: number?,
 	SortType: Enum.CatalogSortType?,

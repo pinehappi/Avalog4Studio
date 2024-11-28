@@ -51,6 +51,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			return {}
 		end
 	end)
+	local SearchQuery = Scope:Computed(function(Use)
+		local SearchQueryValue = Use(States.Catalog.SearchQuery)
+		local SearchingValue = Use(States.Catalog.Searching)
+
+		return (SearchingValue and SearchQueryValue) or nil
+	end)
 
 	local Search = Scope:Value(nil)
 	local Results = Scope:Value({})
@@ -62,8 +68,13 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 		local BundleTypesValue = Fusion.peek(BundleTypes)
 		local AssetTypesValue = Fusion.peek(AssetTypes)
+		local SearchQueryValue = Fusion.peek(SearchQuery)
 
-		local SearchObject = CatalogSearch.Search({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue })
+		local SearchObject = CatalogSearch.Search({
+			BundleTypes = BundleTypesValue,
+			AssetTypes = AssetTypesValue,
+			SearchKeyword = SearchQueryValue,
+		})
 
 		SearchObject.Updated:Connect(function()
 			Results:set(SearchObject.Results)
@@ -76,6 +87,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		UpdateSearch()
 	end)
 	Scope:Observer(AssetTypes):onChange(function()
+		UpdateSearch()
+	end)
+	Scope:Observer(SearchQuery):onChange(function()
 		UpdateSearch()
 	end)
 	UpdateSearch()
