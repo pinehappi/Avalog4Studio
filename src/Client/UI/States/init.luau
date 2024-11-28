@@ -2,10 +2,6 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Fusion = require(Avalog.Parent.Fusion)
 local Loader = require(Avalog.Parent.Loader)
 
-local function UnloadedService(): { [any]: any }
-	return {}
-end
-
 local Scope = Fusion.scoped(Fusion)
 
 local States = {

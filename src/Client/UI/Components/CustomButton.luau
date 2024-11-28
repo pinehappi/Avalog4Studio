@@ -1,7 +1,6 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local ColorUtils = require(Avalog.Parent.ColorUtils)
 
 local Util = OnyxUI.Util
 local Themer = OnyxUI.Themer

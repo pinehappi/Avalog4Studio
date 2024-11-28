@@ -56,7 +56,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					end),
 
 					OnActivated = function()
-						local OptionsValue = Use(Options)
 						Selection:set(table.find(OptionsValue, Option))
 					end,
 				}
