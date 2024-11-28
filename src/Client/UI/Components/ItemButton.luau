@@ -23,8 +23,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Data = OnyxUI.Util.Fallback(Props.Data, nil)
 	local Equipped = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Equipped, false))
 
-	print(Data)
-
 	return Scope:CustomButton(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		StrokeEnabled = Equipped,

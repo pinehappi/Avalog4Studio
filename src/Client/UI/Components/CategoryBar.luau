@@ -4,13 +4,12 @@ local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Categories = require(Avalog.SourceCode.Shared.Categories)
 local CategoriesToNames = require(Avalog.SourceCode.Shared.Categories.CategoriesToNames)
+local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
 
 local Children = Fusion.Children
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
-
-local MODES = { "Marketplace", "Inventory", "Build" }
 
 export type Props = Frame.Props & {}
 
@@ -19,16 +18,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Tabs = require(script.Parent.Tabs),
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
-
-	local ActiveMode = Scope:Computed(function(Use)
-		return MODES[Use(States.Catalog.Mode)]
-	end)
-	local ActiveCategory = Scope:Computed(function(Use)
-		local ActiveModeValue = Use(ActiveMode)
-		local CategoryValue = Use(States.Catalog.Category)
-
-		return Categories[ActiveModeValue][CategoryValue]
-	end)
 
 	Scope:Observer(States.Catalog.Mode):onChange(function()
 		States.Catalog.Category:set(1)
@@ -47,9 +36,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			Scope:Tabs {
 				Name = "Categories",
 				Options = Scope:Computed(function(Use)
-					local ActiveModeValue = Use(ActiveMode)
+					local ModeValue = Use(Navigation.Mode)
 
-					return CategoriesToNames(Categories[ActiveModeValue])
+					return CategoriesToNames(Categories[ModeValue])
 				end),
 				Selection = States.Catalog.Category,
 				Padding = Scope:Computed(function(Use)
@@ -62,9 +51,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			Scope:Tabs {
 				Name = "SubCategories",
 				Options = Scope:Computed(function(Use)
-					local ActiveCategoryValue = Use(ActiveCategory)
+					local CategoryValue = Use(Navigation.Category)
 
-					return CategoriesToNames(ActiveCategoryValue.SubCategories or {})
+					return CategoriesToNames(CategoryValue.SubCategories or {})
 				end),
 				Selection = States.Catalog.SubCategory,
 				Padding = Scope:Computed(function(Use)
@@ -74,9 +63,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				BackgroundColor3 = Theme.Colors.Neutral.Main,
 				AutomaticSize = Enum.AutomaticSize.Y,
 				Visible = Scope:Computed(function(Use)
-					local ActiveCategoryValue = Use(ActiveCategory)
+					local CategoryValue = Use(Navigation.Category)
 
-					return #CategoriesToNames(ActiveCategoryValue.SubCategories or {}) > 0
+					return #CategoriesToNames(CategoryValue.SubCategories or {}) > 0
 				end),
 			},
 		},

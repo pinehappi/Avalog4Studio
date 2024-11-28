@@ -4,6 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.CatalogSearch)
+local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
 
 local Children = Fusion.Children
 
@@ -23,31 +24,58 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 
-	local Items = Scope:Value({})
+	local DeepestCategory = Scope:Computed(function(Use)
+		local CategoryValue = Use(Navigation.Category)
+		local SubCategoryValue = Use(Navigation.SubCategory)
 
-	local function LoadItems()
-		local LoadedItems = {}
-
-		for _ = 1, 20 do
-			table.insert(LoadedItems, math.random(10000, 100000000))
+		if SubCategoryValue ~= nil then
+			return SubCategoryValue
+		else
+			return CategoryValue
 		end
+	end)
+	local BundleTypes = Scope:Computed(function(Use)
+		local DeepestCategoryValue = Use(DeepestCategory)
 
-		Items:set(LoadedItems)
+		if DeepestCategoryValue and DeepestCategoryValue.BundleTypes then
+			return DeepestCategoryValue.BundleTypes
+		else
+			return {}
+		end
+	end)
+	local AssetTypes = Scope:Computed(function(Use)
+		local DeepestCategoryValue = Use(DeepestCategory)
+
+		if DeepestCategoryValue and DeepestCategoryValue.AssetTypes then
+			return DeepestCategoryValue.AssetTypes
+		else
+			return {}
+		end
+	end)
+
+	local Search = Scope:Value(nil)
+	local Results = Scope:Computed(function(Use)
+		local SearchValue = Use(Search)
+
+		if SearchValue then
+			return Use(SearchValue.Results)
+		else
+			return {}
+		end
+	end)
+
+	local function UpdateSearch()
+		local BundleTypesValue = Fusion.peek(BundleTypes)
+		local AssetTypesValue = Fusion.peek(AssetTypes)
+
+		Search:set(Scope:CatalogSearch({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue }))
 	end
-
-	Scope:Observer(States.Catalog.Category):onChange(function()
-		if Fusion.peek(Shown) then
-			LoadItems()
-		end
+	Scope:Observer(BundleTypes):onChange(function()
+		UpdateSearch()
 	end)
-	Scope:Observer(States.Catalog.SubCategory):onChange(function()
-		if Fusion.peek(Shown) then
-			LoadItems()
-		end
+	Scope:Observer(AssetTypes):onChange(function()
+		UpdateSearch()
 	end)
-	LoadItems()
-
-	local Search = Scope:CatalogSearch({ BundleTypes = { Enum.BundleType.BodyParts } })
 
 	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
@@ -62,7 +90,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Visible = Shown,
 
 		[Children] = {
-			Scope:ForValues(Search.Results, function(Use, Scope, Result)
+			Scope:ForValues(Results, function(Use, Scope, Result)
 				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
 					return Scope:ItemButton {
 						Data = Result,
