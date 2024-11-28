@@ -4,6 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.CatalogSearch)
 local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -55,6 +56,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Results = Scope:Value({})
 
 	local function UpdateSearch()
+		if not Fusion.peek(Shown) then
+			return
+		end
+
 		local BundleTypesValue = Fusion.peek(BundleTypes)
 		local AssetTypesValue = Fusion.peek(AssetTypes)
 
