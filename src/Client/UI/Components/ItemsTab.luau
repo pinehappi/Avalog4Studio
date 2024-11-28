@@ -17,7 +17,6 @@ export type Props = Frame.Props & {
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
 		ItemButton = require(script.Parent.ItemButton),
-		CatalogSearch = CatalogSearch.Search,
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
@@ -59,14 +58,14 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local BundleTypesValue = Fusion.peek(BundleTypes)
 		local AssetTypesValue = Fusion.peek(AssetTypes)
 
-		local SearchObject = Scope:CatalogSearch({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue })
+		local SearchObject = CatalogSearch.Search({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue })
+
+		SearchObject.Updated:Connect(function()
+			Results:set(SearchObject.Results)
+		end)
 
 		Search:set(SearchObject)
-		Results:set(Fusion.peek(SearchObject.Results))
-
-		Scope:Observer(SearchObject.Results):onChange(function()
-			Results:set(Fusion.peek(SearchObject.Results))
-		end)
+		Results:set(SearchObject.Results)
 	end
 	Scope:Observer(BundleTypes):onChange(function()
 		UpdateSearch()

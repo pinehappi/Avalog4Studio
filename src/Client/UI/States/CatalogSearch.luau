@@ -2,8 +2,8 @@ local AvatarEditorService = game:GetService("AvatarEditorService")
 
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
-local Fusion = require(Avalog.Parent.Fusion)
 local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
+local Signal = require(Avalog.Parent.Signal)
 
 export type SearchParams = {
 	String: string?,
@@ -24,15 +24,16 @@ local CatalogSearch = {
 	Searches = {},
 }
 
-function CatalogSearch.Search(Scope: Fusion.Scope<typeof(Fusion)>, Params: SearchParams)
+function CatalogSearch.Search(Params: SearchParams)
 	local ParamsHash = HashDictionary(Params)
 	if CatalogSearch.Searches[ParamsHash] ~= nil then
 		return CatalogSearch.Searches[ParamsHash]
 	end
 
 	local Search = {
-		Results = Scope:Value({}),
+		Results = {},
 		Pages = nil,
+		Updated = Signal.new(),
 	}
 
 	function Search:LoadNextPage()
@@ -49,13 +50,11 @@ function CatalogSearch.Search(Scope: Fusion.Scope<typeof(Fusion)>, Params: Searc
 	end
 
 	function Search:_LoadPage(Page: { [number]: any })
-		local ResultsValue = Fusion.peek(Search.Results)
-
 		for _, Entry in ipairs(Page) do
-			table.insert(ResultsValue, Entry)
+			table.insert(Search.Results, Entry)
 		end
 
-		Search.Results:set(ResultsValue)
+		self.Updated:Fire()
 	end
 
 	CatalogSearch.Pages(Params):After(function(Success, Result)
