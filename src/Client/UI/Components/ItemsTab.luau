@@ -2,7 +2,6 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
-local States = require(Avalog.SourceCode.Client.UI.States)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.CatalogSearch)
 local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
 
@@ -54,21 +53,20 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 
 	local Search = Scope:Value(nil)
-	local Results = Scope:Computed(function(Use)
-		local SearchValue = Use(Search)
-
-		if SearchValue then
-			return Use(SearchValue.Results)
-		else
-			return {}
-		end
-	end)
+	local Results = Scope:Value({})
 
 	local function UpdateSearch()
 		local BundleTypesValue = Fusion.peek(BundleTypes)
 		local AssetTypesValue = Fusion.peek(AssetTypes)
 
-		Search:set(Scope:CatalogSearch({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue }))
+		local SearchObject = Scope:CatalogSearch({ BundleTypes = BundleTypesValue, AssetTypes = AssetTypesValue })
+
+		Search:set(SearchObject)
+		Results:set(Fusion.peek(SearchObject.Results))
+
+		Scope:Observer(SearchObject.Results):onChange(function()
+			Results:set(Fusion.peek(SearchObject.Results))
+		end)
 	end
 	Scope:Observer(BundleTypes):onChange(function()
 		UpdateSearch()
@@ -76,6 +74,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	Scope:Observer(AssetTypes):onChange(function()
 		UpdateSearch()
 	end)
+	UpdateSearch()
 
 	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
