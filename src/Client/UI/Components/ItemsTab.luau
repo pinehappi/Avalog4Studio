@@ -3,6 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.CatalogSearch)
 
 local Children = Fusion.Children
 
@@ -16,6 +17,7 @@ export type Props = Frame.Props & {
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
 		ItemButton = require(script.Parent.ItemButton),
+		CatalogSearch = CatalogSearch.Search,
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
@@ -45,6 +47,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 	LoadItems()
 
+	local Search = Scope:CatalogSearch({ BundleTypes = { Enum.BundleType.BodyParts } })
+
 	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
@@ -58,10 +62,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Visible = Shown,
 
 		[Children] = {
-			Scope:ForValues(Items, function(Use, Scope, AssetId)
+			Scope:ForValues(Search.Results, function(Use, Scope, Result)
 				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
 					return Scope:ItemButton {
-						AssetId = AssetId,
+						Data = Result,
 					}
 				end)
 			end),
