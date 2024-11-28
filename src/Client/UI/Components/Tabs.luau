@@ -19,6 +19,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Options = OnyxUI.Util.Fallback(Props.Options, {})
 	local Selection = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Selection, 1))
 
+	Scope:Observer(Options):onChange(function()
+		Selection:set(1)
+	end)
+
 	local Tabs = Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
