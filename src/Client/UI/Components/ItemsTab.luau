@@ -94,7 +94,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 	UpdateSearch()
 
-	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
+	local ItemsTab = Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
@@ -116,4 +116,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			end),
 		},
 	}))
+
+	Scope:Observer(Search):onChange(function()
+		ItemsTab.CanvasPosition = Vector2.new()
+	end)
+
+	return ItemsTab
 end
