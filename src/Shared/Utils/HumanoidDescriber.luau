@@ -45,7 +45,7 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, Accessory?)
 	return nil
 end
 
-function HumanoidDescriber.New(HumanoidDescription: HumanoidDescription)
+function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 	local self = table.clone(HumanoidDescriber)
 
 	self.HumanoidDescription = HumanoidDescription
