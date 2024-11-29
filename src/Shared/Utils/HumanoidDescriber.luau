@@ -14,6 +14,32 @@ local HumanoidDescriber = {
 	AccessoriesChanged = Signal.new(),
 }
 
+function HumanoidDescriber:SetProperties(Properties: { [string]: any })
+	local HumanoidDescription = self.HumanoidDescription
+	local PropertiesWritten = 0
+	local PropertiesEncountered = 0
+
+	for Name, Value in pairs(Properties) do
+		PropertiesEncountered += 0
+
+		local _, ExistingValue = pcall(function()
+			return HumanoidDescription[Name]
+		end)
+
+		if (ExistingValue ~= nil) and (Value ~= nil) then
+			if typeof(ExistingValue) == typeof(Value) then
+				if ExistingValue ~= Value then
+					HumanoidDescription[Name] = Value
+
+					PropertiesWritten += 1
+				end
+			end
+		end
+	end
+
+	return PropertiesWritten == PropertiesEncountered
+end
+
 function HumanoidDescriber:ToggleAccessory(Accessory: Accessory)
 	if self:GetAccessory(Accessory.AssetId) then
 		self:RemoveAccessory(Accessory.AssetId)

@@ -1,6 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
+local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
 
 local RATE_LIMITS = {
 	SetProperty = RateLimit(4, 1),
@@ -39,24 +40,9 @@ end
 
 function AvatarService:SetProperty(Player: Player, Name: string, Value: any)
 	local HumanoidDescription = self:GetHumanoidDescription(Player)
+	local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
-	if HumanoidDescription then
-		local _, ExistingValue = pcall(function()
-			return HumanoidDescription[Name]
-		end)
-
-		if (ExistingValue ~= nil) and (Value ~= nil) then
-			if typeof(ExistingValue) == typeof(Value) then
-				if ExistingValue ~= Value then
-					HumanoidDescription[Name] = Value
-
-					return self:Apply(Player, HumanoidDescription):Await()
-				end
-			end
-		end
-	end
-
-	return false
+	return HumanoidDescriberObject:SetProperties({ [Name] = Value })
 end
 
 function AvatarService:SetAccessories(Player: Player, Accessories: { { any } })

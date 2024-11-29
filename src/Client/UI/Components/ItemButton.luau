@@ -1,8 +1,8 @@
-local MarketplaceService = game:GetService("MarketplaceService")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local Future = require(Avalog.Parent.Future)
+local States = require(Avalog.SourceCode.Client.UI.States)
+local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 
 local Children = Fusion.Children
 
@@ -22,6 +22,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	local Data = OnyxUI.Util.Fallback(Props.Data, nil)
 	local Equipped = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Equipped, false))
+
+	Scope:Observer(Equipped):onChange(function()
+		local DataValue = Fusion.peek(Data)
+
+		LocalAvatar:ToggleCatalogItem(DataValue)
+	end)
 
 	return Scope:CustomButton(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
