@@ -1,9 +1,12 @@
+local AssetService = game:GetService("AssetService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Avalog = script.Parent.Parent.Parent.Parent
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
 local Signal = require(Avalog.Parent.Signal)
+local Future = require(Avalog.Parent.Future)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local ASSET_ACCESSORY_TYPES = {
 	Hat = Enum.AccessoryType.Hat,
@@ -34,10 +37,23 @@ local LocalAvatar = {
 }
 
 function LocalAvatar:ToggleCatalogItem(Item)
-	print(Item.AssetType)
-
 	if Item.ItemType == "Bundle" then
-		print("bundle")
+		print(Item)
+		Future.Try(function()
+			return AssetService:GetBundleDetailsAsync(Item.Id)
+		end):After(function(Success, Result)
+			if Success then
+				if Result.BundleType == "BodyParts" then
+					for _, BundleItem in pairs(Result.Items) do
+						if BundleItem.Type == "UserOutfit" then
+							if next(States.Services.AvatarService) ~= nil then
+								States.Services.AvatarService:SetOutfit(BundleItem.Id)
+							end
+						end
+					end
+				end
+			end
+		end)
 	elseif Item.ItemType == "Asset" then
 		local AccessoryType = ASSET_ACCESSORY_TYPES[Item.AssetType]
 		if AccessoryType then
@@ -46,12 +62,12 @@ function LocalAvatar:ToggleCatalogItem(Item)
 				AccessoryType = AccessoryType,
 				Order = 1,
 			})
+		elseif Item.AssetType == "Face" then
+			LocalAvatar.HumanoidDescriber:SetProperties({
+				Face = Item.Id,
+			})
 		else
-			-- LocalAvatar.HumanoidDescriber:SetProperties({
-			-- 	AssetId = Item.Id,
-			-- 	AccessoryType = AccessoryType,
-			-- 	Order = 1,
-			-- })
+			print(Item.AssetType, Item.ItemType, Item)
 		end
 	end
 end
