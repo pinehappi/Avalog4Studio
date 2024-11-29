@@ -4,6 +4,8 @@ local CLIENT = SOURCE.Client
 
 local Knit = require(PACKAGES.Knit)
 local Loader = require(PACKAGES.Loader)
+local States = require(SOURCE.Client.UI.States)
+local Fusion = require(PACKAGES.Fusion)
 
 local AvalogClient = {
 	Started = false,
@@ -22,6 +24,14 @@ function AvalogClient:Start()
 	end)
 
 	Knit.Start()
+end
+
+function AvalogClient:ToggleOpen()
+	States.Open:set(not Fusion.peek(States.Open))
+end
+
+function AvalogClient:SetOpen(Open: boolean)
+	States.Open:set(Open)
 end
 
 return AvalogClient

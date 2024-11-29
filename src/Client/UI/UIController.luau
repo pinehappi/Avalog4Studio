@@ -6,9 +6,9 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local OnyxUITheme = require(script.Parent.OnyxUITheme)
 
-local Themer = OnyxUI.Themer
+local AvalogMenu = require(script.Parent.ScreenGuis.AvalogMenu)
 
-local DEFAULT_UIS = { "TopbarHUD", "PromptHUD" }
+local Themer = OnyxUI.Themer
 
 local UIController = {
 	Name = "UIController",
@@ -17,32 +17,14 @@ local UIController = {
 	XPMultiplierDropdownIcons = {},
 }
 
-function UIController:MountUI(Component)
-	return Themer.Theme:is(OnyxUITheme):during(function()
-		local UIObject = Component(self.Scope, {
-			Parent = self.AvalogUI,
-		})
-
-		return UIObject
-	end)
-end
-
 function UIController:KnitStart()
 	States:Start()
 
-	for _, GuiName in ipairs(DEFAULT_UIS) do
-		local GuiModule = Avalog.SourceCode.Client.UI.ScreenGuis:FindFirstChild(GuiName)
-		if GuiModule then
-			local Gui = require(GuiModule)
-			self:MountUI(Gui)
-		end
-	end
+	Themer.Theme:is(OnyxUITheme):during(function()
+		AvalogMenu(self.Scope, {
+			Parent = Players.LocalPlayer:WaitForChild("PlayerGui"),
+		})
+	end)
 end
-
-UIController.AvalogUI = UIController.Scope:New "ScreenGui" {
-	Name = "AvalogUI",
-	Parent = Players.LocalPlayer:WaitForChild("PlayerGui"),
-	ResetOnSpawn = false,
-}
 
 return UIController
