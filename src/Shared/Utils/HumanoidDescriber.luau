@@ -14,19 +14,37 @@ local HumanoidDescriber = {
 	AccessoriesChanged = Signal.new(),
 }
 
+function HumanoidDescriber:GetProperties(Properties: { string })
+	local Results = {}
+
+	local HumanoidDescription = self.HumanoidDescription
+
+	for _, PropertyName in ipairs(Properties) do
+		local Success, ExistingValue = pcall(function()
+			return HumanoidDescription[PropertyName]
+		end)
+
+		if Success and (ExistingValue ~= nil) then
+			Results[PropertyName] = ExistingValue
+		end
+	end
+
+	return Results
+end
+
 function HumanoidDescriber:SetProperties(Properties: { [string]: any })
 	local HumanoidDescription = self.HumanoidDescription
 	local PropertiesWritten = 0
 	local PropertiesEncountered = 0
 
 	for Name, Value in pairs(Properties) do
-		PropertiesEncountered += 0
+		PropertiesEncountered += 1
 
-		local _, ExistingValue = pcall(function()
+		local Success, ExistingValue = pcall(function()
 			return HumanoidDescription[Name]
 		end)
 
-		if (ExistingValue ~= nil) and (Value ~= nil) then
+		if Success and ((ExistingValue ~= nil) and (Value ~= nil)) then
 			if typeof(ExistingValue) == typeof(Value) then
 				if ExistingValue ~= Value then
 					HumanoidDescription[Name] = Value

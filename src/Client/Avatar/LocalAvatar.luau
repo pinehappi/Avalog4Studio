@@ -7,6 +7,8 @@ local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescrib
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local DictionaryKeys = require(Avalog.SourceCode.Shared.Utils.DictionaryKeys)
+local PropertyValueBinds = require(Avalog.SourceCode.Client.Avatar.PropertyValueBinds)
 
 local ASSET_ACCESSORY_TYPES = {
 	Hat = Enum.AccessoryType.Hat,
@@ -38,17 +40,32 @@ local LocalAvatar = {
 
 function LocalAvatar:ToggleCatalogItem(Item)
 	if Item.ItemType == "Bundle" then
-		print(Item)
 		Future.Try(function()
 			return AssetService:GetBundleDetailsAsync(Item.Id)
 		end):After(function(Success, Result)
 			if Success then
-				if Result.BundleType == "BodyParts" then
-					for _, BundleItem in pairs(Result.Items) do
-						if BundleItem.Type == "UserOutfit" then
+				for _, BundleItem in pairs(Result.Items) do
+					if BundleItem.Type == "UserOutfit" then
+						if Result.BundleType == "BodyParts" then
 							if next(States.Services.AvatarService) ~= nil then
 								States.Services.AvatarService:SetOutfit(BundleItem.Id)
 							end
+						elseif Result.BundleType == "AvatarAnimations" then
+							local Success2, Result2 = Future.Try(function()
+								return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
+							end):Await()
+
+							if Success2 then
+								local BundleHumanoidDescriber = HumanoidDescriber.new(Result2)
+
+								LocalAvatar.HumanoidDescriber:SetProperties(
+									BundleHumanoidDescriber:GetProperties(
+										DictionaryKeys(PropertyValueBinds.Binds.Animations)
+									)
+								)
+							end
+						else
+							print(Result)
 						end
 					end
 				end

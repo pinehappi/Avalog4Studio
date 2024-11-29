@@ -24,12 +24,12 @@ function AvatarService.Client:SetOutfit(Player: Player, OutfitId: number)
 	return AvatarService:SetOutfit(Player, OutfitId)
 end
 
-function AvatarService.Client:SetProperty(Player: Player, Name: string, Value: any)
+function AvatarService.Client:SetProperties(Player: Player, Properties: { [string]: any })
 	if not RATE_LIMITS.SetProperty(Player.UserId) then
 		return
 	end
 
-	return AvatarService:SetProperty(Player, Name, Value)
+	return AvatarService:SetProperties(Player, Properties)
 end
 
 function AvatarService.Client:SetAccessories(Player: Player, Accessories: { { any } })
@@ -63,11 +63,15 @@ function AvatarService:SetOutfit(Player: Player, OutfitId: number)
 	end
 end
 
-function AvatarService:SetProperty(Player: Player, Name: string, Value: any)
+function AvatarService:SetProperties(Player: Player, Properties: { [string]: any })
 	local _, _, HumanoidDescription = self:GetCharacterObjects(Player)
 	local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
-	return HumanoidDescriberObject:SetProperties({ [Name] = Value })
+	print(1)
+	if HumanoidDescriberObject:SetProperties(Properties) then
+		print(2)
+		return self:Apply(Player, HumanoidDescription):Await()
+	end
 end
 
 function AvatarService:SetAccessories(Player: Player, Accessories: { { any } })

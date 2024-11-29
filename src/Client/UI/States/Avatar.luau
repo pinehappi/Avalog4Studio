@@ -2,43 +2,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Fusion = require(Avalog.Parent.Fusion)
-
-local PROPERTY_VALUE_BINDS = {
-	Face = States.Avatar.Face,
-
-	BodyTypeScale = States.Avatar.Scale.BodyType,
-	DepthScale = States.Avatar.Scale.Depth,
-	HeadScale = States.Avatar.Scale.Head,
-	HeightScale = States.Avatar.Scale.Height,
-	ProportionScale = States.Avatar.Scale.Proportion,
-	WidthScale = States.Avatar.Scale.Width,
-
-	Head = States.Avatar.BodyParts.Head,
-	Torso = States.Avatar.BodyParts.Torso,
-	LeftLeg = States.Avatar.BodyParts.LeftLeg,
-	RightLeg = States.Avatar.BodyParts.RightLeg,
-	LeftArm = States.Avatar.BodyParts.LeftArm,
-	RightArm = States.Avatar.BodyParts.RightArm,
-
-	IdleAnimation = States.Avatar.Animations.Idle,
-	WalkAnimation = States.Avatar.Animations.Walk,
-	RunAnimation = States.Avatar.Animations.Run,
-	FallAnimation = States.Avatar.Animations.Fall,
-	JumpAnimation = States.Avatar.Animations.Jump,
-	MoodAnimation = States.Avatar.Animations.Mood,
-	SwimAnimation = States.Avatar.Animations.Swim,
-
-	Shirt = States.Avatar.Clothing.Shirt,
-	GraphicTShirt = States.Avatar.Clothing.TShirt,
-	Pants = States.Avatar.Clothing.Pants,
-
-	HeadColor = States.Avatar.BodyPartColors.Head,
-	TorsoColor = States.Avatar.BodyPartColors.Torso,
-	LeftLegColor = States.Avatar.BodyPartColors.LeftLeg,
-	RightLegColor = States.Avatar.BodyPartColors.RightLeg,
-	LeftArmColor = States.Avatar.BodyPartColors.LeftArm,
-	RightArmColor = States.Avatar.BodyPartColors.RightArm,
-}
+local PropertyValueBinds = require(Avalog.SourceCode.Client.Avatar.PropertyValueBinds)
 
 local Scope = Fusion.scoped(Fusion)
 
@@ -64,7 +28,7 @@ end
 function Avatar:_BindProperties()
 	local HumanoidDescription = LocalAvatar.HumanoidDescriber.HumanoidDescription
 
-	for Property, Value in pairs(PROPERTY_VALUE_BINDS) do
+	for Property, Value in pairs(PropertyValueBinds.Binds.All) do
 		local function UpdateValue()
 			Value:set(HumanoidDescription[Property])
 		end
@@ -78,7 +42,7 @@ function Avatar:_BindProperties()
 
 			if HumanoidDescription[Property] ~= ValueValue then
 				if next(States.Services.AvatarService) ~= nil then
-					States.Services.AvatarService:SetProperty(Property, ValueValue)
+					States.Services.AvatarService:SetProperties({ [Property] = ValueValue })
 				end
 			end
 		end)
