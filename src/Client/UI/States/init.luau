@@ -4,8 +4,14 @@ local Loader = require(Avalog.Parent.Loader)
 
 local Scope = Fusion.scoped(Fusion)
 
+local function UnloadedService(): { [any]: any }
+	return {}
+end
+
 local States = {
-	Services = {},
+	Services = {
+		AvatarService = UnloadedService(),
+	},
 	Catalog = {
 		Searching = Scope:Value(false),
 		SearchQuery = Scope:Value(""),

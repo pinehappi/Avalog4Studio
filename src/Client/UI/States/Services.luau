@@ -4,7 +4,7 @@ local States = require(script.Parent)
 
 type KnitService = typeof(Knit.GetService)
 
-local Services = {}
+local Services = { "AvatarService" }
 
 function Services:Start()
 	Knit.OnStart():andThen(function()

@@ -77,8 +77,9 @@ function Avatar:_BindProperties()
 			local ValueValue = Fusion.peek(Value)
 
 			if HumanoidDescription[Property] ~= ValueValue then
-				HumanoidDescription[Property] = ValueValue
-				LocalAvatar.Humanoid:ApplyDescription(HumanoidDescription)
+				if next(States.Services.AvatarService) ~= nil then
+					States.Services.AvatarService:SetProperty(Property, ValueValue)
+				end
 			end
 		end)
 
@@ -87,7 +88,13 @@ function Avatar:_BindProperties()
 end
 
 function Avatar:_UpdateAccessories()
-	States.Avatar.Accessories:set(LocalAvatar.HumanoidDescriber.HumanoidDescription:GetAccessories(true))
+	local Accessories = LocalAvatar.HumanoidDescriber.HumanoidDescription:GetAccessories(true)
+
+	States.Avatar.Accessories:set(Accessories)
+
+	if next(States.Services.AvatarService) ~= nil then
+		States.Services.AvatarService:SetAccessories(Accessories)
+	end
 end
 
 function Avatar:_UpdateEmotes()
