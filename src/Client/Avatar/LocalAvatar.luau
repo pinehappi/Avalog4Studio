@@ -2,11 +2,13 @@ local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local Signal = require(Avalog.Parent.Signal)
 
 local LocalAvatar = {
 	Character = Instance.new("Model"),
 	Humanoid = Instance.new("Humanoid"),
 	HumanoidDescriber = HumanoidDescriber.new(Instance.new("HumanoidDescription")),
+	Updated = Signal.new(),
 }
 
 function LocalAvatar:SetCharacter(Character: Model)
@@ -18,6 +20,8 @@ function LocalAvatar:SetCharacter(Character: Model)
 		self.Character = Character
 		self.Humanoid = Humanoid
 		self.HumanoidDescriber = HumanoidDescriberObject
+
+		self.Updated:Fire()
 	end
 end
 

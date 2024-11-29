@@ -1,3 +1,6 @@
+local Avalog = script.Parent.Parent.Parent.Parent
+local Signal = require(Avalog.Parent.Signal)
+
 export type Accessory = {
 	Order: number,
 	AssetId: number,
@@ -7,6 +10,8 @@ export type Accessory = {
 
 local HumanoidDescriber = {
 	HumanoidDescription = Instance.new("HumanoidDescription"),
+
+	AccessoriesChanged = Signal.new(),
 }
 
 function HumanoidDescriber:ToggleAccessory(Accessory: Accessory)
@@ -21,6 +26,8 @@ function HumanoidDescriber:AddAccessory(Accessory: Accessory)
 	local Accessories = self.HumanoidDescription:GetAccessories(true)
 	table.insert(Accessories, Accessory)
 	self.HumanoidDescription:SetAccessories(Accessories, true)
+
+	self.AccessoriesChanged:Fire(Accessories)
 end
 
 function HumanoidDescriber:RemoveAccessory(AssetId: number)
@@ -30,6 +37,8 @@ function HumanoidDescriber:RemoveAccessory(AssetId: number)
 		local Accessories = self.HumanoidDescription:GetAccessories(true)
 		table.remove(Accessories, AccessoryIndex)
 		self.HumanoidDescription:SetAccessories(Accessories, true)
+
+		self.AccessoriesChanged:Fire(Accessories)
 	end
 end
 
@@ -43,6 +52,10 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, Accessory?)
 	end
 
 	return nil
+end
+
+function HumanoidDescriber:Destroy()
+	self.AccessoriesChanged:Destroy()
 end
 
 function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
