@@ -1,6 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local Fusion = require(Avalog.Parent.Fusion)
 
 local PROPERTY_VALUE_BINDS = {
 	Face = States.Avatar.Face,
@@ -39,6 +40,8 @@ local PROPERTY_VALUE_BINDS = {
 	RightArmColor = States.Avatar.BodyPartColors.RightArm,
 }
 
+local Scope = Fusion.scoped(Fusion)
+
 local Avatar = {}
 
 function Avatar:_HandleAvatar()
@@ -59,13 +62,24 @@ function Avatar:_HandleAvatar()
 end
 
 function Avatar:_BindProperties()
+	local HumanoidDescription = LocalAvatar.HumanoidDescriber.HumanoidDescription
+
 	for Property, Value in pairs(PROPERTY_VALUE_BINDS) do
 		local function UpdateValue()
-			Value:set(LocalAvatar.HumanoidDescriber.HumanoidDescription[Property])
+			Value:set(HumanoidDescription[Property])
 		end
 
-		LocalAvatar.HumanoidDescriber.HumanoidDescription:GetPropertyChangedSignal(Property):Connect(function()
+		HumanoidDescription:GetPropertyChangedSignal(Property):Connect(function()
 			UpdateValue()
+		end)
+
+		Scope:Observer(Value):onChange(function()
+			local ValueValue = Fusion.peek(Value)
+
+			if HumanoidDescription[Property] ~= ValueValue then
+				HumanoidDescription[Property] = ValueValue
+				LocalAvatar.Humanoid:ApplyDescription(HumanoidDescription)
+			end
 		end)
 
 		UpdateValue()
