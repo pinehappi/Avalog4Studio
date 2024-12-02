@@ -237,8 +237,10 @@ function HumanoidDescriber:_UpdateHumanoidDescription()
 		Pants = Data.Clothing.Pants,
 	}
 
-	for Name, Value in ipairs(Properties) do
-		self.HumanoidDescription[Name] = Value
+	for Name, Value in pairs(Properties) do
+		if self.HumanoidDescription[Name] ~= Value then
+			self.HumanoidDescription[Name] = Value
+		end
 	end
 
 	self.HumanoidDescription:SetAccessories(Data.Accessories, true)
@@ -246,6 +248,10 @@ function HumanoidDescriber:_UpdateHumanoidDescription()
 end
 
 function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> Data, UpdateDescription: boolean?)
+	if UpdateDescription == nil then
+		UpdateDescription = true
+	end
+
 	local OldData = self:GetData()
 	local NewData = ModifierCallback(self:GetData())
 
@@ -253,7 +259,7 @@ function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> Data, UpdateDe
 		self.Data = NewData
 
 		if UpdateDescription then
-			self:_UpdateHumanoidDescription(NewData)
+			self:_UpdateHumanoidDescription()
 		end
 
 		self.Updated:Fire(OldData, NewData)

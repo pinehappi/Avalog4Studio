@@ -38,35 +38,40 @@ local LocalAvatar = {
 
 function LocalAvatar:ToggleCatalogItem(Item)
 	if Item.ItemType == "Bundle" then
-		Future.Try(function()
+		local Success, Result = Future.Try(function()
 			return AssetService:GetBundleDetailsAsync(Item.Id)
-		end):After(function(Success, Result)
-			if Success then
-				for _, BundleItem in pairs(Result.Items) do
-					if BundleItem.Type == "UserOutfit" then
-						if Result.BundleType == "BodyParts" then
-							local Success2, Result2 = Future.Try(function()
-								return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
-							end):Await()
+		end):Await()
+		if Success then
+			for _, BundleItem in pairs(Result.Items) do
+				if BundleItem.Type == "UserOutfit" then
+					if Result.BundleType == "BodyParts" then
+						local Success2, Result2 = Future.Try(function()
+							return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
+						end):Await()
 
-							if Success2 then
-								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
-							end
-						elseif Result.BundleType == "AvatarAnimations" then
-							local Success2, Result2 = Future.Try(function()
-								return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
-							end):Await()
-
-							if Success2 then
-								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
-							end
-						else
-							print(Result)
+						if Success2 then
+							LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
 						end
+					elseif Result.BundleType == "AvatarAnimations" then
+						local Success2, Result2 = Future.Try(function()
+							return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
+						end):Await()
+
+						if Success2 then
+							local BundleDescriber = HumanoidDescriber.new(Result2)
+							local BundleData = BundleDescriber:GetData()
+
+							self.HumanoidDescriber:UpdateData(function(Data)
+								Data.Animations = BundleData.Animations
+								return Data
+							end)
+						end
+					else
+						print(Result)
 					end
 				end
 			end
-		end)
+		end
 	elseif Item.ItemType == "Asset" then
 		local AccessoryType = ASSET_ACCESSORY_TYPES[Item.AssetType]
 		if AccessoryType then
@@ -86,7 +91,7 @@ function LocalAvatar:ToggleCatalogItem(Item)
 	end
 
 	if next(States.Services.AvatarService) ~= nil then
-		States.Services.AvatarService:Reconcile(HumanoidDescriber:GetData())
+		States.Services.AvatarService:Update(self.HumanoidDescriber:GetData())
 	end
 end
 

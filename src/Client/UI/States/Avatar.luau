@@ -8,11 +8,9 @@ local Scope = Fusion.scoped(Fusion)
 local Avatar = {}
 
 function Avatar:_HandleAvatar()
-	local HumanoidDescriber = LocalAvatar.HumanoidDescriber
+	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
 
-	States.Avatar.Data:set(HumanoidDescriber:GetData())
-
-	HumanoidDescriber.Updated:Connect(function(_, NewData)
+	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		States.Avatar.Data:set(NewData)
 	end)
 end

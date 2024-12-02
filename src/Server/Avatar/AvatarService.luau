@@ -7,6 +7,7 @@ local ReconcileTable = require(Avalog.SourceCode.Shared.Utils.ReconcileTable)
 
 local RATE_LIMITS = {
 	Reconcile = RateLimit(4, 1),
+	Update = RateLimit(4, 1),
 	SetOutfit = RateLimit(1, 1),
 }
 
@@ -14,6 +15,14 @@ local AvatarService = {
 	Name = script.Name,
 	Client = {},
 }
+
+function AvatarService.Client:Update(Player: Player, Data: HumanoidDescriber.Data)
+	if not RATE_LIMITS.Update(Player.UserId) then
+		return
+	end
+
+	return AvatarService:Update(Player, Data)
+end
 
 function AvatarService.Client:SetOutfit(Player: Player, OutfitId: number)
 	if not RATE_LIMITS.SetOutfit(Player.UserId) then
@@ -43,6 +52,19 @@ function AvatarService:SetOutfit(Player: Player, OutfitId: number)
 			Result.Parent = workspace
 			Humanoid:ApplyDescription(Result)
 		end
+	end
+end
+
+function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
+	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
+	if Humanoid and HumanoidDescription then
+		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
+
+		HumanoidDescriberObject:UpdateData(function()
+			return Data
+		end)
+
+		Humanoid:ApplyDescriptionReset(HumanoidDescription)
 	end
 end
 
@@ -81,7 +103,7 @@ function AvatarService:GetCharacterObjects(Player: Player): (Model?, Humanoid?, 
 	if Character then
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if Humanoid then
-			return Character, Humanoid, Humanoid:GetAppliedDescription()
+			return Character, Humanoid, Humanoid:FindFirstChildOfClass("HumanoidDescription")
 		end
 	end
 
