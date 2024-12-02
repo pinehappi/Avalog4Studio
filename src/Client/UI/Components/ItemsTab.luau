@@ -7,6 +7,8 @@ local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
+local Out = Fusion.Out
+local OnChange = Fusion.OnChange
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
@@ -94,7 +96,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 	UpdateSearch()
 
-	local ItemsTab = Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
+	local AbsoluteCanvasSize = Scope:Value(Vector2.new())
+	local AbsoluteWindowSize = Scope:Value(Vector2.new())
+
+	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
@@ -105,6 +110,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ScrollBarImageColor3 = Theme.Colors.Neutral.Light,
 		ClipsDescendants = false,
 		Visible = Shown,
+		CanvasSize = UDim2.fromOffset(0, 0),
 
 		[Children] = {
 			Scope:ForValues(Results, function(Use, Scope, Result)
@@ -115,7 +121,20 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				end)
 			end),
 		},
-	}))
+	}))) {
+		[OnChange "CanvasPosition"] = function(CanvasPosition)
+			local CanvasHeight = Fusion.peek(AbsoluteCanvasSize).Y - Fusion.peek(AbsoluteWindowSize).Y
+
+			if CanvasPosition.Y >= CanvasHeight then
+				local SearchValue = Fusion.peek(Search)
+				if (SearchValue ~= nil) and not SearchValue.IsFinished then
+					SearchValue:LoadNextPage()
+				end
+			end
+		end,
+		[Out "AbsoluteCanvasSize"] = AbsoluteCanvasSize,
+		[Out "AbsoluteWindowSize"] = AbsoluteWindowSize,
+	}
 
 	Scope:Observer(Search):onChange(function()
 		ItemsTab.CanvasPosition = Vector2.new()
