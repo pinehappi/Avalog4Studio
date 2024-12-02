@@ -78,6 +78,7 @@ function LocalAvatar:ToggleCatalogItem(Item)
 		elseif Item.AssetType == "Face" then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
 				Data.Face = Item.Id
+				return Data
 			end)
 		else
 			print(Item.AssetType, Item.ItemType, Item)
@@ -90,9 +91,13 @@ function LocalAvatar:ToggleCatalogItem(Item)
 end
 
 function LocalAvatar:SetCharacter(Character: Model)
+	if not Players.LocalPlayer:HasAppearanceLoaded() then
+		Players.LocalPlayer:GetPropertyChangedSignal("HasAppearanceLoaded"):Wait()
+	end
+
 	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 	if Humanoid then
-		local HumanoidDescription = Humanoid:GetAppliedDescription()
+		local HumanoidDescription = Humanoid:FindFirstChildOfClass("HumanoidDescription")
 		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
 		self.Character = Character

@@ -51,8 +51,9 @@ function AvatarService:Reconcile(Player: Player, SupplementaryData: HumanoidDesc
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
-		HumanoidDescriberObject:UpdateData(function(OldData)
-			return ReconcileTable(OldData, SupplementaryData)
+		HumanoidDescriberObject:UpdateData(function(Data)
+			ReconcileTable(Data, SupplementaryData)
+			return Data
 		end)
 
 		Humanoid:ApplyDescription(HumanoidDescription)

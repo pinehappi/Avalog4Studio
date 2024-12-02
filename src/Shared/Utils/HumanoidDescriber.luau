@@ -115,8 +115,9 @@ function HumanoidDescriber:AddAccessory(Accessory: AccessorySpec)
 	local AccessoryIndex = self:GetAccessory(Accessory.AssetId)
 
 	if AccessoryIndex == nil then
-		self:UpdateData(function(OldData)
-			table.insert(OldData.Accessories, Accessory)
+		self:UpdateData(function(Data)
+			table.insert(Data.Accessories, Accessory)
+			return Data
 		end)
 	end
 end
@@ -125,9 +126,9 @@ function HumanoidDescriber:RemoveAccessory(AssetId: number)
 	local AccessoryIndex = self:GetAccessory(AssetId)
 
 	if AccessoryIndex ~= nil then
-		self:UpdateData(function(OldData)
-			table.remove(OldData.Accessories, AccessoryIndex)
-			return OldData
+		self:UpdateData(function(Data)
+			table.remove(Data.Accessories, AccessoryIndex)
+			return Data
 		end)
 	end
 end
@@ -193,7 +194,7 @@ function HumanoidDescriber:ReadFromDescription(HumanoidDescription: HumanoidDesc
 
 	self:UpdateData(function()
 		return NewData
-	end)
+	end, false)
 end
 
 function HumanoidDescriber:_UpdateHumanoidDescription()
@@ -244,16 +245,16 @@ function HumanoidDescriber:_UpdateHumanoidDescription()
 	self.HumanoidDescription:SetEmotes(Data.Emotes)
 end
 
-function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> ())
+function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> Data, UpdateDescription: boolean?)
 	local OldData = self:GetData()
-	local NewData = self:GetData()
-
-	ModifierCallback(NewData)
+	local NewData = ModifierCallback(self:GetData())
 
 	if NewData ~= nil then
 		self.Data = NewData
 
-		self:_UpdateHumanoidDescription(NewData)
+		if UpdateDescription then
+			self:_UpdateHumanoidDescription(NewData)
+		end
 
 		self.Updated:Fire(OldData, NewData)
 	else
@@ -272,7 +273,6 @@ end
 function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 	local self = table.clone(HumanoidDescriber)
 
-	self.HumanoidDescription = HumanoidDescription
 	self:ReadFromDescription(HumanoidDescription)
 
 	return self
