@@ -7,8 +7,6 @@ local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescrib
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local States = require(Avalog.SourceCode.Client.UI.States)
-local DictionaryKeys = require(Avalog.SourceCode.Shared.Utils.DictionaryKeys)
-local PropertyValueBinds = require(Avalog.SourceCode.Client.Avatar.PropertyValueBinds)
 
 local ASSET_ACCESSORY_TYPES = {
 	Hat = Enum.AccessoryType.Hat,
@@ -47,8 +45,12 @@ function LocalAvatar:ToggleCatalogItem(Item)
 				for _, BundleItem in pairs(Result.Items) do
 					if BundleItem.Type == "UserOutfit" then
 						if Result.BundleType == "BodyParts" then
-							if next(States.Services.AvatarService) ~= nil then
-								States.Services.AvatarService:SetOutfit(BundleItem.Id)
+							local Success2, Result2 = Future.Try(function()
+								return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
+							end):Await()
+
+							if Success2 then
+								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
 							end
 						elseif Result.BundleType == "AvatarAnimations" then
 							local Success2, Result2 = Future.Try(function()
@@ -56,13 +58,7 @@ function LocalAvatar:ToggleCatalogItem(Item)
 							end):Await()
 
 							if Success2 then
-								local BundleHumanoidDescriber = HumanoidDescriber.new(Result2)
-
-								LocalAvatar.HumanoidDescriber:SetProperties(
-									BundleHumanoidDescriber:GetProperties(
-										DictionaryKeys(PropertyValueBinds.Binds.Animations)
-									)
-								)
+								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
 							end
 						else
 							print(Result)
@@ -80,12 +76,16 @@ function LocalAvatar:ToggleCatalogItem(Item)
 				Order = 1,
 			})
 		elseif Item.AssetType == "Face" then
-			LocalAvatar.HumanoidDescriber:SetProperties({
-				Face = Item.Id,
-			})
+			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
+				Data.Face = Item.Id
+			end)
 		else
 			print(Item.AssetType, Item.ItemType, Item)
 		end
+	end
+
+	if next(States.Services.AvatarService) ~= nil then
+		States.Services.AvatarService:Reconcile(HumanoidDescriber:GetData())
 	end
 end
 

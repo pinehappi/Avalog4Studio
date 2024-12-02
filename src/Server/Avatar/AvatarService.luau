@@ -3,11 +3,10 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local ReconcileTable = require(Avalog.SourceCode.Shared.Utils.ReconcileTable)
 
 local RATE_LIMITS = {
-	SetProperty = RateLimit(4, 1),
-	SetAccessories = RateLimit(4, 1),
-	SetEmotes = RateLimit(4, 1),
+	Reconcile = RateLimit(4, 1),
 	SetOutfit = RateLimit(1, 1),
 }
 
@@ -24,28 +23,12 @@ function AvatarService.Client:SetOutfit(Player: Player, OutfitId: number)
 	return AvatarService:SetOutfit(Player, OutfitId)
 end
 
-function AvatarService.Client:SetProperties(Player: Player, Properties: { [string]: any })
-	if not RATE_LIMITS.SetProperty(Player.UserId) then
+function AvatarService.Client:Reconcile(Player: Player, SupplementaryData: HumanoidDescriber.Data)
+	if not RATE_LIMITS.Reconcile(Player.UserId) then
 		return
 	end
 
-	return AvatarService:SetProperties(Player, Properties)
-end
-
-function AvatarService.Client:SetAccessories(Player: Player, Accessories: { { any } })
-	if not RATE_LIMITS.SetAccessories(Player.UserId) then
-		return
-	end
-
-	return AvatarService:SetAccessories(Player, Accessories)
-end
-
-function AvatarService.Client:SetEmotes(Player: Player, Emotes: { { any } })
-	if not RATE_LIMITS.SetEmotes(Player.UserId) then
-		return
-	end
-
-	return AvatarService:SetEmotes(Player, Emotes)
+	return AvatarService:Reconcile(Player, SupplementaryData)
 end
 
 function AvatarService:SetOutfit(Player: Player, OutfitId: number)
@@ -63,39 +46,17 @@ function AvatarService:SetOutfit(Player: Player, OutfitId: number)
 	end
 end
 
-function AvatarService:SetProperties(Player: Player, Properties: { [string]: any })
-	local _, _, HumanoidDescription = self:GetCharacterObjects(Player)
-	local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
+function AvatarService:Reconcile(Player: Player, SupplementaryData: HumanoidDescriber.Data)
+	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
+	if Humanoid and HumanoidDescription then
+		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
-	print(1)
-	if HumanoidDescriberObject:SetProperties(Properties) then
-		print(2)
-		return self:Apply(Player, HumanoidDescription):Await()
+		HumanoidDescriberObject:UpdateData(function(OldData)
+			return ReconcileTable(OldData, SupplementaryData)
+		end)
+
+		Humanoid:ApplyDescription(HumanoidDescription)
 	end
-end
-
-function AvatarService:SetAccessories(Player: Player, Accessories: { { any } })
-	local _, _, HumanoidDescription = self:GetCharacterObjects(Player)
-
-	if HumanoidDescription then
-		HumanoidDescription:SetAccessories(Accessories, true)
-
-		return self:Apply(Player, HumanoidDescription):Await()
-	end
-
-	return false
-end
-
-function AvatarService:SetEmotes(Player: Player, Emotes: { { any } })
-	local _, _, HumanoidDescription = self:GetCharacterObjects(Player)
-
-	if HumanoidDescription then
-		HumanoidDescription:SetEquippedEmotes(Emotes)
-
-		return self:Apply(Player, HumanoidDescription):Await()
-	end
-
-	return false
 end
 
 function AvatarService:Apply(Player: Player, HumanoidDescription: HumanoidDescription)

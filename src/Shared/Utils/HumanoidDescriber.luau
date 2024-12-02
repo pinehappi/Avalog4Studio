@@ -1,5 +1,6 @@
 local Avalog = script.Parent.Parent.Parent.Parent
 local Signal = require(Avalog.Parent.Signal)
+local DeepCopy = require(Avalog.SourceCode.Shared.Utils.DeepCopy)
 
 export type AccessorySpec = {
 	Order: number?,
@@ -143,10 +144,12 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, AccessorySpe
 	return nil
 end
 
-function HumanoidDescriber:ReadFromDescription()
+function HumanoidDescriber:ReadFromDescription(HumanoidDescription: HumanoidDescription)
+	self.HumanoidDescription = HumanoidDescription
+
 	local NewData: Data = {
 		Face = self.HumanoidDescription.Face,
-		Accessories = self.HumanoidDescription:GetAccessories(),
+		Accessories = self.HumanoidDescription:GetAccessories(true),
 		Emotes = self.HumanoidDescription:GetEmotes(),
 		Scale = {
 			BodyType = self.HumanoidDescription.BodyTypeScale,
@@ -241,19 +244,25 @@ function HumanoidDescriber:_UpdateHumanoidDescription()
 	self.HumanoidDescription:SetEmotes(Data.Emotes)
 end
 
-function HumanoidDescriber:UpdateData(Callback: (Data) -> Data)
+function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> ())
 	local OldData = self:GetData()
-	local NewData = Callback(OldData)
+	local NewData = self:GetData()
 
-	self.Data = NewData
+	ModifierCallback(NewData)
 
-	self:_UpdateHumanoidDescription(NewData)
+	if NewData ~= nil then
+		self.Data = NewData
 
-	self.Updated:Fire(OldData, NewData)
+		self:_UpdateHumanoidDescription(NewData)
+
+		self.Updated:Fire(OldData, NewData)
+	else
+		assert(false, "Data was not returned.")
+	end
 end
 
 function HumanoidDescriber:GetData(): Data
-	return table.clone(self.Data)
+	return DeepCopy(self.Data)
 end
 
 function HumanoidDescriber:Destroy()
@@ -264,8 +273,7 @@ function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 	local self = table.clone(HumanoidDescriber)
 
 	self.HumanoidDescription = HumanoidDescription
-
-	table.freeze(self)
+	self:ReadFromDescription(HumanoidDescription)
 
 	return self
 end
