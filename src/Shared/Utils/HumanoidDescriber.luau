@@ -1,64 +1,108 @@
 local Avalog = script.Parent.Parent.Parent.Parent
 local Signal = require(Avalog.Parent.Signal)
 
-export type Accessory = {
-	Order: number,
+export type AccessorySpec = {
+	Order: number?,
 	AssetId: number,
-	Puffiness: number,
 	AccessoryType: Enum.AccessoryType,
+	Puffiness: number?,
+}
+export type Data = {
+	Accessories: { AccessorySpec },
+	Emotes: {},
+	Face: number,
+	Scale: {
+		BodyType: number,
+		Depth: number,
+		Head: number,
+		Height: number,
+		Proportion: number,
+		Width: number,
+	},
+	Animations: {
+		Walk: number,
+		Run: number,
+		Fall: number,
+		Climb: number,
+		Swim: number,
+		Idle: number,
+		Mood: number,
+		Jump: number,
+	},
+	BodyParts: {
+		Head: number,
+		Torso: number,
+		LeftArm: number,
+		RightArm: number,
+		LeftLeg: number,
+		RightLeg: number,
+	},
+	BodyPartColors: {
+		Head: Color3,
+		Torso: Color3,
+		LeftArm: Color3,
+		RightArm: Color3,
+		LeftLeg: Color3,
+		RightLeg: Color3,
+	},
+	Clothing: {
+		Shirt: number,
+		TShirt: number,
+		Pants: number,
+	},
 }
 
 local HumanoidDescriber = {
+	Data = {
+		Accessories = {},
+		Emotes = {},
+		Face = 0,
+		Scale = {
+			BodyType = 0,
+			Depth = 0,
+			Head = 0,
+			Height = 0,
+			Proportion = 0,
+			Width = 0,
+		},
+		Animations = {
+			Walk = 0,
+			Run = 0,
+			Fall = 0,
+			Climb = 0,
+			Swim = 0,
+			Idle = 0,
+			Mood = 0,
+			Jump = 0,
+		},
+		BodyParts = {
+			Head = 0,
+			Torso = 0,
+			LeftArm = 0,
+			RightArm = 0,
+			LeftLeg = 0,
+			RightLeg = 0,
+		},
+		BodyPartColors = {
+			Head = Color3.fromRGB(0, 0, 0),
+			Torso = Color3.fromRGB(0, 0, 0),
+			LeftArm = Color3.fromRGB(0, 0, 0),
+			RightArm = Color3.fromRGB(0, 0, 0),
+			LeftLeg = Color3.fromRGB(0, 0, 0),
+			RightLeg = Color3.fromRGB(0, 0, 0),
+		},
+		Clothing = {
+			Shirt = 0,
+			TShirt = 0,
+			Pants = 0,
+		},
+	},
 	HumanoidDescription = Instance.new("HumanoidDescription"),
 
-	AccessoriesChanged = Signal.new(),
+	Updated = Signal.new(),
 }
 
-function HumanoidDescriber:GetProperties(Properties: { string })
-	local Results = {}
-
-	local HumanoidDescription = self.HumanoidDescription
-
-	for _, PropertyName in ipairs(Properties) do
-		local Success, ExistingValue = pcall(function()
-			return HumanoidDescription[PropertyName]
-		end)
-
-		if Success and (ExistingValue ~= nil) then
-			Results[PropertyName] = ExistingValue
-		end
-	end
-
-	return Results
-end
-
-function HumanoidDescriber:SetProperties(Properties: { [string]: any })
-	local HumanoidDescription = self.HumanoidDescription
-	local PropertiesWritten = 0
-	local PropertiesEncountered = 0
-
-	for Name, Value in pairs(Properties) do
-		PropertiesEncountered += 1
-
-		local Success, ExistingValue = pcall(function()
-			return HumanoidDescription[Name]
-		end)
-
-		if Success and ((ExistingValue ~= nil) and (Value ~= nil)) then
-			if typeof(ExistingValue) == typeof(Value) then
-				if ExistingValue ~= Value then
-					HumanoidDescription[Name] = Value
-
-					PropertiesWritten += 1
-				end
-			end
-		end
-	end
-
-	return PropertiesWritten == PropertiesEncountered
-end
-
-function HumanoidDescriber:ToggleAccessory(Accessory: Accessory)
+function HumanoidDescriber:ToggleAccessory(Accessory: AccessorySpec)
 	if self:GetAccessory(Accessory.AssetId) then
 		self:RemoveAccessory(Accessory.AssetId)
 	else
@@ -66,30 +110,31 @@ function HumanoidDescriber:ToggleAccessory(Accessory: Accessory)
 	end
 end
 
-function HumanoidDescriber:AddAccessory(Accessory: Accessory)
-	local Accessories = self.HumanoidDescription:GetAccessories(true)
-	table.insert(Accessories, Accessory)
-	self.HumanoidDescription:SetAccessories(Accessories, true)
+function HumanoidDescriber:AddAccessory(Accessory: AccessorySpec)
+	local AccessoryIndex = self:GetAccessory(Accessory.AssetId)
 
-	self.AccessoriesChanged:Fire(Accessories)
+	if AccessoryIndex == nil then
+		self:UpdateData(function(OldData)
+			table.insert(OldData.Accessories, Accessory)
+		end)
+	end
 end
 
 function HumanoidDescriber:RemoveAccessory(AssetId: number)
 	local AccessoryIndex = self:GetAccessory(AssetId)
 
-	if AccessoryIndex then
-		local Accessories = self.HumanoidDescription:GetAccessories(true)
-		table.remove(Accessories, AccessoryIndex)
-		self.HumanoidDescription:SetAccessories(Accessories, true)
-
-		self.AccessoriesChanged:Fire(Accessories)
+	if AccessoryIndex ~= nil then
+		self:UpdateData(function(OldData)
+			table.remove(OldData.Accessories, AccessoryIndex)
+			return OldData
+		end)
 	end
 end
 
-function HumanoidDescriber:GetAccessory(AssetId: number): (number?, Accessory?)
-	local Accessories = self.HumanoidDescription:GetAccessories(true)
+function HumanoidDescriber:GetAccessory(AssetId: number): (number?, AccessorySpec?)
+	local Data = self:GetData()
 
-	for Index, Accessory: Accessory in ipairs(Accessories) do
+	for Index, Accessory: AccessorySpec in ipairs(Data.Accessories) do
 		if Accessory.AssetId == AssetId then
 			return Index, Accessory
 		end
@@ -98,8 +143,121 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, Accessory?)
 	return nil
 end
 
+function HumanoidDescriber:ReadFromDescription()
+	local NewData: Data = {
+		Face = self.HumanoidDescription.Face,
+		Accessories = self.HumanoidDescription:GetAccessories(),
+		Emotes = self.HumanoidDescription:GetEmotes(),
+		Scale = {
+			BodyType = self.HumanoidDescription.BodyTypeScale,
+			Depth = self.HumanoidDescription.DepthScale,
+			Head = self.HumanoidDescription.HeadScale,
+			Height = self.HumanoidDescription.HeightScale,
+			Proportion = self.HumanoidDescription.ProportionScale,
+			Width = self.HumanoidDescription.WidthScale,
+		},
+		BodyParts = {
+			Head = self.HumanoidDescription.Head,
+			Torso = self.HumanoidDescription.Torso,
+			LeftLeg = self.HumanoidDescription.LeftLeg,
+			RightLeg = self.HumanoidDescription.RightLeg,
+			LeftArm = self.HumanoidDescription.LeftArm,
+			RightArm = self.HumanoidDescription.RightArm,
+		},
+		Animations = {
+			Idle = self.HumanoidDescription.IdleAnimation,
+			Walk = self.HumanoidDescription.WalkAnimation,
+			Run = self.HumanoidDescription.RunAnimation,
+			Fall = self.HumanoidDescription.FallAnimation,
+			Jump = self.HumanoidDescription.JumpAnimation,
+			Mood = self.HumanoidDescription.MoodAnimation,
+			Swim = self.HumanoidDescription.SwimAnimation,
+		},
+		Clothing = {
+			Shirt = self.HumanoidDescription.Shirt,
+			TShirt = self.HumanoidDescription.GraphicTShirt,
+			Pants = self.HumanoidDescription.Pants,
+		},
+		BodyPartColors = {
+			HeadColor = self.HumanoidDescription.HeadColor,
+			TorsoColor = self.HumanoidDescription.TorsoColor,
+			LeftLegColor = self.HumanoidDescription.LeftLegColor,
+			RightLegColor = self.HumanoidDescription.RightLegColor,
+			LeftArmColor = self.HumanoidDescription.LeftArmColor,
+			RightArmColor = self.HumanoidDescription.RightArmColor,
+		},
+	}
+
+	self:UpdateData(function()
+		return NewData
+	end)
+end
+
+function HumanoidDescriber:_UpdateHumanoidDescription()
+	local Data = self:GetData()
+	local Properties = {
+		Face = Data.Face,
+
+		BodyTypeScale = Data.Scale.BodyType,
+		DepthScale = Data.Scale.Depth,
+		HeadScale = Data.Scale.Head,
+		HeightScale = Data.Scale.Height,
+		ProportionScale = Data.Scale.Proportion,
+		WidthScale = Data.Scale.Width,
+
+		WalkAnimation = Data.Animations.Walk,
+		RunAnimation = Data.Animations.Run,
+		FallAnimation = Data.Animations.Fall,
+		ClimbAnimation = Data.Animations.Climb,
+		SwimAnimation = Data.Animations.Swim,
+		IdleAnimation = Data.Animations.Idle,
+		MoodAnimation = Data.Animations.Mood,
+		JumpAnimation = Data.Animations.Jump,
+
+		Head = Data.BodyParts.Head,
+		Torso = Data.BodyParts.Torso,
+		LeftArm = Data.BodyParts.LeftArm,
+		RightArm = Data.BodyParts.RightArm,
+		LeftLeg = Data.BodyParts.LeftLeg,
+		RightLeg = Data.BodyParts.RightLeg,
+
+		HeadColor = Data.BodyPartColors.Head,
+		TorsoColor = Data.BodyPartColors.Torso,
+		LeftArmColor = Data.BodyPartColors.LeftArm,
+		RightArmColor = Data.BodyPartColors.RightArm,
+		LeftLegColor = Data.BodyPartColors.LeftLeg,
+		RightLegColor = Data.BodyPartColors.RightLeg,
+
+		Shirt = Data.Clothing.Shirt,
+		GraphicTShirt = Data.Clothing.TShirt,
+		Pants = Data.Clothing.Pants,
+	}
+
+	for Name, Value in ipairs(Properties) do
+		self.HumanoidDescription[Name] = Value
+	end
+
+	self.HumanoidDescription:SetAccessories(Data.Accessories, true)
+	self.HumanoidDescription:SetEmotes(Data.Emotes)
+end
+
+function HumanoidDescriber:UpdateData(Callback: (Data) -> Data)
+	local OldData = self:GetData()
+	local NewData = Callback(OldData)
+
+	self.Data = NewData
+
+	self:_UpdateHumanoidDescription(NewData)
+
+	self.Updated:Fire(OldData, NewData)
+end
+
+function HumanoidDescriber:GetData(): Data
+	return table.clone(self.Data)
+end
+
 function HumanoidDescriber:Destroy()
-	self.AccessoriesChanged:Destroy()
+	self.Updated:Destroy()
 end
 
 function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
