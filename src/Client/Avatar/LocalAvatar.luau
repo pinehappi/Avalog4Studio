@@ -7,27 +7,9 @@ local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescrib
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
 
-local ASSET_ACCESSORY_TYPES = {
-	Hat = Enum.AccessoryType.Hat,
-	HairAccessory = Enum.AccessoryType.Hair,
-	FaceAccessory = Enum.AccessoryType.Face,
-	NeckAccessory = Enum.AccessoryType.Neck,
-	ShoulderAccessory = Enum.AccessoryType.Shoulder,
-	FrontAccessory = Enum.AccessoryType.Front,
-	BackAccessory = Enum.AccessoryType.Back,
-	WaistAccessory = Enum.AccessoryType.Waist,
-
-	ShirtAccessory = Enum.AccessoryType.Shirt,
-	TShirtAccessory = Enum.AccessoryType.TShirt,
-	SweaterAccessory = Enum.AccessoryType.Sweater,
-	JacketAccessory = Enum.AccessoryType.Jacket,
-	PantsAccessory = Enum.AccessoryType.Pants,
-	DressSkirtAccessory = Enum.AccessoryType.DressSkirt,
-	ShortsAccessory = Enum.AccessoryType.Shorts,
-	LeftShoeAccessory = Enum.AccessoryType.LeftShoe,
-	RightShoeAccessory = Enum.AccessoryType.RightShoe,
-}
+local CLOTHING_TYPES = { "Shirt", "TShirt", "Pants" }
 
 local LocalAvatar = {
 	Character = Instance.new("Model"),
@@ -75,7 +57,7 @@ function LocalAvatar:ToggleCatalogItem(Item)
 			end
 		end
 	elseif Item.ItemType == "Asset" then
-		local AccessoryType = ASSET_ACCESSORY_TYPES[Item.AssetType]
+		local AccessoryType = AssetAccessoryTypes[Item.AssetType]
 		if AccessoryType then
 			LocalAvatar.HumanoidDescriber:ToggleAccessory({
 				AssetId = Item.Id,
@@ -84,11 +66,24 @@ function LocalAvatar:ToggleCatalogItem(Item)
 			})
 		elseif Item.AssetType == "Face" then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				Data.Face = Item.Id
+				if Data.Face ~= Item.Id then
+					Data.Face = Item.Id
+				else
+					Data.Face = 0
+				end
+
 				return Data
 			end)
-		else
-			print(Item.AssetType, Item.ItemType, Item)
+		elseif table.find(CLOTHING_TYPES, Item.AssetType) then
+			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
+				if Data.Clothing[Item.AssetType] ~= Item.Id then
+					Data.Clothing[Item.AssetType] = Item.Id
+				else
+					Data.Clothing[Item.AssetType] = 0
+				end
+
+				return Data
+			end)
 		end
 	end
 

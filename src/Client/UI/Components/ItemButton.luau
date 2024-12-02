@@ -3,6 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
+local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
 
 local Children = Fusion.Children
 
@@ -21,12 +22,43 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Theme = OnyxUI.Themer.Theme:now()
 
 	local Data = OnyxUI.Util.Fallback(Props.Data, nil)
-	local Equipped = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Equipped, false))
+
+	local Equippable = Scope:Computed(function(Use)
+		local ItemDataValue = Use(Data)
+
+		if ItemDataValue ~= nil then
+			if ItemDataValue.ItemType == "Bundle" then
+				return false
+			end
+		end
+
+		return true
+	end)
+	local Equipped = Scope:Computed(function(Use)
+		local DescriberDataValue = Use(States.Avatar.Data)
+		local ItemDataValue = Use(Data)
+
+		if ItemDataValue == nil then
+			return false
+		end
+
+		if ItemDataValue.ItemType == "Bundle" then
+			return false
+		elseif ItemDataValue.ItemType == "Asset" then
+			local AccessoryType = AssetAccessoryTypes[ItemDataValue.AssetType]
+			if AccessoryType ~= nil then
+				return LocalAvatar.HumanoidDescriber:GetAccessory(ItemDataValue.Id) ~= nil
+			elseif ItemDataValue.AssetType == "Face" then
+				return DescriberDataValue.Face == ItemDataValue.Id
+			end
+		end
+
+		return false
+	end)
+	local EquippedValueState = Scope:Value(Fusion.peek(Equipped))
 
 	Scope:Observer(Equipped):onChange(function()
-		local DataValue = Fusion.peek(Data)
-
-		LocalAvatar:ToggleCatalogItem(DataValue)
+		EquippedValueState:set(Fusion.peek(Equipped))
 	end)
 
 	return Scope:CustomButton(OnyxUI.Util.CombineProps(Props, {
@@ -37,7 +69,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ListEnabled = false,
 
 		OnActivated = function()
-			Equipped:set(not Fusion.peek(Equipped))
+			LocalAvatar:ToggleCatalogItem(Fusion.peek(Data))
 		end,
 
 		[Children] = {
@@ -130,9 +162,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			},
 			Scope:Checkbox {
 				Name = "EquippedMarker",
-				Checked = Equipped,
+				Checked = EquippedValueState,
 				AnchorPoint = Vector2.new(1, 0),
 				Position = UDim2.fromScale(1, 0),
+				Active = false,
+				Visible = Equippable,
 			},
 		},
 	}))
