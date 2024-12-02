@@ -3,10 +3,8 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
-local ReconcileTable = require(Avalog.SourceCode.Shared.Utils.ReconcileTable)
 
 local RATE_LIMITS = {
-	Reconcile = RateLimit(4, 1),
 	Update = RateLimit(4, 1),
 	SetOutfit = RateLimit(1, 1),
 }
@@ -24,37 +22,6 @@ function AvatarService.Client:Update(Player: Player, Data: HumanoidDescriber.Dat
 	return AvatarService:Update(Player, Data)
 end
 
-function AvatarService.Client:SetOutfit(Player: Player, OutfitId: number)
-	if not RATE_LIMITS.SetOutfit(Player.UserId) then
-		return
-	end
-
-	return AvatarService:SetOutfit(Player, OutfitId)
-end
-
-function AvatarService.Client:Reconcile(Player: Player, SupplementaryData: HumanoidDescriber.Data)
-	if not RATE_LIMITS.Reconcile(Player.UserId) then
-		return
-	end
-
-	return AvatarService:Reconcile(Player, SupplementaryData)
-end
-
-function AvatarService:SetOutfit(Player: Player, OutfitId: number)
-	local _, Humanoid, _ = self:GetCharacterObjects(Player)
-
-	if Humanoid then
-		local Success, Result = Future.Try(function()
-			return Players:GetHumanoidDescriptionFromOutfitId(OutfitId)
-		end):Await()
-
-		if Success then
-			Result.Parent = workspace
-			Humanoid:ApplyDescription(Result)
-		end
-	end
-end
-
 function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
@@ -64,21 +31,9 @@ function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 			return Data
 		end)
 
-		Humanoid:ApplyDescriptionReset(HumanoidDescription)
-	end
-end
+		self:Apply(Player, HumanoidDescription):Await()
 
-function AvatarService:Reconcile(Player: Player, SupplementaryData: HumanoidDescriber.Data)
-	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
-	if Humanoid and HumanoidDescription then
-		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
-
-		HumanoidDescriberObject:UpdateData(function(Data)
-			ReconcileTable(Data, SupplementaryData)
-			return Data
-		end)
-
-		Humanoid:ApplyDescription(HumanoidDescription)
+		HumanoidDescriberObject:Destroy()
 	end
 end
 
@@ -89,7 +44,7 @@ function AvatarService:Apply(Player: Player, HumanoidDescription: HumanoidDescri
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if Humanoid then
 			return Future.Try(function()
-				Humanoid:ApplyDescription(HumanoidDescription)
+				Humanoid:ApplyDescriptionReset(HumanoidDescription)
 			end)
 		end
 	end

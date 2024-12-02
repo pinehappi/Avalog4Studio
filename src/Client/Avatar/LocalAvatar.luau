@@ -65,6 +65,8 @@ function LocalAvatar:ToggleCatalogItem(Item)
 								Data.Animations = BundleData.Animations
 								return Data
 							end)
+
+							BundleDescriber:Destroy()
 						end
 					else
 						print(Result)
