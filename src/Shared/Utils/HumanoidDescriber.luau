@@ -8,9 +8,16 @@ export type AccessorySpec = {
 	AccessoryType: Enum.AccessoryType,
 	Puffiness: number?,
 }
+export type EquippedEmote = {
+	Name: string,
+	Slot: number,
+}
 export type Data = {
 	Accessories: { AccessorySpec },
-	Emotes: {},
+	Emotes: {
+		[string]: { number },
+	},
+	EquippedEmotes: { EquippedEmote },
 	Face: number,
 	Scale: {
 		BodyType: number,
@@ -103,6 +110,62 @@ local HumanoidDescriber = {
 	Updated = Signal.new(),
 }
 
+function HumanoidDescriber:SetEmoteEquipped(Name: string, Equipped: boolean)
+	self:UpdateData(function(Data)
+		local ExistingIndex = self:GetEquippedEmote(Name)
+
+		if Equipped then
+			if not ExistingIndex then
+				if #Data.EquippedEmotes >= 8 then
+					table.remove(Data.EquippedEmotes, #Data.EquippedEmotes)
+				end
+
+				table.insert(Data.EquippedEmotes, {
+					Name = Name,
+					Slot = #Data.EquippedEmotes + 1,
+				})
+			end
+		else
+			if ExistingIndex then
+				table.remove(Data.EquippedEmotes, ExistingIndex)
+			end
+		end
+
+		return Data
+	end)
+end
+
+function HumanoidDescriber:GetEquippedEmote(Name: string): (number?, EquippedEmote?)
+	local Data = self:GetData()
+
+	for Index, Emote in ipairs(Data.EquippedEmotes) do
+		if Emote.Name == Name then
+			return Index, Emote
+		end
+	end
+
+	return nil
+end
+
+function HumanoidDescriber:SetEmote(Name: string, Emote: { number } | nil)
+	self:UpdateData(function(Data)
+		Data.Emotes[Name] = Emote
+		return Data
+	end)
+end
+
+function HumanoidDescriber:GetEmote(Name: string)
+	local Data = self:GetData()
+
+	for EmoteName, Emote in pairs(Data.Emotes) do
+		if EmoteName == Name then
+			return Emote
+		end
+	end
+
+	return nil
+end
+
 function HumanoidDescriber:ToggleAccessory(Accessory: AccessorySpec)
 	if self:GetAccessory(Accessory.AssetId) then
 		self:RemoveAccessory(Accessory.AssetId)
@@ -152,6 +215,7 @@ function HumanoidDescriber:ReadFromDescription(HumanoidDescription: HumanoidDesc
 		Face = self.HumanoidDescription.Face,
 		Accessories = self.HumanoidDescription:GetAccessories(true),
 		Emotes = self.HumanoidDescription:GetEmotes(),
+		EquippedEmotes = self.HumanoidDescription:GetEquippedEmotes(),
 		Scale = {
 			BodyType = self.HumanoidDescription.BodyTypeScale,
 			Depth = self.HumanoidDescription.DepthScale,
@@ -245,6 +309,7 @@ function HumanoidDescriber:_UpdateHumanoidDescription()
 
 	self.HumanoidDescription:SetAccessories(Data.Accessories, true)
 	self.HumanoidDescription:SetEmotes(Data.Emotes)
+	self.HumanoidDescription:SetEquippedEmotes(Data.EquippedEmotes)
 end
 
 function HumanoidDescriber:UpdateData(ModifierCallback: (Data) -> Data, UpdateDescription: boolean?)

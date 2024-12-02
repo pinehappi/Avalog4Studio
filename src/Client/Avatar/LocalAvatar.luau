@@ -84,6 +84,17 @@ function LocalAvatar:ToggleCatalogItem(Item)
 
 				return Data
 			end)
+		elseif Item.AssetType == "EmoteAnimation" then
+			if LocalAvatar.HumanoidDescriber:GetEmote(Item.Name) == nil then
+				LocalAvatar.HumanoidDescriber:SetEmote(Item.Name, { Item.Id })
+			end
+
+			LocalAvatar.HumanoidDescriber:SetEmoteEquipped(
+				Item.Name,
+				not (LocalAvatar.HumanoidDescriber:GetEquippedEmote(Item.Name) ~= nil)
+			)
+		else
+			print(Item)
 		end
 	end
 

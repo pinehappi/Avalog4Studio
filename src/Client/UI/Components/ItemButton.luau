@@ -10,6 +10,8 @@ local Children = Fusion.Children
 local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
 
+local CLOTHING_TYPES = { "Shirt", "TShirt", "Pants" }
+
 export type Props = Button.Props & {
 	Data: Fusion.UsedAs<{ [string]: any }>,
 	Equipped: Fusion.UsedAs<boolean>?,
@@ -50,6 +52,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				return LocalAvatar.HumanoidDescriber:GetAccessory(ItemDataValue.Id) ~= nil
 			elseif ItemDataValue.AssetType == "Face" then
 				return DescriberDataValue.Face == ItemDataValue.Id
+			elseif table.find(CLOTHING_TYPES, ItemDataValue.AssetType) then
+				return Data.Clothing[ItemDataValue.AssetType] == ItemDataValue.Id
+			elseif ItemDataValue.AssetType == "EmoteAnimation" then
+				return LocalAvatar.HumanoidDescriber:GetEquippedEmote(ItemDataValue.Name) ~= nil
 			end
 		end
 
