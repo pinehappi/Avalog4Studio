@@ -174,7 +174,7 @@ else
 
 			local floor = math.floor
 
-			for i = 1, bits do
+			for _ = 1, bits do
 				n = n / 2
 				n = bit_or(floor(n), high_bit)
 			end
@@ -187,7 +187,7 @@ else
 				n = bit_not(math.abs(n)) + 1
 			end
 
-			for i = 1, bits do
+			for _ = 1, bits do
 				n = n * 2
 			end
 			return bit_and(n, 0xFFFFFFFF)
@@ -440,7 +440,7 @@ local function md5_update(self, s)
 	s = self.buf .. s
 	for ii = 1, #s - 63, 64 do
 		local X = cut_le_str(sub(s, ii, ii + 63))
-		assert(#X == 16)
+		assert(#X == 16, "a")
 		X[0] = table.remove(X, 1) -- zero based!
 		self.a, self.b, self.c, self.d = transform(self.a, self.b, self.c, self.d, X)
 	end
@@ -466,7 +466,7 @@ local function md5_finish(self)
 		.. lei2str(math.floor(msgLen / 0x20000000))
 	md5_update(self, s)
 
-	assert(self.pos % 64 == 0)
+	assert(self.pos % 64 == 0, "")
 	return lei2str(self.a) .. lei2str(self.b) .. lei2str(self.c) .. lei2str(self.d)
 end
 

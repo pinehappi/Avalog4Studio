@@ -1,4 +1,3 @@
-local Players = game:GetService("Players")
 local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
