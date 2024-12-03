@@ -4,8 +4,7 @@ local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
 
 local RATE_LIMITS = {
-	Update = RateLimit(4, 1),
-	SetOutfit = RateLimit(1, 1),
+	Update = RateLimit(1, 1),
 }
 
 local AvatarService = {
