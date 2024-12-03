@@ -22,42 +22,45 @@ function LocalAvatar:ToggleCatalogItem(Item)
 		local Success, Result = Future.Try(function()
 			return AssetService:GetBundleDetailsAsync(Item.Id)
 		end):Await()
+
 		if Success then
-			for _, BundleItem in pairs(Result.Items) do
+			local UserOutfit
+
+			for _, BundleItem in ipairs(Result.Items) do
 				if BundleItem.Type == "UserOutfit" then
-					local Success2, Result2 = Future.Try(function()
-						return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
-					end):Await()
+					UserOutfit = BundleItem
+					break
+				end
+			end
 
-					if Success2 then
-						if Result.BundleType == "BodyParts" then
-							if Success2 then
-								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
-							end
-						elseif Result.BundleType == "AvatarAnimations" then
-							if Success2 then
-								local BundleDescriber = HumanoidDescriber.new(Result2)
-								local BundleData = BundleDescriber:GetData()
+			if UserOutfit then
+				local Success2, Result2 = Future.Try(function()
+					return Players:GetHumanoidDescriptionFromOutfitId(UserOutfit.Id)
+				end):Await()
 
-								self.HumanoidDescriber:UpdateData(function(Data)
-									Data.Animations = BundleData.Animations
-									return Data
-								end)
+				if Success2 then
+					local BundleDescriber = HumanoidDescriber.new(Result2)
+					local BundleData = BundleDescriber:GetData()
 
-								BundleDescriber:Destroy()
-							end
-						elseif Result.BundleType == "DynamicHead" then
-							local BundleDescriber = HumanoidDescriber.new(Result2)
-							local BundleData = BundleDescriber:GetData()
-
-							self.HumanoidDescriber:UpdateData(function(Data)
-								Data.BodyParts.Head = BundleData.BodyParts.Head
-								return Data
-							end)
-
-							BundleDescriber:Destroy()
-						end
+					if Result.BundleType == "BodyParts" then
+						self.HumanoidDescriber:UpdateData(function(Data)
+							Data.BodyParts = BundleData.BodyParts
+							return Data
+						end)
+					elseif Result.BundleType == "AvatarAnimations" then
+						self.HumanoidDescriber:UpdateData(function(Data)
+							Data.Animations = BundleData.Animations
+							return Data
+						end)
+					elseif Result.BundleType == "DynamicHead" then
+						self.HumanoidDescriber:UpdateData(function(Data)
+							Data.BodyParts.Head = BundleData.BodyParts.Head
+							return Data
+						end)
 					end
+
+					BundleDescriber:Destroy()
+					Result2:Destroy()
 				end
 			end
 		end

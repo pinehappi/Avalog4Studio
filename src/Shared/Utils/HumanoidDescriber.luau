@@ -106,8 +106,6 @@ local HumanoidDescriber = {
 		},
 	},
 	HumanoidDescription = Instance.new("HumanoidDescription"),
-
-	Updated = Signal.new(),
 }
 
 function HumanoidDescriber:SetEmoteEquipped(Name: string, Equipped: boolean)
@@ -343,6 +341,7 @@ end
 
 function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 	local self = table.clone(HumanoidDescriber)
+	self.Updated = Signal.new()
 
 	self:ReadFromDescription(HumanoidDescription)
 
