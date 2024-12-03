@@ -9,6 +9,7 @@ local Avatar = {}
 
 function Avatar:_HandleAvatar()
 	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
+	States.Avatar.Character:set(LocalAvatar.Character)
 
 	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		States.Avatar.Data:set(NewData)

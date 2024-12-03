@@ -11,6 +11,8 @@ local RATE_LIMITS = {
 local AvatarService = {
 	Name = script.Name,
 	Client = {},
+
+	Avatars = {},
 }
 
 function AvatarService.Client:Update(Player: Player, Data: HumanoidDescriber.Data)

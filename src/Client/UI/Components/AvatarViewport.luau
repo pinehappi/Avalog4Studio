@@ -14,6 +14,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components)
 	local Theme = OnyxUI.Themer.Theme:now()
 
+	local ViewportCamera = Scope:New "Camera" {
+		CFrame = CFrame.lookAt(Vector3.new(0, 0, -8), Vector3.new(0, 0, 0)),
+		CameraType = Enum.CameraType.Scriptable,
+	}
+
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		MaxSize = Scope:Computed(function(Use)
@@ -34,6 +39,22 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				end),
 
 				[Children] = {
+					Scope:New "ViewportFrame" {
+						Name = "Viewport",
+						Size = UDim2.fromScale(1, 1),
+						BackgroundTransparency = 1,
+						BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+						CurrentCamera = ViewportCamera,
+
+						[Children] = {
+							Scope:New "WorldModel" {
+								[Children] = {
+									ViewportCamera,
+									States.Avatar.Character,
+								},
+							},
+						},
+					},
 					Scope:Frame {
 						Name = "TopControls",
 						AnchorPoint = Vector2.new(0.5, 0),

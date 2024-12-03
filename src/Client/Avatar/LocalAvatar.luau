@@ -6,7 +6,6 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
-local States = require(Avalog.SourceCode.Client.UI.States)
 local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
 
 local CLOTHING_TYPES = { "Shirt", "TShirt", "Pants" }
@@ -98,9 +97,9 @@ function LocalAvatar:ToggleCatalogItem(Item)
 		end
 	end
 
-	if next(States.Services.AvatarService) ~= nil then
-		States.Services.AvatarService:Update(self.HumanoidDescriber:GetData())
-	end
+	return Future.Try(function()
+		LocalAvatar.Humanoid:ApplyDescriptionReset(LocalAvatar.HumanoidDescriber.HumanoidDescription)
+	end):Await()
 end
 
 function LocalAvatar:SetCharacter(Character: Model)
@@ -108,16 +107,22 @@ function LocalAvatar:SetCharacter(Character: Model)
 		Players.LocalPlayer:GetPropertyChangedSignal("HasAppearanceLoaded"):Wait()
 	end
 
-	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-	if Humanoid then
-		local HumanoidDescription = Humanoid:FindFirstChildOfClass("HumanoidDescription")
-		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
+	if Character then
+		Character.Archivable = true
+		Character = Character:Clone()
+		Character:PivotTo(CFrame.new())
 
-		self.Character = Character
-		self.Humanoid = Humanoid
-		self.HumanoidDescriber = HumanoidDescriberObject
+		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+		if Humanoid then
+			local HumanoidDescription = Humanoid:FindFirstChildOfClass("HumanoidDescription")
+			local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
 
-		self.Updated:Fire()
+			self.Character = Character
+			self.Humanoid = Humanoid
+			self.HumanoidDescriber = HumanoidDescriberObject
+
+			self.Updated:Fire()
+		end
 	end
 end
 
