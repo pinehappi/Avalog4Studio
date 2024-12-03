@@ -29,7 +29,10 @@ local Categories: { [string]: { Category } } = {
 		{
 			Name = "Head & Body",
 			SubCategories = {
-				{ Name = "Heads", AssetTypes = { Enum.AvatarAssetType.DynamicHead } },
+				{
+					Name = "Heads",
+					BundleTypes = { Enum.BundleType.DynamicHead },
+				},
 				{ Name = "Hair", AssetTypes = { Enum.AvatarAssetType.HairAccessory } },
 			},
 		},

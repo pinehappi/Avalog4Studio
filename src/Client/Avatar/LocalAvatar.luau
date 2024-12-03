@@ -25,32 +25,38 @@ function LocalAvatar:ToggleCatalogItem(Item)
 		if Success then
 			for _, BundleItem in pairs(Result.Items) do
 				if BundleItem.Type == "UserOutfit" then
-					if Result.BundleType == "BodyParts" then
-						local Success2, Result2 = Future.Try(function()
-							return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
-						end):Await()
+					local Success2, Result2 = Future.Try(function()
+						return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
+					end):Await()
 
-						if Success2 then
-							LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
-						end
-					elseif Result.BundleType == "AvatarAnimations" then
-						local Success2, Result2 = Future.Try(function()
-							return Players:GetHumanoidDescriptionFromOutfitId(BundleItem.Id)
-						end):Await()
+					if Success2 then
+						if Result.BundleType == "BodyParts" then
+							if Success2 then
+								LocalAvatar.HumanoidDescriber:ReadFromDescription(Result2)
+							end
+						elseif Result.BundleType == "AvatarAnimations" then
+							if Success2 then
+								local BundleDescriber = HumanoidDescriber.new(Result2)
+								local BundleData = BundleDescriber:GetData()
 
-						if Success2 then
+								self.HumanoidDescriber:UpdateData(function(Data)
+									Data.Animations = BundleData.Animations
+									return Data
+								end)
+
+								BundleDescriber:Destroy()
+							end
+						elseif Result.BundleType == "DynamicHead" then
 							local BundleDescriber = HumanoidDescriber.new(Result2)
 							local BundleData = BundleDescriber:GetData()
 
 							self.HumanoidDescriber:UpdateData(function(Data)
-								Data.Animations = BundleData.Animations
+								Data.BodyParts.Head = BundleData.BodyParts.Head
 								return Data
 							end)
 
 							BundleDescriber:Destroy()
 						end
-					else
-						print(Result)
 					end
 				end
 			end

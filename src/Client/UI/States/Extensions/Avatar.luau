@@ -8,7 +8,6 @@ local Scope = Fusion.scoped(Fusion)
 local Avatar = {}
 
 function Avatar:_HandleAvatar()
-	print(LocalAvatar.Character)
 	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
 	States.Avatar.Character:set(LocalAvatar.Character)
 
