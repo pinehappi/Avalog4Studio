@@ -103,6 +103,21 @@ function LocalAvatar:ToggleCatalogItem(Item)
 		end
 	end
 
+	self:Apply()
+end
+
+function LocalAvatar:Reset()
+	local Success, Result = Future.Try(function()
+		return Players:GetHumanoidDescriptionFromUserId(Players.LocalPlayer.UserId or 1)
+	end):Await()
+
+	if Success then
+		LocalAvatar.HumanoidDescriber:ReadFromDescription(Result)
+		self:Apply()
+	end
+end
+
+function LocalAvatar:Apply()
 	return Future.Try(function()
 		LocalAvatar.Humanoid:ApplyDescriptionReset(LocalAvatar.HumanoidDescriber.HumanoidDescription)
 	end):Await()

@@ -2,6 +2,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 
 local Children = Fusion.Children
 
@@ -107,6 +108,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								Image = "rbxassetid://13847364382",
 								SizeVariant = "ExtraLarge",
 								Color = Theme.Colors.Error.Main,
+
+								OnActivated = function()
+									LocalAvatar:Reset()
+								end,
 							},
 							Scope:IconButton {
 								Image = "rbxassetid://13846158505",
