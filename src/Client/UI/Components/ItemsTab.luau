@@ -2,8 +2,8 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
-local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.CatalogSearch)
-local Navigation = require(Avalog.SourceCode.Client.UI.States.Navigation)
+local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
+local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children

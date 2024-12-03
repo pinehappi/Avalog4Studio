@@ -1,6 +1,6 @@
-local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local Knit = require(Avalog.Parent.Knit)
-local States = require(script.Parent)
+local States = require(script.Parent.Parent)
 
 type KnitService = typeof(Knit.GetService)
 

@@ -1,6 +1,6 @@
-local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local States = require(Avalog.SourceCode.Client.UI.States)
+local States = require(script.Parent.Parent)
 local Fusion = require(Avalog.Parent.Fusion)
 
 local Scope = Fusion.scoped(Fusion)
@@ -8,6 +8,7 @@ local Scope = Fusion.scoped(Fusion)
 local Avatar = {}
 
 function Avatar:_HandleAvatar()
+	print(LocalAvatar.Character)
 	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
 	States.Avatar.Character:set(LocalAvatar.Character)
 
@@ -16,12 +17,10 @@ function Avatar:_HandleAvatar()
 	end)
 end
 
-function Avatar:Start()
-	LocalAvatar.Updated:Connect(function()
-		self:_HandleAvatar()
-	end)
+LocalAvatar.Updated:Connect(function()
+	Avatar:_HandleAvatar()
+end)
 
-	self:_HandleAvatar()
-end
+Avatar:_HandleAvatar()
 
 return Avatar

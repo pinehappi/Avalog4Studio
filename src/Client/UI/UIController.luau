@@ -2,7 +2,7 @@ local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent
 local Fusion = require(Avalog.Parent.Fusion)
-local States = require(Avalog.SourceCode.Client.UI.States)
+local StateExtensions = require(Avalog.SourceCode.Client.UI.States.Extensions)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local OnyxUITheme = require(script.Parent.OnyxUITheme)
 
@@ -18,7 +18,8 @@ local UIController = {
 }
 
 function UIController:KnitStart()
-	States:Start()
+	StateExtensions:Initialize()
+	StateExtensions:Start()
 
 	Themer.Theme:is(OnyxUITheme):during(function()
 		AvalogMenu(self.Scope, {

@@ -3,6 +3,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local OnyxUITheme = require(script.Parent.Parent.OnyxUITheme)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local StateExtensions = require(Avalog.SourceCode.Client.UI.States.Extensions)
 
 local AvalogMenu = require(script.Parent.AvalogMenu)
 
@@ -11,6 +12,8 @@ return function(Target: Instance)
 		AvalogMenu = AvalogMenu,
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
+
+	StateExtensions:Initialize()
 
 	States.Open:set(true)
 
