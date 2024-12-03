@@ -78,6 +78,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								SizeVariant = "Large",
 
 								OnActivated = function()
+									if next(States.Services.AvatarService) ~= nil then
+										States.Services.AvatarService:Update(Fusion.peek(States.Avatar.Data))
+									end
+
 									States.Open:set(false)
 								end,
 							},
