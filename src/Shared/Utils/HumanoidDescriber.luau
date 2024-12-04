@@ -2,6 +2,13 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Signal = require(Avalog.Parent.Signal)
 local DeepCopy = require(Avalog.SourceCode.Shared.Utils.DeepCopy)
 
+export type CatalogItem = {
+	AssetId: number,
+	Name: string,
+	Type: string,
+	AssetType: string,
+}
+
 export type AccessorySpec = {
 	Order: number?,
 	AssetId: number,
@@ -59,6 +66,21 @@ export type Data = {
 		Pants: number,
 	},
 }
+
+local function Extract(Source: { [any]: any }, Callback: (any, any) -> any)
+	local Extracted = {}
+
+	for Key, Value in pairs(Source) do
+		table.insert(Extracted, Callback(Key, Value))
+	end
+
+	return Extracted
+end
+local function UnpackInto(Target: { [number]: any }, Source: { [number]: any })
+	for _, Entry in ipairs(Source) do
+		table.insert(Target, Entry)
+	end
+end
 
 local HumanoidDescriber = {
 	Data = {
@@ -206,6 +228,52 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, AccessorySpe
 	return nil
 end
 
+function HumanoidDescriber:GetAssetIds(): { number }
+	local Data: Data = self:GetData()
+
+	local AssetIds = {
+		Data.Face,
+	}
+
+	UnpackInto(
+		AssetIds,
+		Extract(Data.Animations, function(_, Value)
+			return Value
+		end)
+	)
+	UnpackInto(
+		AssetIds,
+		Extract(Data.Accessories, function(_, Value)
+			return Value.AssetId
+		end)
+	)
+	UnpackInto(
+		AssetIds,
+		Extract(
+			Extract(Data.Emotes, function(_, Value)
+				return Value
+			end),
+			function(_, Emotes)
+				return table.unpack(Emotes)
+			end
+		)
+	)
+	UnpackInto(
+		AssetIds,
+		Extract(Data.Clothing, function(_, AssetId)
+			return AssetId
+		end)
+	)
+
+	for Key, AssetId in ipairs(AssetIds) do
+		if (AssetId == nil) or (AssetId == 0) then
+			table.remove(AssetIds, Key)
+		end
+	end
+
+	return AssetIds
+end
+
 function HumanoidDescriber:ReadFromDescription(HumanoidDescription: HumanoidDescription)
 	self.HumanoidDescription = HumanoidDescription
 
@@ -344,6 +412,10 @@ function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 	self.Updated = Signal.new()
 
 	self:ReadFromDescription(HumanoidDescription)
+
+	self.Updated:Connect(function()
+		print(self:GetAssetIds())
+	end)
 
 	return self
 end
