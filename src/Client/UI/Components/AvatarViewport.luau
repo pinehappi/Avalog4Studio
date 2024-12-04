@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
@@ -51,7 +52,16 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:New "WorldModel" {
 								[Children] = {
 									ViewportCamera,
-									States.Avatar.Character,
+
+									Scope:Computed(function(Use)
+										local CharacterValue = Use(States.Avatar.Character)
+
+										if RunService:IsRunning() then
+											return CharacterValue
+										else
+											return nil
+										end
+									end),
 								},
 							},
 						},
