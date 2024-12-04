@@ -37,14 +37,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 		[Children] = {
 			Scope:ForValues(Items, function(Use, Scope, Item)
-				print(Item)
 				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
 					return Scope:ItemButton {
-						AssetId = Item.AssetId,
-						Name = Item.Name,
-						Price = Item.Price,
+						Id = Item.Id,
 						Type = Item.Type,
-						AssetType = Item.AssetType,
 					}
 				end)
 			end),

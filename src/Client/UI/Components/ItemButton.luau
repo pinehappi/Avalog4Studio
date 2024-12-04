@@ -3,6 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
+local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
 
 local Children = Fusion.Children
 
@@ -11,11 +12,8 @@ local Button = require(OnyxUIFolder.Components.Button)
 
 export type Props = Button.Props & {
 	Equipped: Fusion.UsedAs<boolean>?,
-	Name: Fusion.UsedAs<string>?,
-	Price: Fusion.UsedAs<number>?,
-	AssetId: Fusion.UsedAs<number>?,
-	Type: Fusion.UsedAs<Enum.AvatarAssetType>?,
-	AssetType: Fusion.UsedAs<Enum.AvatarAssetType>?,
+	Id: Fusion.UsedAs<number>?,
+	Type: Fusion.UsedAs<Enum.AvatarItemType>?,
 }
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
@@ -24,25 +22,53 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
-	local Name = OnyxUI.Util.Fallback(Props.Name, "Name")
-	local Price = OnyxUI.Util.Fallback(Props.Price, nil)
-	local AssetId = OnyxUI.Util.Fallback(Props.AssetId, nil)
-	local Type = OnyxUI.Util.Fallback(Props.Type, nil)
-	local AssetType = OnyxUI.Util.Fallback(Props.AssetType, nil)
+	local Id = Scope:EnsureValue(OnyxUI.Util.Fallback(Props.Id, nil))
+	local Type = OnyxUI.Util.Fallback(Props.Type, Enum.AvatarItemType.Asset)
 
+	local ItemInfo = Scope:Value(nil)
+	local function UpdateItemInfo()
+		local IdValue = Fusion.peek(Id)
+		local TypeValue = Fusion.peek(Type)
+
+		if TypeValue == Enum.AvatarItemType.Asset then
+			ItemInfo:set(CatalogSearch:GetAssetInfo(IdValue))
+		else
+			ItemInfo:set(CatalogSearch:GetBundleInfo(IdValue))
+		end
+	end
+	Scope:Observer(Id):onChange(function()
+		UpdateItemInfo()
+	end)
+	UpdateItemInfo()
+
+	local SafeItemInfo = Scope:Computed(function(Use)
+		local ItemInfoValue = Use(ItemInfo)
+		local IdValue = Use(Id)
+
+		if ItemInfoValue then
+			return ItemInfoValue
+		else
+			return {
+				Id = IdValue,
+				Name = "Name",
+				Price = 0,
+				Type = Enum.AvatarItemType.Asset,
+				AssetType = Enum.AvatarAssetType.Hat,
+			}
+		end
+	end)
 	local Equippable = Scope:Computed(function(Use)
-		local TypeValue = Use(Type)
-
-		return TypeValue == Enum.AvatarItemType.Asset
+		local SafeItemInfoValue = Use(SafeItemInfo)
+		return SafeItemInfoValue.Type == Enum.AvatarItemType.Asset
 	end)
 	local Equipped = Scope:Computed(function(Use)
 		local AssetIdsValue = Use(States.Avatar.AssetIds)
-		local AssetIdValue = Use(AssetId)
+		local IdValue = Use(Id)
 
-		return table.find(AssetIdsValue, AssetIdValue) ~= nil
+		return table.find(AssetIdsValue, IdValue) ~= nil
 	end)
-	local EquippedValueState = Scope:Value(Fusion.peek(Equipped))
 
+	local EquippedValueState = Scope:Value(Fusion.peek(Equipped))
 	Scope:Observer(Equipped):onChange(function()
 		EquippedValueState:set(Fusion.peek(Equipped))
 	end)
@@ -55,17 +81,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ListEnabled = false,
 
 		OnActivated = function()
-			local TypeValue = Fusion.peek(Type)
-			local AssetTypeValue = Fusion.peek(AssetType)
-			local AssetIdValue = Fusion.peek(AssetId)
-			local NameValue = Fusion.peek(Name)
+			local ItemInfoValue = Fusion.peek(ItemInfo)
 
-			LocalAvatar:ToggleCatalogItem({
-				AssetId = AssetIdValue,
-				Name = NameValue,
-				Type = TypeValue,
-				AssetType = AssetTypeValue,
-			})
+			if ItemInfoValue then
+				LocalAvatar:ToggleCatalogItem(ItemInfoValue)
+			end
 		end,
 
 		[Children] = {
@@ -86,14 +106,13 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					Scope:Image {
 						BackgroundTransparency = 1,
 						Image = Scope:Computed(function(Use)
+							local SafeItemInfoValue = Use(SafeItemInfo)
 							local ItemTypeToType = {
 								[Enum.AvatarItemType.Bundle] = "BundleThumbnail",
 								[Enum.AvatarItemType.Asset] = "Asset",
 							}
-							local TypeValue = Use(Type)
-							local AssetIdValue = Use(AssetId)
 
-							return `rbxthumb://id={AssetIdValue}&type={(ItemTypeToType[TypeValue] or "Asset")}&w=150&h=150`
+							return `rbxthumb://id={SafeItemInfoValue.Id}&type={(ItemTypeToType[SafeItemInfoValue.Type] or "Asset")}&w=150&h=150`
 						end),
 						CornerRadius = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.CornerRadius["1"]))
@@ -114,13 +133,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						[Children] = {
 							Scope:Text {
 								Text = Scope:Computed(function(Use)
-									local NameValue = Use(Name)
-
-									if NameValue then
-										return NameValue
-									else
-										return "Item"
-									end
+									local SafeItemInfoValue = Use(SafeItemInfo)
+									return SafeItemInfoValue.Name
 								end),
 								Size = Scope:Computed(function(Use)
 									return UDim2.fromOffset(0, Use(Theme.TextSize["1"]) * 2)
@@ -132,13 +146,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconText {
 								Name = "Price",
 								Content = Scope:Computed(function(Use)
-									local PriceValue = Use(Price)
-
-									if PriceValue then
-										return { "rbxassetid://102562927562320", PriceValue }
-									else
-										return { "rbxassetid://102562927562320", 0 }
-									end
+									local SafeItemInfoValue = Use(SafeItemInfo)
+									return { "rbxassetid://102562927562320", SafeItemInfoValue.Price }
 								end),
 								ListPadding = Scope:Computed(function(Use)
 									return UDim.new(0, Use(Theme.Spacing["0.25"]))

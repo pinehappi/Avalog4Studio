@@ -11,10 +11,10 @@ local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 
 export type CatalogItem = {
-	AssetId: number,
+	Id: number,
+	Type: Enum.AvatarItemType,
+	AssetType: Enum.AvatarAssetType,
 	Name: string,
-	Type: string,
-	AssetType: string,
 }
 
 local LocalAvatar = {
@@ -27,8 +27,6 @@ local LocalAvatar = {
 function LocalAvatar:PromptCheckout()
 	local Items = {}
 	local AssetIds = self.HumanoidDescriber:GetAssetIds(true)
-
-	print(AssetIds)
 
 	for _, AssetId in ipairs(AssetIds) do
 		table.insert(Items, {
@@ -43,7 +41,7 @@ end
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 	if CatalogItem.Type == Enum.AvatarItemType.Bundle then
 		local Success, Result = Future.Try(function()
-			return AssetService:GetBundleDetailsAsync(CatalogItem.AssetId)
+			return AssetService:GetBundleDetailsAsync(CatalogItem.Id)
 		end):Await()
 
 		if Success then
@@ -91,14 +89,14 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 		local AccessoryType = AssetAccessoryTypes[CatalogItem.AssetType]
 		if AccessoryType then
 			LocalAvatar.HumanoidDescriber:ToggleAccessory({
-				AssetId = CatalogItem.AssetId,
+				AssetId = CatalogItem.Id,
 				AccessoryType = AccessoryType,
 				Order = 1,
 			})
 		elseif CatalogItem.AssetType == Enum.AvatarAssetType.Face then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Data.Face ~= CatalogItem.AssetId then
-					Data.Face = CatalogItem.AssetId
+				if Data.Face ~= CatalogItem.Id then
+					Data.Face = CatalogItem.Id
 				else
 					Data.Face = 0
 				end
@@ -107,8 +105,8 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end)
 		elseif table.find(AvatarAssetTypes.Types.Clothing, CatalogItem.AssetType) then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Data.Clothing[CatalogItem.AssetType] ~= CatalogItem.AssetId then
-					Data.Clothing[CatalogItem.AssetType] = CatalogItem.AssetId
+				if Data.Clothing[CatalogItem.AssetType] ~= CatalogItem.Id then
+					Data.Clothing[CatalogItem.AssetType] = CatalogItem.Id
 				else
 					Data.Clothing[CatalogItem.AssetType] = 0
 				end
@@ -117,7 +115,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end)
 		elseif CatalogItem.AssetType == Enum.AvatarAssetType.EmoteAnimation then
 			if LocalAvatar.HumanoidDescriber:GetEmote(CatalogItem.Name) == nil then
-				LocalAvatar.HumanoidDescriber:SetEmote(CatalogItem.Name, { CatalogItem.AssetId })
+				LocalAvatar.HumanoidDescriber:SetEmote(CatalogItem.Name, { CatalogItem.Id })
 			end
 
 			LocalAvatar.HumanoidDescriber:SetEmoteEquipped(

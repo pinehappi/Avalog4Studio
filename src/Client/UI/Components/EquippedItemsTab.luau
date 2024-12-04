@@ -18,10 +18,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		Items = Scope:ForValues(States.Avatar.AssetIds, function(Use, Scope, AssetId)
-			print(AssetId)
 			return {
-				AssetId = AssetId,
-				Name = AssetId,
+				Id = AssetId,
 				Type = Enum.AvatarItemType.Asset,
 			}
 		end),
