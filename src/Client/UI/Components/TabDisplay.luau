@@ -15,7 +15,7 @@ export type Props = Frame.Props & {}
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
-		ItemsTab = require(script.Parent.ItemsTab),
+		CatalogItemsTab = require(script.Parent.CatalogItemsTab),
 		SkinTab = require(script.Parent.SkinTab),
 		BuildTab = require(script.Parent.BuildTab),
 	})
@@ -36,7 +36,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local CategoryValue = Use(ActiveCategory)
 
 		if (ActiveModeValue == "Marketplace") or (ActiveModeValue == "Inventory") then
-			return "ItemsTab"
+			return "CatalogItemsTab"
 		elseif ActiveModeValue == "Customize" then
 			if CategoryValue and CategoryValue.Name then
 				if CategoryValue.Name == "Skin" then
@@ -62,10 +62,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ClipsDescendants = true,
 
 		[Children] = {
-			Scope:ItemsTab {
+			Scope:CatalogItemsTab {
 				Shown = Scope:Computed(function(Use)
 					local ActiveTabValue = Use(ActiveTab)
-					return ActiveTabValue == "ItemsTab"
+					return ActiveTabValue == "CatalogItemsTab"
 				end),
 			},
 			Scope:SkinTab {

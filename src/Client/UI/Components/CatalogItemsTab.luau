@@ -99,7 +99,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local AbsoluteCanvasSize = Scope:Value(Vector2.new())
 	local AbsoluteWindowSize = Scope:Value(Vector2.new())
 
-	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
+	local CatalogItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
@@ -141,8 +141,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	}
 
 	Scope:Observer(Search):onChange(function()
-		ItemsTab.CanvasPosition = Vector2.new()
+		CatalogItemsTab.CanvasPosition = Vector2.new()
 	end)
 
-	return ItemsTab
+	return CatalogItemsTab
 end
