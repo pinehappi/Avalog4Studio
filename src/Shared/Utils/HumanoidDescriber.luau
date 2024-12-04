@@ -237,12 +237,6 @@ function HumanoidDescriber:GetAssetIds(): { number }
 
 	UnpackInto(
 		AssetIds,
-		Extract(Data.Animations, function(_, Value)
-			return Value
-		end)
-	)
-	UnpackInto(
-		AssetIds,
 		Extract(Data.Accessories, function(_, Value)
 			return Value.AssetId
 		end)
@@ -262,6 +256,18 @@ function HumanoidDescriber:GetAssetIds(): { number }
 		AssetIds,
 		Extract(Data.Clothing, function(_, AssetId)
 			return AssetId
+		end)
+	)
+	UnpackInto(
+		AssetIds,
+		Extract(Data.Animations, function(_, Value)
+			return Value
+		end)
+	)
+	UnpackInto(
+		AssetIds,
+		Extract(Data.BodyParts, function(_, Value)
+			return Value
 		end)
 	)
 
