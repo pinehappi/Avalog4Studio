@@ -1,4 +1,5 @@
 local AssetService = game:GetService("AssetService")
+local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
@@ -22,6 +23,22 @@ local LocalAvatar = {
 	HumanoidDescriber = HumanoidDescriber.new(Instance.new("HumanoidDescription")),
 	Updated = Signal.new(),
 }
+
+function LocalAvatar:PromptCheckout()
+	local Items = {}
+	local AssetIds = self.HumanoidDescriber:GetAssetIds(true)
+
+	print(AssetIds)
+
+	for _, AssetId in ipairs(AssetIds) do
+		table.insert(Items, {
+			Id = tostring(AssetId),
+			Type = Enum.MarketplaceProductType.AvatarAsset,
+		})
+	end
+
+	MarketplaceService:PromptBulkPurchase(Players.LocalPlayer, Items, {})
+end
 
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 	if CatalogItem.Type == Enum.AvatarItemType.Bundle then

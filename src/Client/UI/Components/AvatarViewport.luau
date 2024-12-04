@@ -81,6 +81,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								Name = "BuyButton",
 								Content = { "rbxassetid://13846738861", "Buy" },
 								SizeVariant = "Large",
+
+								OnActivated = function()
+									LocalAvatar:PromptCheckout()
+								end,
 							},
 							Scope:Button {
 								Name = "DoneButton",
