@@ -3,7 +3,7 @@ local States = require(script.Parent.Parent)
 local Categories = require(Avalog.SourceCode.Shared.Categories)
 local Fusion = require(Avalog.Parent.Fusion)
 
-local MODES = { "Marketplace", "Inventory", "Build" }
+local MODES = { "Marketplace", "Inventory", "Customize" }
 
 local CategoryStates = {}
 

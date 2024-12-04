@@ -76,7 +76,7 @@ local Categories: { [string]: { Category } } = {
 		},
 	},
 	Inventory = {},
-	Build = { { Name = "Skin" }, { Name = "Build" } },
+	Customize = { { Name = "Skin" }, { Name = "Build" } },
 }
 
 Categories.Inventory = Categories.Marketplace

@@ -7,7 +7,7 @@ local Children = Fusion.Children
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 
-local MODES = { "Marketplace", "Inventory", "Build" }
+local MODES = { "Marketplace", "Inventory", "Customize" }
 
 export type Props = Frame.Props & {}
 
