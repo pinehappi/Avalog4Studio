@@ -29,8 +29,4 @@ Navigation.SubCategory = Scope:Computed(function(Use)
 	end
 end)
 
-function Navigation:Stop()
-	Scope:doCleanup()
-end
-
 return Navigation
