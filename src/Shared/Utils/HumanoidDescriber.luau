@@ -228,7 +228,7 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, AccessorySpe
 	return nil
 end
 
-function HumanoidDescriber:GetAssetIds(): { number }
+function HumanoidDescriber:GetAssetIds(IncludeBundleAssets: boolean?): { number }
 	local Data: Data = self:GetData()
 
 	local AssetIds = {
@@ -243,14 +243,9 @@ function HumanoidDescriber:GetAssetIds(): { number }
 	)
 	UnpackInto(
 		AssetIds,
-		Extract(
-			Extract(Data.Emotes, function(_, Value)
-				return Value
-			end),
-			function(_, Emotes)
-				return table.unpack(Emotes)
-			end
-		)
+		Extract(Data.Emotes, function(_, Value)
+			return table.unpack(Value)
+		end)
 	)
 	UnpackInto(
 		AssetIds,
@@ -258,21 +253,24 @@ function HumanoidDescriber:GetAssetIds(): { number }
 			return AssetId
 		end)
 	)
-	UnpackInto(
-		AssetIds,
-		Extract(Data.Animations, function(_, Value)
-			return Value
-		end)
-	)
-	UnpackInto(
-		AssetIds,
-		Extract(Data.BodyParts, function(_, Value)
-			return Value
-		end)
-	)
+
+	if IncludeBundleAssets then
+		UnpackInto(
+			AssetIds,
+			Extract(Data.Animations, function(_, Value)
+				return Value
+			end)
+		)
+		UnpackInto(
+			AssetIds,
+			Extract(Data.BodyParts, function(_, Value)
+				return Value
+			end)
+		)
+	end
 
 	for Key, AssetId in ipairs(AssetIds) do
-		if (AssetId == nil) or (AssetId == 0) then
+		if (AssetId == nil) or (AssetId == 0) or (table.find(AssetIds, AssetId, Key + 1) ~= nil) then
 			table.remove(AssetIds, Key)
 		end
 	end
