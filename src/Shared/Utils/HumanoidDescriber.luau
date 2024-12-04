@@ -419,10 +419,6 @@ function HumanoidDescriber.new(HumanoidDescription: HumanoidDescription)
 
 	self:ReadFromDescription(HumanoidDescription)
 
-	self.Updated:Connect(function()
-		print(self:GetAssetIds())
-	end)
-
 	return self
 end
 
