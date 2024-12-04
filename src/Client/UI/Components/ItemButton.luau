@@ -131,6 +131,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						Name = "Text",
 						ListEnabled = true,
 						ListFillDirection = Enum.FillDirection.Vertical,
+						ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 						ListPadding = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["0.5"]))
 						end),
@@ -144,7 +145,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								Size = Scope:Computed(function(Use)
 									return UDim2.fromOffset(0, Use(Theme.TextSize["1"]) * 2)
 								end),
-								AutomaticSize = Enum.AutomaticSize.X,
+								AutomaticSize = Enum.AutomaticSize.None,
 								ClipsDescendants = true,
 								RichText = false,
 							},
