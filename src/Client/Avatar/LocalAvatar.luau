@@ -105,10 +105,10 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end)
 		elseif table.find(AvatarAssetTypes.Types.Clothing, CatalogItem.AssetType) then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Data.Clothing[CatalogItem.AssetType] ~= CatalogItem.Id then
-					Data.Clothing[CatalogItem.AssetType] = CatalogItem.Id
+				if Data.Clothing[CatalogItem.AssetType.Name] ~= CatalogItem.Id then
+					Data.Clothing[CatalogItem.AssetType.Name] = CatalogItem.Id
 				else
-					Data.Clothing[CatalogItem.AssetType] = 0
+					Data.Clothing[CatalogItem.AssetType.Name] = 0
 				end
 
 				return Data
