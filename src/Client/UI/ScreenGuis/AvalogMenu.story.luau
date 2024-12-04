@@ -38,5 +38,6 @@ return function(Target: Instance)
 
 	return function()
 		Scope:doCleanup()
+		StateExtensions:Stop()
 	end
 end

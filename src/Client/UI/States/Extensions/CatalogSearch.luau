@@ -38,10 +38,10 @@ function CatalogSearch.Search(Params: SearchParams)
 
 	function Search:LoadNextPage()
 		return Future.Try(function()
-			assert(Search.Pages ~= nil, "Pages does not exist.")
+			assert(self.Pages ~= nil, "Pages does not exist.")
 
-			Search.Pages:AdvanceToNextPageAsync()
-			return Search.Pages:GetCurrentPage()
+			self.Pages:AdvanceToNextPageAsync()
+			return self.Pages:GetCurrentPage()
 		end):After(function(Success, Result)
 			if Success and Result then
 				self:_LoadPage(Result)
@@ -51,10 +51,19 @@ function CatalogSearch.Search(Params: SearchParams)
 
 	function Search:_LoadPage(Page: { [number]: any })
 		for _, Entry in ipairs(Page) do
-			table.insert(Search.Results, Entry)
+			table.insert(self.Results, Entry)
 		end
 
 		self.Updated:Fire()
+	end
+
+	function Search:Destroy()
+		self.Results = {}
+		self.Updated:Destroy()
+
+		if self.Pages ~= nil then
+			self.Pages:Destroy()
+		end
 	end
 
 	CatalogSearch.Pages(Params):After(function(Success, Result)
@@ -85,6 +94,13 @@ function CatalogSearch.Params(Params: SearchParams)
 	end
 
 	return CatalogSearchParams
+end
+
+function CatalogSearch:Stop()
+	for Hash, Search in pairs(self.Searches) do
+		Search:Destroy()
+		self.Searches[Hash] = nil
+	end
 end
 
 return CatalogSearch

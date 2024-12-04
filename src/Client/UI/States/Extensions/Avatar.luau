@@ -1,11 +1,10 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(script.Parent.Parent)
-local Fusion = require(Avalog.Parent.Fusion)
 
-local Scope = Fusion.scoped(Fusion)
-
-local Avatar = {}
+local Avatar = {
+	_Connections = {},
+}
 
 function Avatar:_HandleAvatar()
 	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
@@ -16,9 +15,18 @@ function Avatar:_HandleAvatar()
 	end)
 end
 
-LocalAvatar.Updated:Connect(function()
-	Avatar:_HandleAvatar()
-end)
+function Avatar:Stop()
+	for _, Connection: RBXScriptConnection in ipairs(self._Connections) do
+		Connection:Disconnect()
+	end
+end
+
+table.insert(
+	Avatar._Connections,
+	LocalAvatar.Updated:Connect(function()
+		Avatar:_HandleAvatar()
+	end)
+)
 
 Avatar:_HandleAvatar()
 

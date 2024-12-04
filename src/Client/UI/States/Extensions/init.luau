@@ -3,6 +3,10 @@ local Loader = require(Avalog.Parent.Loader)
 
 local Extensions = {}
 
+function Extensions:Stop()
+	Loader.SpawnAll(Loader.LoadChildren(script), "Stop")
+end
+
 function Extensions:Start()
 	Loader.SpawnAll(Loader.LoadChildren(script), "Start")
 end

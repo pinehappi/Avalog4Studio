@@ -5,21 +5,21 @@ local Fusion = require(Avalog.Parent.Fusion)
 
 local MODES = { "Marketplace", "Inventory", "Customize" }
 
-local CategoryStates = {}
+local Navigation = {}
 
 local Scope = Fusion.scoped(Fusion)
 
-CategoryStates.Mode = Scope:Computed(function(Use)
+Navigation.Mode = Scope:Computed(function(Use)
 	return MODES[Use(States.Catalog.Mode)]
 end)
-CategoryStates.Category = Scope:Computed(function(Use)
-	local ActiveModeValue = Use(CategoryStates.Mode)
+Navigation.Category = Scope:Computed(function(Use)
+	local ActiveModeValue = Use(Navigation.Mode)
 	local CategoryValue = Use(States.Catalog.Category)
 
 	return Categories[ActiveModeValue][CategoryValue]
 end)
-CategoryStates.SubCategory = Scope:Computed(function(Use)
-	local CategoryValue = Use(CategoryStates.Category)
+Navigation.SubCategory = Scope:Computed(function(Use)
+	local CategoryValue = Use(Navigation.Category)
 	local SubCategoryValue = Use(States.Catalog.SubCategory)
 
 	if CategoryValue and CategoryValue.SubCategories then
@@ -29,4 +29,8 @@ CategoryStates.SubCategory = Scope:Computed(function(Use)
 	end
 end)
 
-return CategoryStates
+function Navigation:Stop()
+	Scope:doCleanup()
+end
+
+return Navigation
