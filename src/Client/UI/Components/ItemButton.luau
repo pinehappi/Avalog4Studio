@@ -3,14 +3,11 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 
 local Children = Fusion.Children
 
 local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
-
-local CLOTHING_TYPES = { "Shirt", "TShirt", "Pants" }
 
 export type Props = Button.Props & {
 	Equipped: Fusion.UsedAs<boolean>?,
@@ -39,27 +36,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		return TypeValue == Enum.AvatarItemType.Asset
 	end)
 	local Equipped = Scope:Computed(function(Use)
-		local AvatarDataValue = Use(States.Avatar.Data)
-		local TypeValue = Use(Type)
-		local AssetTypeValue = Use(AssetType)
+		local AssetIdsValue = Use(States.Avatar.AssetIds)
 		local AssetIdValue = Use(AssetId)
-		local NameValue = Use(Name)
 
-		if TypeValue == Enum.AvatarItemType.Bundle then
-			return false
-		elseif TypeValue == Enum.AvatarItemType.Asset then
-			if table.find(AvatarAssetTypes.Types.Accessories, AssetTypeValue) ~= nil then
-				return LocalAvatar.HumanoidDescriber:GetAccessory(AssetIdValue) ~= nil
-			elseif AssetTypeValue == Enum.AvatarAssetType.Face then
-				return AvatarDataValue.Face == AssetIdValue
-			elseif table.find(CLOTHING_TYPES, AssetTypeValue) then
-				return AvatarDataValue.Clothing[AssetTypeValue] == AssetIdValue
-			elseif AssetTypeValue == Enum.AvatarAssetType.EmoteAnimation then
-				return LocalAvatar.HumanoidDescriber:GetEquippedEmote(NameValue) ~= nil
-			end
-		end
-
-		return false
+		return table.find(AssetIdsValue, AssetIdValue) ~= nil
 	end)
 	local EquippedValueState = Scope:Value(Fusion.peek(Equipped))
 

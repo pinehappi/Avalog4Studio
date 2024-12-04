@@ -12,6 +12,8 @@ local Components = {
 	BuildTab = require(script.BuildTab),
 	NavigationBar = require(script.NavigationBar),
 	TabDisplay = require(script.TabDisplay),
+	ItemsTab = require(script.ItemsTab),
+	EquippedItemsTab = require(script.EquippedItemsTab),
 }
 
 for _, Child in ipairs(script:GetChildren()) do
