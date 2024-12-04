@@ -1,6 +1,6 @@
 local AvatarAssetTypes = {
 	Types = {
-		Accessories = {
+		RigidAccessories = {
 			Enum.AvatarAssetType.BackAccessory,
 			Enum.AvatarAssetType.FaceAccessory,
 			Enum.AvatarAssetType.HairAccessory,
@@ -90,5 +90,7 @@ end
 AvatarAssetTypes.Types.All = AvatarAssetTypes:Combine(AvatarAssetTypes:Flatten(AvatarAssetTypes.Types))
 AvatarAssetTypes.Types.Clothing =
 	AvatarAssetTypes:Combine({ AvatarAssetTypes.Types.ClassicClothing, AvatarAssetTypes.Types.LayeredClothing })
+AvatarAssetTypes.Types.Accessories =
+	AvatarAssetTypes:Combine({ AvatarAssetTypes.Types.RigidAccessories, AvatarAssetTypes.Types.LayeredClothing })
 
 return AvatarAssetTypes

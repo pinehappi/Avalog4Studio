@@ -116,7 +116,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			Scope:ForValues(Results, function(Use, Scope, Result)
 				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
 					return Scope:ItemButton {
-						Data = Result,
+						AssetId = Result.Id,
+						Name = Result.Name,
+						Price = Result.Price,
+						Type = Enum.AvatarItemType[Result.ItemType],
+						AssetType = (Result.AssetType and Enum.AvatarAssetType[Result.AssetType]) or nil,
 					}
 				end)
 			end),

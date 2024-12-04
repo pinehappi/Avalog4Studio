@@ -3,7 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
+local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 
 local Children = Fusion.Children
 
@@ -13,8 +13,12 @@ local Button = require(OnyxUIFolder.Components.Button)
 local CLOTHING_TYPES = { "Shirt", "TShirt", "Pants" }
 
 export type Props = Button.Props & {
-	Data: Fusion.UsedAs<{ [string]: any }>,
 	Equipped: Fusion.UsedAs<boolean>?,
+	Name: Fusion.UsedAs<string>?,
+	Price: Fusion.UsedAs<number>?,
+	AssetId: Fusion.UsedAs<number>?,
+	Type: Fusion.UsedAs<Enum.AvatarAssetType>?,
+	AssetType: Fusion.UsedAs<Enum.AvatarAssetType>?,
 }
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
@@ -23,39 +27,35 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
-	local Data = OnyxUI.Util.Fallback(Props.Data, nil)
+	local Name = OnyxUI.Util.Fallback(Props.Name, "Name")
+	local Price = OnyxUI.Util.Fallback(Props.Price, nil)
+	local AssetId = OnyxUI.Util.Fallback(Props.AssetId, nil)
+	local Type = OnyxUI.Util.Fallback(Props.Type, nil)
+	local AssetType = OnyxUI.Util.Fallback(Props.AssetType, nil)
 
 	local Equippable = Scope:Computed(function(Use)
-		local ItemDataValue = Use(Data)
+		local TypeValue = Use(Type)
 
-		if ItemDataValue ~= nil then
-			if ItemDataValue.ItemType == "Bundle" then
-				return false
-			end
-		end
-
-		return true
+		return TypeValue == Enum.AvatarItemType.Asset
 	end)
 	local Equipped = Scope:Computed(function(Use)
-		local DescriberDataValue = Use(States.Avatar.Data)
-		local ItemDataValue = Use(Data)
+		local AvatarDataValue = Use(States.Avatar.Data)
+		local TypeValue = Use(Type)
+		local AssetTypeValue = Use(AssetType)
+		local AssetIdValue = Use(AssetId)
+		local NameValue = Use(Name)
 
-		if ItemDataValue == nil then
+		if TypeValue == Enum.AvatarItemType.Bundle then
 			return false
-		end
-
-		if ItemDataValue.ItemType == "Bundle" then
-			return false
-		elseif ItemDataValue.ItemType == "Asset" then
-			local AccessoryType = AssetAccessoryTypes[ItemDataValue.AssetType]
-			if AccessoryType ~= nil then
-				return LocalAvatar.HumanoidDescriber:GetAccessory(ItemDataValue.Id) ~= nil
-			elseif ItemDataValue.AssetType == "Face" then
-				return DescriberDataValue.Face == ItemDataValue.Id
-			elseif table.find(CLOTHING_TYPES, ItemDataValue.AssetType) then
-				return Data.Clothing[ItemDataValue.AssetType] == ItemDataValue.Id
-			elseif ItemDataValue.AssetType == "EmoteAnimation" then
-				return LocalAvatar.HumanoidDescriber:GetEquippedEmote(ItemDataValue.Name) ~= nil
+		elseif TypeValue == Enum.AvatarItemType.Asset then
+			if table.find(AvatarAssetTypes.Types.Accessories, AssetTypeValue) ~= nil then
+				return LocalAvatar.HumanoidDescriber:GetAccessory(AssetIdValue) ~= nil
+			elseif AssetTypeValue == Enum.AvatarAssetType.Face then
+				return AvatarDataValue.Face == AssetIdValue
+			elseif table.find(CLOTHING_TYPES, AssetTypeValue) then
+				return AvatarDataValue.Clothing[AssetTypeValue] == AssetIdValue
+			elseif AssetTypeValue == Enum.AvatarAssetType.EmoteAnimation then
+				return LocalAvatar.HumanoidDescriber:GetEquippedEmote(NameValue) ~= nil
 			end
 		end
 
@@ -75,7 +75,17 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ListEnabled = false,
 
 		OnActivated = function()
-			LocalAvatar:ToggleCatalogItem(Fusion.peek(Data))
+			local TypeValue = Fusion.peek(Type)
+			local AssetTypeValue = Fusion.peek(AssetType)
+			local AssetIdValue = Fusion.peek(AssetId)
+			local NameValue = Fusion.peek(Name)
+
+			LocalAvatar:ToggleCatalogItem({
+				AssetId = AssetIdValue,
+				Name = NameValue,
+				Type = TypeValue,
+				AssetType = AssetTypeValue,
+			})
 		end,
 
 		[Children] = {
@@ -96,22 +106,14 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					Scope:Image {
 						BackgroundTransparency = 1,
 						Image = Scope:Computed(function(Use)
-							local DataValue = Use(Data)
 							local ItemTypeToType = {
-								Bundle = "BundleThumbnail",
+								[Enum.AvatarItemType.Bundle] = "BundleThumbnail",
+								[Enum.AvatarItemType.Asset] = "Asset",
 							}
-							local Type
+							local TypeValue = Use(Type)
+							local AssetIdValue = Use(AssetId)
 
-							if DataValue and DataValue.ItemType then
-								local FoundType = ItemTypeToType[DataValue.ItemType]
-								if FoundType ~= nil then
-									Type = FoundType
-								else
-									Type = "Asset"
-								end
-							end
-
-							return `rbxthumb://id={DataValue.Id}&type={Type}&w=150&h=150`
+							return `rbxthumb://id={AssetIdValue}&type={(ItemTypeToType[TypeValue] or "Asset")}&w=150&h=150`
 						end),
 						CornerRadius = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.CornerRadius["1"]))
@@ -132,9 +134,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						[Children] = {
 							Scope:Text {
 								Text = Scope:Computed(function(Use)
-									local DataValue = Use(Data)
-									if DataValue and DataValue.Name then
-										return DataValue.Name
+									local NameValue = Use(Name)
+
+									if NameValue then
+										return NameValue
 									else
 										return "Item"
 									end
@@ -149,9 +152,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconText {
 								Name = "Price",
 								Content = Scope:Computed(function(Use)
-									local DataValue = Use(Data)
-									if DataValue and DataValue.Price then
-										return { "rbxassetid://102562927562320", DataValue.Price }
+									local PriceValue = Use(Price)
+
+									if PriceValue then
+										return { "rbxassetid://102562927562320", PriceValue }
 									else
 										return { "rbxassetid://102562927562320", 0 }
 									end
