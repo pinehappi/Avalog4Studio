@@ -23,7 +23,7 @@ export type CatalogItem = {
 local LocalAvatar = {
 	Character = Instance.new("Model"),
 	Humanoid = Instance.new("Humanoid"),
-	HumanoidDescriber = HumanoidDescriber.new(Instance.new("HumanoidDescription")),
+	HumanoidDescriber = HumanoidDescriber(Instance.new("HumanoidDescription")),
 	Updated = Signal.new(),
 }
 
@@ -83,7 +83,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 				end):Await()
 
 				if Success2 then
-					local BundleDescriber = HumanoidDescriber.new(Result2)
+					local BundleDescriber = HumanoidDescriber(Result2)
 					local BundleData = BundleDescriber:GetData()
 
 					if Result.BundleType == "BodyParts" then
@@ -143,7 +143,7 @@ function LocalAvatar:SetCharacter(Character: Model)
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
 		if Humanoid then
 			local HumanoidDescription = Humanoid:FindFirstChildOfClass("HumanoidDescription")
-			local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
+			local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
 
 			self.Character = Character
 			self.Humanoid = Humanoid

@@ -41,7 +41,7 @@ end
 function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
-		local HumanoidDescriberObject = HumanoidDescriber.new(HumanoidDescription)
+		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
 
 		HumanoidDescriberObject:UpdateData(function()
 			return Data
