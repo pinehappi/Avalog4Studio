@@ -78,8 +78,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 						[Children] = {
 							Scope:Button {
-								Name = "BuyButton",
-								Content = { "rbxassetid://13846738861", "Buy" },
+								Name = "SaveButton",
+								Content = { "rbxassetid://13846738861", "Save" },
 								SizeVariant = "Large",
 
 								OnActivated = function()

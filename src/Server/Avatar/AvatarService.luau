@@ -1,3 +1,4 @@
+local MarketplaceService = game:GetService("MarketplaceService")
 local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
@@ -5,6 +6,7 @@ local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescrib
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
+	BulkPurchaseItems = RateLimit(1, 2),
 }
 
 local AvatarService = {
@@ -14,12 +16,26 @@ local AvatarService = {
 	Avatars = {},
 }
 
+function AvatarService.Client:BulkPurchaseItems(Player: Player, Items: { any })
+	if not RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
+		return
+	end
+
+	return AvatarService:BulkPurchaseItems(Player, Items)
+end
+
 function AvatarService.Client:Update(Player: Player, Data: HumanoidDescriber.Data)
 	if not RATE_LIMITS.Update(Player.UserId) then
 		return
 	end
 
 	return AvatarService:Update(Player, Data)
+end
+
+function AvatarService:BulkPurchaseItems(Player: Player, Items: { any })
+	return Future.Try(function()
+		return MarketplaceService:PromptBulkPurchase(Player, Items, {})
+	end):Await()
 end
 
 function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)

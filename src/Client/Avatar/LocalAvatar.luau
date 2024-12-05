@@ -9,6 +9,9 @@ local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
+local Fusion = require(Avalog.Parent.Fusion)
+local States = require(Avalog.SourceCode.Client.UI.States)
+local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
 
 export type CatalogItem = {
 	Id: number,
@@ -26,16 +29,30 @@ local LocalAvatar = {
 
 function LocalAvatar:PromptCheckout()
 	local Items = {}
-	local AssetIds = self.HumanoidDescriber:GetAssetIds(true)
+	local AssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
 
-	for _, AssetId in ipairs(AssetIds) do
-		table.insert(Items, {
-			Id = tostring(AssetId),
-			Type = Enum.MarketplaceProductType.AvatarAsset,
-		})
+	for _, AssetId in ipairs(AssetIdsValue) do
+		local AssetInfo = CatalogSearch:GetAssetInfo(AssetId)
+
+		if AssetInfo and not AssetInfo.Offsale then
+			local Success, Result = Future.Try(function()
+				return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, AssetId)
+			end):Await()
+
+			if Success then
+				if Result == false then
+					table.insert(Items, {
+						Id = tostring(AssetId),
+						Type = Enum.MarketplaceProductType.AvatarAsset,
+					})
+				end
+			end
+		end
 	end
 
-	MarketplaceService:PromptBulkPurchase(Players.LocalPlayer, Items, {})
+	if next(States.Services.AvatarService) ~= nil then
+		States.Services.AvatarService:BulkPurchaseItems(Items)
+	end
 end
 
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
