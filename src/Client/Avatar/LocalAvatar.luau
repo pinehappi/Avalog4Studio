@@ -31,6 +31,8 @@ function LocalAvatar:PromptCheckout()
 	local Items = {}
 	local AssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
 
+	States.Checkout.Loading:set(true)
+
 	for _, AssetId in ipairs(AssetIdsValue) do
 		local AssetInfo = CatalogSearch:GetAssetInfo(AssetId)
 
@@ -46,8 +48,16 @@ function LocalAvatar:PromptCheckout()
 		end
 	end
 
-	if next(States.Services.AvatarService) ~= nil then
-		States.Services.AvatarService:BulkPurchaseItems(Items)
+	States.Checkout.Loading:set(false)
+
+	if #Items > 0 then
+		if next(States.Services.AvatarService) ~= nil then
+			States.Services.AvatarService:BulkPurchaseItems(Items)
+		end
+
+		return true
+	else
+		return false
 	end
 end
 

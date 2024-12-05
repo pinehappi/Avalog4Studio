@@ -21,6 +21,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		CameraType = Enum.CameraType.Scriptable,
 	}
 
+	local CheckoutFailureShown = Scope:Value(false)
+
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		MaxSize = Scope:Computed(function(Use)
@@ -79,11 +81,24 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						[Children] = {
 							Scope:Button {
 								Name = "SaveButton",
-								Content = { "rbxassetid://13846738861", "Save" },
+								Content = Scope:Computed(function(Use)
+									local CheckoutFailureShownValue = Use(CheckoutFailureShown)
+									if CheckoutFailureShownValue then
+										return { "rbxassetid://13852128781", "Save" }
+									else
+										return { "rbxassetid://13846738861", "Save" }
+									end
+								end),
 								SizeVariant = "Large",
+								Disabled = States.Checkout.Loading,
 
 								OnActivated = function()
-									LocalAvatar:PromptCheckout()
+									local Success = LocalAvatar:PromptCheckout()
+									if not Success then
+										CheckoutFailureShown:set(true)
+										task.wait(1)
+										CheckoutFailureShown:set(false)
+									end
 								end,
 							},
 							Scope:Button {
