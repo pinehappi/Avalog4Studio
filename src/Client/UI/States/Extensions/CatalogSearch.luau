@@ -125,6 +125,7 @@ function CatalogSearch.Search(Params: SearchParams)
 					Id = Entry.Id,
 					Name = Entry.Name,
 					Price = Entry.Price,
+					Offsale = Entry.IsOffSale,
 					Type = Enum.AvatarItemType[Entry.ItemType],
 					AssetType = (Entry.AssetType and Enum.AvatarAssetType[Entry.AssetType]) or nil,
 				}

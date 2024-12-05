@@ -51,6 +51,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				Id = IdValue,
 				Name = "Name",
 				Price = 0,
+				Offsale = false,
 				Type = Enum.AvatarItemType.Asset,
 				AssetType = Enum.AvatarAssetType.Hat,
 			}
