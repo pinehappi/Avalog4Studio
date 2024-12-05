@@ -269,9 +269,17 @@ function HumanoidDescriber:GetAssetIds(IncludeBundleAssets: boolean?): { number 
 		)
 	end
 
+	local InvalidAssetIds = {}
 	for Key, AssetId in ipairs(AssetIds) do
 		if (AssetId == nil) or (AssetId == 0) or (table.find(AssetIds, AssetId, Key + 1) ~= nil) then
-			table.remove(AssetIds, Key)
+			table.insert(InvalidAssetIds, AssetId)
+		end
+	end
+
+	for _, AssetId in ipairs(InvalidAssetIds) do
+		local Index = table.find(AssetIds, AssetId)
+		if Index ~= nil then
+			table.remove(AssetIds, Index)
 		end
 	end
 
