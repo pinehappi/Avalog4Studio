@@ -134,6 +134,18 @@ local HumanoidDescriber = {
 	HumanoidDescription = Instance.new("HumanoidDescription"),
 }
 
+function HumanoidDescriber:EquipAsset(AssetId: number, AssetType: Enum.AvatarAssetType)
+	if not self:IsAssetEquipped(AssetId, AssetType) then
+		self:SetAssetEquipped(AssetId, AssetType, true)
+	end
+end
+
+function HumanoidDescriber:UnequipAsset(AssetId: number, AssetType: Enum.AvatarAssetType)
+	if self:IsAssetEquipped(AssetId, AssetType) then
+		self:SetAssetEquipped(AssetId, AssetType, false)
+	end
+end
+
 function HumanoidDescriber:SetAssetEquipped(AssetId: number, AssetType: Enum.AvatarAssetType, Equip: boolean)
 	local Equipped = self:IsAssetEquipped(AssetId, AssetType)
 

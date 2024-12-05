@@ -91,10 +91,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 							return Data
 						end)
 					elseif Result.BundleType == "DynamicHead" then
-						self.HumanoidDescriber:UpdateData(function(Data)
-							Data.BodyParts.Head = BundleData.BodyParts.Head
-							return Data
-						end)
+						self.HumanoidDescriber:EquipAsset(BundleData.BodyParts.Head, Enum.AvatarAssetType.DynamicHead)
 					end
 
 					BundleDescriber:Destroy()
