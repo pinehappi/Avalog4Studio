@@ -135,7 +135,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 				return Data
 			end)
 		elseif CatalogItem.AssetType == Enum.AvatarAssetType.EmoteAnimation then
-			if LocalAvatar.HumanoidDescriber:GetEmote(CatalogItem.Name) == nil then
+			if LocalAvatar.HumanoidDescriber:GetEmoteByAssetId(CatalogItem.Id) == nil then
 				LocalAvatar.HumanoidDescriber:SetEmote(CatalogItem.Name, { CatalogItem.Id })
 			end
 

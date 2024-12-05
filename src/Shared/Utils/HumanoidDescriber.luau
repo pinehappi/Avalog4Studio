@@ -141,14 +141,7 @@ function HumanoidDescriber:IsAssetEquipped(AssetId: number, AssetType: Enum.Avat
 	elseif table.find(AvatarAssetTypes.Types.Clothing, AssetType) then
 		return Data.Clothing[AssetType.Name] == AssetId
 	elseif AssetType == Enum.AvatarAssetType.EmoteAnimation then
-		-- if self:GetEmote(CatalogItem.Name) == nil then
-		-- 	self:SetEmote(CatalogItem.Name, { AssetId })
-		-- end
-
-		-- self:SetEmoteEquipped(
-		-- 	CatalogItem.Name,
-		-- 	not (self:GetEquippedEmote(CatalogItem.Name) ~= nil)
-		-- )
+		return self:GetEmoteByAssetId(AssetId) ~= nil
 	elseif table.find(AvatarAssetTypes.Types.Animations, AssetType) then
 		local AnimationName = string.gsub(AssetType.Name, "Animation", "", 1)
 		local Animation = Data.Animations[AnimationName]
@@ -210,6 +203,18 @@ function HumanoidDescriber:SetEmote(Name: string, Emote: { number } | nil)
 		Data.Emotes[Name] = Emote
 		return Data
 	end)
+end
+
+function HumanoidDescriber:GetEmoteByAssetId(AssetId: number)
+	local Data = self:GetData()
+
+	for Name, Emote in pairs(Data.Emotes) do
+		if table.find(Emote, AssetId) ~= nil then
+			return Name, Emote
+		end
+	end
+
+	return nil
 end
 
 function HumanoidDescriber:GetEmote(Name: string)
