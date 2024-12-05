@@ -17,6 +17,9 @@ local ASSET_ACCESSORY_TYPES = {
 	[Enum.AvatarAssetType.ShortsAccessory] = Enum.AccessoryType.Shorts,
 	[Enum.AvatarAssetType.LeftShoeAccessory] = Enum.AccessoryType.LeftShoe,
 	[Enum.AvatarAssetType.RightShoeAccessory] = Enum.AccessoryType.RightShoe,
+
+	[Enum.AvatarAssetType.EyelashAccessory] = Enum.AccessoryType.Eyelash,
+	[Enum.AvatarAssetType.EyebrowAccessory] = Enum.AccessoryType.Eyebrow,
 }
 
 return ASSET_ACCESSORY_TYPES

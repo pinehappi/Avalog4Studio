@@ -103,13 +103,15 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end
 		end
 	elseif CatalogItem.Type == Enum.AvatarItemType.Asset then
-		local AccessoryType = AssetAccessoryTypes[CatalogItem.AssetType]
-		if AccessoryType then
-			LocalAvatar.HumanoidDescriber:ToggleAccessory({
-				AssetId = CatalogItem.Id,
-				AccessoryType = AccessoryType,
-				Order = 1,
-			})
+		if table.find(AvatarAssetTypes.Types.Accessories, CatalogItem.AssetType) then
+			local AccessoryType = AssetAccessoryTypes[CatalogItem.AssetType]
+			if AccessoryType then
+				LocalAvatar.HumanoidDescriber:ToggleAccessory({
+					AssetId = CatalogItem.Id,
+					AccessoryType = AccessoryType,
+					Order = 1,
+				})
+			end
 		elseif CatalogItem.AssetType == Enum.AvatarAssetType.Face then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
 				if Data.Face ~= CatalogItem.Id then

@@ -88,7 +88,10 @@ end
 AvatarAssetTypes.Types.All = AvatarAssetTypes:Combine(AvatarAssetTypes:Flatten(AvatarAssetTypes.Types))
 AvatarAssetTypes.Types.Clothing =
 	AvatarAssetTypes:Combine({ AvatarAssetTypes.Types.ClassicClothing, AvatarAssetTypes.Types.LayeredClothing })
-AvatarAssetTypes.Types.Accessories =
-	AvatarAssetTypes:Combine({ AvatarAssetTypes.Types.RigidAccessories, AvatarAssetTypes.Types.LayeredClothing })
+AvatarAssetTypes.Types.Accessories = AvatarAssetTypes:Combine({
+	AvatarAssetTypes.Types.RigidAccessories,
+	AvatarAssetTypes.Types.LayeredClothing,
+	AvatarAssetTypes.Types.FacialFeatures,
+})
 
 return AvatarAssetTypes
