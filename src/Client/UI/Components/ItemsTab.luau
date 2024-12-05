@@ -41,6 +41,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					return Scope:ItemButton {
 						Id = Item.Id,
 						Type = Item.Type,
+						Visible = Item.Visible,
 					}
 				end)
 			end),

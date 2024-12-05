@@ -21,6 +21,7 @@ local States = {
 	Avatar = {
 		Data = Scope:Value(nil),
 		AssetIds = Scope:Value({}),
+		EquippedAssetIds = Scope:Value({}),
 		Character = Scope:Value(nil),
 	},
 	Open = Scope:Value(false),

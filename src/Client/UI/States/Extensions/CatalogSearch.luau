@@ -72,7 +72,7 @@ function CatalogSearch:GetAssetInfo(AssetId: number): { [string]: any }?
 			local Item = {
 				Id = Result.AssetId,
 				Name = Result.Name,
-				Price = Result.Price,
+				Price = Result.PriceInRobux,
 				Type = Enum.AvatarItemType.Asset,
 				AssetType = AssetType,
 			}
