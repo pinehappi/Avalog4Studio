@@ -38,10 +38,11 @@ function CatalogSearch:GetBundleInfo(BundleId: number): { [string]: any }?
 		end):Await()
 		if Success then
 			local Item = {
-				BundleId = Result.Id,
+				Id = Result.Id,
 				Name = Result.Name,
-				Price = Result.Price,
+				Price = Result.PriceInRobux,
 				Type = Enum.AvatarItemType.Bundle,
+				Offsale = not Result.IsForSale,
 			}
 
 			self.KnownBundles[BundleId] = Item
@@ -75,6 +76,7 @@ function CatalogSearch:GetAssetInfo(AssetId: number): { [string]: any }?
 				Price = Result.PriceInRobux,
 				Type = Enum.AvatarItemType.Asset,
 				AssetType = AssetType,
+				Offsale = not Result.IsForSale,
 			}
 
 			self.KnownAssets[AssetId] = Item

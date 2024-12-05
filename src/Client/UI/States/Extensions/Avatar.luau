@@ -10,13 +10,21 @@ local Avatar = {
 
 function Avatar:_UpdateEquippedAssetIds()
 	local AssetIdsValue = Fusion.peek(States.Avatar.AssetIds)
+	local UnequippedAssetIds = {}
 
-	for Index, AssetId in ipairs(AssetIdsValue) do
+	for _, AssetId in ipairs(AssetIdsValue) do
 		local CatalogInfo = CatalogSearch:GetAssetInfo(AssetId)
 		if CatalogInfo and (CatalogInfo.AssetType == Enum.AvatarAssetType.EmoteAnimation) then
 			if LocalAvatar.HumanoidDescriber:GetEquippedEmote(CatalogInfo.Name) == nil then
-				table.remove(AssetIdsValue, Index)
+				table.insert(UnequippedAssetIds, AssetId)
 			end
+		end
+	end
+
+	for _, AssetId in ipairs(UnequippedAssetIds) do
+		local Index = table.find(AssetIdsValue, AssetId)
+		if Index ~= nil then
+			table.remove(AssetIdsValue, Index)
 		end
 	end
 

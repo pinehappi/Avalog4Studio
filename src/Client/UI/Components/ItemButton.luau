@@ -151,8 +151,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconText {
 								Name = "Price",
 								Content = Scope:Computed(function(Use)
-									local SafeItemInfoValue = Use(SafeItemInfo)
-									return { "rbxassetid://102562927562320", SafeItemInfoValue.Price }
+									local ItemInfoValue = Use(ItemInfo)
+									if ItemInfoValue and ItemInfoValue.Price then
+										return { "rbxassetid://102562927562320", ItemInfoValue.Price }
+									else
+										return { "Offsale" }
+									end
 								end),
 								ListPadding = Scope:Computed(function(Use)
 									return UDim.new(0, Use(Theme.Spacing["0.25"]))
