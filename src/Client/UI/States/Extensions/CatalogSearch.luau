@@ -1,5 +1,6 @@
 local AvatarEditorService = game:GetService("AvatarEditorService")
 local MarketplaceService = game:GetService("MarketplaceService")
+local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
@@ -25,7 +26,21 @@ local CatalogSearch = {
 	Searches = {},
 	KnownAssets = {},
 	KnownBundles = {},
+	OwnedAssets = {},
 }
+
+function CatalogSearch:OwnsAsset(AssetId: number)
+	if table.find(self.OwnedAssets, AssetId) == nil then
+		local Success, Result = Future.Try(function()
+			return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, AssetId)
+		end):Await()
+		if Success and Result then
+			table.insert(self.OwnedAssets, AssetId)
+		end
+	end
+
+	return table.find(self.OwnedAssets, AssetId) ~= nil
+end
 
 function CatalogSearch:GetBundleInfo(BundleId: number): { [string]: any }?
 	local KnownBundle = self.KnownBundles[BundleId]

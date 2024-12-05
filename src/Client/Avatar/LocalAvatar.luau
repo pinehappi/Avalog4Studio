@@ -35,17 +35,13 @@ function LocalAvatar:PromptCheckout()
 		local AssetInfo = CatalogSearch:GetAssetInfo(AssetId)
 
 		if AssetInfo and not AssetInfo.Offsale then
-			local Success, Result = Future.Try(function()
-				return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, AssetId)
-			end):Await()
+			local Owned = CatalogSearch:OwnsAsset(AssetId)
 
-			if Success then
-				if Result == false then
-					table.insert(Items, {
-						Id = tostring(AssetId),
-						Type = Enum.MarketplaceProductType.AvatarAsset,
-					})
-				end
+			if Owned == false then
+				table.insert(Items, {
+					Id = tostring(AssetId),
+					Type = Enum.MarketplaceProductType.AvatarAsset,
+				})
 			end
 		end
 	end
