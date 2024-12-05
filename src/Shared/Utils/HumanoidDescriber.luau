@@ -1,7 +1,10 @@
+local MarketplaceService = game:GetService("MarketplaceService")
 local Avalog = script.Parent.Parent.Parent.Parent
 local Signal = require(Avalog.Parent.Signal)
 local DeepCopy = require(Avalog.SourceCode.Shared.Utils.DeepCopy)
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
+local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
+local Future = require(Avalog.Parent.Future)
 
 export type CatalogItem = {
 	AssetId: number,
@@ -131,6 +134,103 @@ local HumanoidDescriber = {
 	HumanoidDescription = Instance.new("HumanoidDescription"),
 }
 
+function HumanoidDescriber:SetAssetEquipped(AssetId: number, AssetType: Enum.AvatarAssetType, Equip: boolean)
+	local Equipped = self:IsAssetEquipped(AssetId, AssetType)
+
+	if table.find(AvatarAssetTypes.Types.Accessories, AssetType) then
+		local AccessoryType = AssetAccessoryTypes[AssetType]
+		if AccessoryType then
+			if Equip then
+				if not Equipped then
+					self:AddAccessory({
+						AssetId = AssetId,
+						AccessoryType = AccessoryType,
+						Order = 1,
+					})
+				end
+			else
+				self:RemoveAccessory(AssetId)
+			end
+		end
+	elseif AssetType == Enum.AvatarAssetType.Face then
+		self:UpdateData(function(Data)
+			if Equip then
+				if not Equipped then
+					Data.Face = AssetId
+				end
+			else
+				Data.Face = 0
+			end
+
+			return Data
+		end)
+	elseif table.find(AvatarAssetTypes.Types.Clothing, AssetType) then
+		self:UpdateData(function(Data)
+			if Equip then
+				if not Equipped then
+					Data.Clothing[AssetType.Name] = AssetId
+				end
+			else
+				Data.Clothing[AssetType.Name] = 0
+			end
+
+			return Data
+		end)
+	elseif AssetType == Enum.AvatarAssetType.EmoteAnimation then
+		local Name, Emote = self:GetEmoteByAssetId(AssetId)
+
+		if Name == nil then
+			Future.Try(function()
+				local ProductInfo = MarketplaceService:GetProductInfo(AssetId, Enum.InfoType.Asset)
+				if ProductInfo then
+					Name = ProductInfo.Name
+					Emote = { ProductInfo.AssetId }
+
+					self:SetEmote(Name, Emote)
+				end
+			end):Await()
+		end
+
+		self:SetEmoteEquipped(Name, not Equipped)
+	elseif table.find(AvatarAssetTypes.Types.Animations, AssetType) then
+		self:UpdateData(function(Data)
+			local AnimationName = string.gsub(AssetType.Name, "Animation", "", 1)
+			local Animation = Data.Animations[AnimationName]
+			if Animation then
+				if Equip then
+					if not Equipped then
+						Data.Animations[AnimationName] = AssetId
+					end
+				else
+					Data.Animations[AnimationName] = 0
+				end
+			end
+
+			return Data
+		end)
+	elseif table.find(AvatarAssetTypes.Types.BodyParts, AssetType) then
+		self:UpdateData(function(Data)
+			local PartName = AssetType.Name
+			if PartName == "DynamicHead" then
+				PartName = "Head"
+			end
+
+			local BodyPart = Data.BodyParts[PartName]
+			if BodyPart then
+				if Equip then
+					if not Equipped then
+						Data.BodyParts[PartName] = AssetId
+					end
+				else
+					Data.BodyParts[PartName] = 0
+				end
+			end
+
+			return Data
+		end)
+	end
+end
+
 function HumanoidDescriber:IsAssetEquipped(AssetId: number, AssetType: Enum.AvatarAssetType)
 	local Data = self:GetData()
 
@@ -141,7 +241,8 @@ function HumanoidDescriber:IsAssetEquipped(AssetId: number, AssetType: Enum.Avat
 	elseif table.find(AvatarAssetTypes.Types.Clothing, AssetType) then
 		return Data.Clothing[AssetType.Name] == AssetId
 	elseif AssetType == Enum.AvatarAssetType.EmoteAnimation then
-		return self:GetEmoteByAssetId(AssetId) ~= nil
+		local Name = self:GetEmoteByAssetId(AssetId)
+		return self:GetEquippedEmote(Name) ~= nil
 	elseif table.find(AvatarAssetTypes.Types.Animations, AssetType) then
 		local AnimationName = string.gsub(AssetType.Name, "Animation", "", 1)
 		local Animation = Data.Animations[AnimationName]
@@ -161,29 +262,63 @@ function HumanoidDescriber:IsAssetEquipped(AssetId: number, AssetType: Enum.Avat
 	end
 end
 
-function HumanoidDescriber:SetEmoteEquipped(Name: string, Equipped: boolean)
-	self:UpdateData(function(Data)
-		local ExistingIndex = self:GetEquippedEmote(Name)
+function HumanoidDescriber:SetEmoteEquipped(Name: string, Equip: boolean, Slot: number?)
+	local Data = self:GetData()
 
-		if Equipped then
-			if not ExistingIndex then
-				if #Data.EquippedEmotes >= 8 then
-					table.remove(Data.EquippedEmotes, #Data.EquippedEmotes)
-				end
+	if Slot == nil then
+		if Equip then
+			local PotentialSlots = {}
 
-				table.insert(Data.EquippedEmotes, {
-					Name = Name,
-					Slot = #Data.EquippedEmotes + 1,
-				})
+			for Count = 1, 8 do
+				table.insert(PotentialSlots, Count)
 			end
+
+			for _, Emote in ipairs(Data.EquippedEmotes) do
+				local PotentialSlotIndex = table.find(PotentialSlots, Emote.Slot)
+				if PotentialSlotIndex then
+					table.remove(PotentialSlots, PotentialSlotIndex)
+				end
+			end
+
+			Slot = PotentialSlots[1] or 8
 		else
-			if ExistingIndex then
-				table.remove(Data.EquippedEmotes, ExistingIndex)
+			local _, Emote = self:GetEquippedEmote(Name)
+			if Emote then
+				Slot = Emote.Slot
+			else
+				Slot = 8
 			end
 		end
+	end
 
-		return Data
+	self:UpdateData(function(ModifierData)
+		local ExistingIndex = self:GetEquippedEmoteBySlot(Slot)
+
+		if ExistingIndex then
+			table.remove(ModifierData.EquippedEmotes, ExistingIndex)
+		end
+
+		if Equip then
+			table.insert(ModifierData.EquippedEmotes, {
+				Name = Name,
+				Slot = Slot,
+			})
+		end
+
+		return ModifierData
 	end)
+end
+
+function HumanoidDescriber:GetEquippedEmoteBySlot(Slot: number)
+	local Data = self:GetData()
+
+	for Index, Emote in ipairs(Data.EquippedEmotes) do
+		if Emote.Slot == Slot then
+			return Index, Emote
+		end
+	end
+
+	return nil
 end
 
 function HumanoidDescriber:GetEquippedEmote(Name: string): (number?, EquippedEmote?)

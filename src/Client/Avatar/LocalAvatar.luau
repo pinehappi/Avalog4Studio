@@ -104,77 +104,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 		end
 	elseif CatalogItem.Type == Enum.AvatarItemType.Asset then
 		local Equipped = self.HumanoidDescriber:IsAssetEquipped(CatalogItem.Id, CatalogItem.AssetType)
-
-		if table.find(AvatarAssetTypes.Types.Accessories, CatalogItem.AssetType) then
-			local AccessoryType = AssetAccessoryTypes[CatalogItem.AssetType]
-			if AccessoryType then
-				LocalAvatar.HumanoidDescriber:ToggleAccessory({
-					AssetId = CatalogItem.Id,
-					AccessoryType = AccessoryType,
-					Order = 1,
-				})
-			end
-		elseif CatalogItem.AssetType == Enum.AvatarAssetType.Face then
-			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Equipped then
-					Data.Face = 0
-				else
-					Data.Face = CatalogItem.Id
-				end
-
-				return Data
-			end)
-		elseif table.find(AvatarAssetTypes.Types.Clothing, CatalogItem.AssetType) then
-			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Equipped then
-					Data.Clothing[CatalogItem.AssetType.Name] = 0
-				else
-					Data.Clothing[CatalogItem.AssetType.Name] = CatalogItem.Id
-				end
-
-				return Data
-			end)
-		elseif CatalogItem.AssetType == Enum.AvatarAssetType.EmoteAnimation then
-			if LocalAvatar.HumanoidDescriber:GetEmoteByAssetId(CatalogItem.Id) == nil then
-				LocalAvatar.HumanoidDescriber:SetEmote(CatalogItem.Name, { CatalogItem.Id })
-			end
-
-			LocalAvatar.HumanoidDescriber:SetEmoteEquipped(CatalogItem.Name, not Equipped)
-		elseif table.find(AvatarAssetTypes.Types.Animations, CatalogItem.AssetType) then
-			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				local AnimationName = string.gsub(CatalogItem.AssetType.Name, "Animation", "", 1)
-				local Animation = Data.Animations[AnimationName]
-				if Animation then
-					if Equipped then
-						Data.Animations[AnimationName] = 0
-					else
-						Data.Animations[AnimationName] = CatalogItem.Id
-					end
-				end
-
-				return Data
-			end)
-		elseif table.find(AvatarAssetTypes.Types.BodyParts, CatalogItem.AssetType) then
-			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				local PartName = CatalogItem.AssetType.Name
-				if PartName == "DynamicHead" then
-					PartName = "Head"
-				end
-
-				local BodyPart = Data.BodyParts[PartName]
-				if BodyPart then
-					if Equipped then
-						Data.BodyParts[PartName] = 0
-					else
-						Data.BodyParts[PartName] = CatalogItem.Id
-					end
-				end
-
-				return Data
-			end)
-		else
-			print(CatalogItem)
-		end
+		self.HumanoidDescriber:SetAssetEquipped(CatalogItem.Id, CatalogItem.AssetType, not Equipped)
 	end
 
 	self:Apply()
