@@ -103,6 +103,8 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end
 		end
 	elseif CatalogItem.Type == Enum.AvatarItemType.Asset then
+		local Equipped = self.HumanoidDescriber:IsAssetEquipped(CatalogItem.Id, CatalogItem.AssetType)
+
 		if table.find(AvatarAssetTypes.Types.Accessories, CatalogItem.AssetType) then
 			local AccessoryType = AssetAccessoryTypes[CatalogItem.AssetType]
 			if AccessoryType then
@@ -114,20 +116,20 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 			end
 		elseif CatalogItem.AssetType == Enum.AvatarAssetType.Face then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Data.Face ~= CatalogItem.Id then
-					Data.Face = CatalogItem.Id
-				else
+				if Equipped then
 					Data.Face = 0
+				else
+					Data.Face = CatalogItem.Id
 				end
 
 				return Data
 			end)
 		elseif table.find(AvatarAssetTypes.Types.Clothing, CatalogItem.AssetType) then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
-				if Data.Clothing[CatalogItem.AssetType.Name] ~= CatalogItem.Id then
-					Data.Clothing[CatalogItem.AssetType.Name] = CatalogItem.Id
-				else
+				if Equipped then
 					Data.Clothing[CatalogItem.AssetType.Name] = 0
+				else
+					Data.Clothing[CatalogItem.AssetType.Name] = CatalogItem.Id
 				end
 
 				return Data
@@ -137,16 +139,13 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 				LocalAvatar.HumanoidDescriber:SetEmote(CatalogItem.Name, { CatalogItem.Id })
 			end
 
-			LocalAvatar.HumanoidDescriber:SetEmoteEquipped(
-				CatalogItem.Name,
-				not (LocalAvatar.HumanoidDescriber:GetEquippedEmote(CatalogItem.Name) ~= nil)
-			)
+			LocalAvatar.HumanoidDescriber:SetEmoteEquipped(CatalogItem.Name, not Equipped)
 		elseif table.find(AvatarAssetTypes.Types.Animations, CatalogItem.AssetType) then
 			LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
 				local AnimationName = string.gsub(CatalogItem.AssetType.Name, "Animation", "", 1)
 				local Animation = Data.Animations[AnimationName]
 				if Animation then
-					if Animation == CatalogItem.Id then
+					if Equipped then
 						Data.Animations[AnimationName] = 0
 					else
 						Data.Animations[AnimationName] = CatalogItem.Id
@@ -164,7 +163,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 
 				local BodyPart = Data.BodyParts[PartName]
 				if BodyPart then
-					if BodyPart == CatalogItem.Id then
+					if Equipped then
 						Data.BodyParts[PartName] = 0
 					else
 						Data.BodyParts[PartName] = CatalogItem.Id

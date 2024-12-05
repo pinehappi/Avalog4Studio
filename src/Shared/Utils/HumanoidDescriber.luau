@@ -1,6 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent
 local Signal = require(Avalog.Parent.Signal)
 local DeepCopy = require(Avalog.SourceCode.Shared.Utils.DeepCopy)
+local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 
 export type CatalogItem = {
 	AssetId: number,
@@ -129,6 +130,43 @@ local HumanoidDescriber = {
 	},
 	HumanoidDescription = Instance.new("HumanoidDescription"),
 }
+
+function HumanoidDescriber:IsAssetEquipped(AssetId: number, AssetType: Enum.AvatarAssetType)
+	local Data = self:GetData()
+
+	if table.find(AvatarAssetTypes.Types.Accessories, AssetType) then
+		return self:GetAccessory(AssetId) ~= nil
+	elseif AssetType == Enum.AvatarAssetType.Face then
+		return Data.Face == AssetId
+	elseif table.find(AvatarAssetTypes.Types.Clothing, AssetType) then
+		return Data.Clothing[AssetType.Name] == AssetId
+	elseif AssetType == Enum.AvatarAssetType.EmoteAnimation then
+		-- if self:GetEmote(CatalogItem.Name) == nil then
+		-- 	self:SetEmote(CatalogItem.Name, { AssetId })
+		-- end
+
+		-- self:SetEmoteEquipped(
+		-- 	CatalogItem.Name,
+		-- 	not (self:GetEquippedEmote(CatalogItem.Name) ~= nil)
+		-- )
+	elseif table.find(AvatarAssetTypes.Types.Animations, AssetType) then
+		local AnimationName = string.gsub(AssetType.Name, "Animation", "", 1)
+		local Animation = Data.Animations[AnimationName]
+
+		return Animation == AssetId
+	elseif table.find(AvatarAssetTypes.Types.BodyParts, AssetType) then
+		local PartName = AssetType.Name
+		if PartName == "DynamicHead" then
+			PartName = "Head"
+		end
+
+		local BodyPart = Data.BodyParts[PartName]
+
+		return BodyPart == AssetId
+	else
+		return false
+	end
+end
 
 function HumanoidDescriber:SetEmoteEquipped(Name: string, Equipped: boolean)
 	self:UpdateData(function(Data)
