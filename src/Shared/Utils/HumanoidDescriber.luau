@@ -228,7 +228,7 @@ function HumanoidDescriber:GetAccessory(AssetId: number): (number?, AccessorySpe
 	return nil
 end
 
-function HumanoidDescriber:GetAssetIds(IncludeBundleAssets: boolean?): { number }
+function HumanoidDescriber:GetAssets(IgnoreBundleAssets: boolean?): { number }
 	local Data: Data = self:GetData()
 
 	local AssetIds = {
@@ -254,7 +254,7 @@ function HumanoidDescriber:GetAssetIds(IncludeBundleAssets: boolean?): { number 
 		end)
 	)
 
-	if IncludeBundleAssets then
+	if not IgnoreBundleAssets then
 		UnpackInto(
 			AssetIds,
 			Extract(Data.Animations, function(_, Value)
