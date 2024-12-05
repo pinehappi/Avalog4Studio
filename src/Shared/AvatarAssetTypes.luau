@@ -46,12 +46,10 @@ local AvatarAssetTypes = {
 			Enum.AvatarAssetType.LeftLeg,
 			Enum.AvatarAssetType.RightLeg,
 			Enum.AvatarAssetType.Head,
+			Enum.AvatarAssetType.DynamicHead,
 		},
 		ClassicFaces = {
 			Enum.AvatarAssetType.Face,
-		},
-		DynamicHeads = {
-			Enum.AvatarAssetType.DynamicHead,
 		},
 		FacialFeatures = {
 			Enum.AvatarAssetType.EyebrowAccessory,
