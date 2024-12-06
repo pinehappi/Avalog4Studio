@@ -13,7 +13,7 @@ function Avatar:_UpdateEquippedAssetIds()
 	local UnequippedAssetIds = {}
 
 	for _, AssetId in ipairs(AssetIdsValue) do
-		local CatalogInfo = CatalogSearch:GetAssetInfo(AssetId)
+		local CatalogInfo = CatalogSearch:GetProductInfo(AssetId, Enum.InfoType.Asset)
 		if CatalogInfo and (CatalogInfo.AssetType == Enum.AvatarAssetType.EmoteAnimation) then
 			if LocalAvatar.HumanoidDescriber:GetEquippedEmote(CatalogInfo.Name) == nil then
 				table.insert(UnequippedAssetIds, AssetId)

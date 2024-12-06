@@ -34,7 +34,7 @@ function LocalAvatar:PromptCheckout()
 	States.Checkout.Loading:set(true)
 
 	for _, AssetId in ipairs(AssetIdsValue) do
-		local AssetInfo = CatalogSearch:GetAssetInfo(AssetId)
+		local AssetInfo = CatalogSearch:GetProductInfo(AssetId, Enum.InfoType.Asset)
 
 		if AssetInfo and not AssetInfo.Offsale then
 			local Owned = CatalogSearch:OwnsAsset(AssetId)
@@ -63,14 +63,11 @@ end
 
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 	if CatalogItem.Type == Enum.AvatarItemType.Bundle then
-		local Success, Result = Future.Try(function()
-			return AssetService:GetBundleDetailsAsync(CatalogItem.Id)
-		end):Await()
+		local BundleDetails = CatalogSearch:GetBundleDetails(CatalogItem.Id)
+		local UserOutfit
 
-		if Success then
-			local UserOutfit
-
-			for _, BundleItem in ipairs(Result.Items) do
+		if BundleDetails then
+			for _, BundleItem in ipairs(BundleDetails.Items) do
 				if BundleItem.Type == "UserOutfit" then
 					UserOutfit = BundleItem
 					break
@@ -86,17 +83,17 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 					local BundleDescriber = HumanoidDescriber(Result2)
 					local BundleData = BundleDescriber:GetData()
 
-					if Result.BundleType == "BodyParts" then
+					if BundleDetails.BundleType == "BodyParts" then
 						self.HumanoidDescriber:UpdateData(function(Data)
 							Data.BodyParts = BundleData.BodyParts
 							return Data
 						end)
-					elseif Result.BundleType == "AvatarAnimations" then
+					elseif BundleDetails.BundleType == "AvatarAnimations" then
 						self.HumanoidDescriber:UpdateData(function(Data)
 							Data.Animations = BundleData.Animations
 							return Data
 						end)
-					elseif Result.BundleType == "DynamicHead" then
+					elseif BundleDetails.BundleType == "DynamicHead" then
 						self.HumanoidDescriber:EquipAsset(BundleData.BodyParts.Head, Enum.AvatarAssetType.DynamicHead)
 					end
 

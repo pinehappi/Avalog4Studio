@@ -30,9 +30,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local TypeValue = Fusion.peek(Type)
 
 		if TypeValue == Enum.AvatarItemType.Asset then
-			ItemInfo:set(CatalogSearch:GetAssetInfo(IdValue))
+			ItemInfo:set(CatalogSearch:GetProductInfo(IdValue, Enum.InfoType.Asset))
 		else
-			ItemInfo:set(CatalogSearch:GetBundleInfo(IdValue))
+			ItemInfo:set(CatalogSearch:GetProductInfo(IdValue, Enum.InfoType.Bundle))
 		end
 	end
 	Scope:Observer(Id):onChange(function()

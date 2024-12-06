@@ -1,3 +1,4 @@
+local AssetService = game:GetService("AssetService")
 local AvatarEditorService = game:GetService("AvatarEditorService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
@@ -27,7 +28,22 @@ local CatalogSearch = {
 	KnownAssets = {},
 	KnownBundles = {},
 	OwnedAssets = {},
+	BundleDetails = {},
 }
+
+function CatalogSearch:GetBundleDetails(BundleId: number)
+	if self.BundleDetails[BundleId] == nil then
+		local Success, Result = Future.Try(function()
+			return AssetService:GetBundleDetailsAsync(BundleId)
+		end):Await()
+
+		if Success then
+			self.BundleDetails[BundleId] = Result
+		end
+	end
+
+	return self.BundleDetails[BundleId]
+end
 
 function CatalogSearch:OwnsAsset(AssetId: number)
 	if table.find(self.OwnedAssets, AssetId) == nil then
@@ -42,64 +58,44 @@ function CatalogSearch:OwnsAsset(AssetId: number)
 	return table.find(self.OwnedAssets, AssetId) ~= nil
 end
 
-function CatalogSearch:GetBundleInfo(BundleId: number): { [string]: any }?
-	local KnownBundle = self.KnownBundles[BundleId]
+function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): { [string]: any }?
+	local INFO_TYPE_TABLES = {
+		[Enum.InfoType.Asset] = self.KnownAssets,
+		[Enum.InfoType.Bundle] = self.KnownBundles,
+	}
+	local INFO_TYPE_AVATAR_ITEM_TYPES = {
+		[Enum.InfoType.Asset] = Enum.AvatarItemType.Asset,
+		[Enum.InfoType.Bundle] = Enum.AvatarItemType.Bundle,
+	}
+	local RelevantTable = INFO_TYPE_TABLES[InfoType]
+	local AvatarItemType = INFO_TYPE_AVATAR_ITEM_TYPES[InfoType]
 
-	if KnownBundle then
-		return KnownBundle
-	else
-		local Success, Result = Future.Try(function()
-			return MarketplaceService:GetProductInfo(BundleId, Enum.InfoType.Bundle)
-		end):Await()
-		if Success then
-			local Item = {
-				Id = Result.Id,
-				Name = Result.Name,
-				Price = Result.PriceInRobux,
-				Type = Enum.AvatarItemType.Bundle,
-				Offsale = not Result.IsForSale,
-			}
-
-			self.KnownBundles[BundleId] = Item
-			return Item
+	if RelevantTable and AvatarItemType then
+		local KnownEntry = RelevantTable[Id]
+		if KnownEntry then
+			return KnownEntry
 		else
-			return nil
-		end
-	end
-end
+			local Success, Result = Future.Try(function()
+				return MarketplaceService:GetProductInfo(Id, InfoType)
+			end):Await()
+			if Success then
+				local Item = {
+					Id = Result.Id,
+					Name = Result.Name,
+					Price = Result.PriceInRobux,
+					Type = AvatarItemType,
+					Offsale = not Result.IsForSale,
+				}
 
-function CatalogSearch:GetAssetInfo(AssetId: number): { [string]: any }?
-	local KnownAsset = self.KnownAssets[AssetId]
-
-	if KnownAsset then
-		return KnownAsset
-	else
-		local Success, Result = Future.Try(function()
-			return MarketplaceService:GetProductInfo(AssetId, Enum.InfoType.Asset)
-		end):Await()
-		if Success then
-			local AssetType
-			for _, AvatarAssetType in ipairs(Enum.AvatarAssetType:GetEnumItems()) do
-				if AvatarAssetType.Value == Result.AssetTypeId then
-					AssetType = AvatarAssetType
-				end
+				RelevantTable[Id] = Item
+				return Item
+			else
+				return nil
 			end
-
-			local Item = {
-				Id = Result.AssetId,
-				Name = Result.Name,
-				Price = Result.PriceInRobux,
-				Type = Enum.AvatarItemType.Asset,
-				AssetType = AssetType,
-				Offsale = not Result.IsForSale,
-			}
-
-			self.KnownAssets[AssetId] = Item
-			return Item
-		else
-			return nil
 		end
 	end
+
+	return nil
 end
 
 function CatalogSearch.Search(Params: SearchParams)
