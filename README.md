@@ -24,8 +24,6 @@
 
 ---
 
-## [Installation 📦](https://avafe.me/avalog/docs/install/)
+## Unfinished ⚠️
 
-## [Documentation 📄](https://avafe.me/avalog/docs/)
-
-## [Demo Place 🎮](https://www.roblox.com/games/77860115672601)
+Avalog is in its early stages of rapid development, and not officially released or documented. Star the repo and follow the socials to keep up with it as it goes.
