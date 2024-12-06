@@ -28,8 +28,20 @@ local CatalogSearch = {
 	KnownAssets = {},
 	KnownBundles = {},
 	OwnedAssets = {},
+	OwnedBundles = {},
 	BundleDetails = {},
+	BundleAssets = {},
 }
+
+function CatalogSearch:GetBundleFromAsset(AssetId: number)
+	for BundleId, AssetIds in pairs(self.BundleAssets) do
+		if table.find(AssetIds, AssetId) ~= nil then
+			return BundleId
+		end
+	end
+
+	return nil
+end
 
 function CatalogSearch:GetBundleDetails(BundleId: number)
 	if self.BundleDetails[BundleId] == nil then
@@ -38,6 +50,13 @@ function CatalogSearch:GetBundleDetails(BundleId: number)
 		end):Await()
 
 		if Success then
+			self.BundleAssets[BundleId] = {}
+			for _, Item in ipairs(Result.Items) do
+				if Item.Type == "Asset" then
+					table.insert(self.BundleAssets[BundleId], Item.Id)
+				end
+			end
+
 			self.BundleDetails[BundleId] = Result
 		end
 	end
@@ -45,17 +64,33 @@ function CatalogSearch:GetBundleDetails(BundleId: number)
 	return self.BundleDetails[BundleId]
 end
 
-function CatalogSearch:OwnsAsset(AssetId: number)
-	if table.find(self.OwnedAssets, AssetId) == nil then
-		local Success, Result = Future.Try(function()
-			return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, AssetId)
-		end):Await()
-		if Success and Result then
-			table.insert(self.OwnedAssets, AssetId)
+function CatalogSearch:OwnsItem(Id: number, Type: Enum.AvatarItemType)
+	local ItemTypeTables = {
+		[Enum.AvatarItemType.Asset] = self.OwnedAssets,
+		[Enum.AvatarItemType.Bundle] = self.OwnedBundles,
+	}
+	local RelevantTable = ItemTypeTables[Type]
+
+	if RelevantTable then
+		if table.find(RelevantTable, Id) == nil then
+			local Success, Result = Future.Try(function()
+				if Type == Enum.AvatarItemType.Asset then
+					return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, Id)
+				elseif Type == Enum.AvatarItemType.Bundle then
+					return MarketplaceService:PlayerOwnsBundle(Players.LocalPlayer, Id)
+				else
+					return nil
+				end
+			end):Await()
+			if Success and Result then
+				table.insert(RelevantTable, Id)
+			end
 		end
+
+		return table.find(RelevantTable, Id) ~= nil
 	end
 
-	return table.find(self.OwnedAssets, AssetId) ~= nil
+	return false
 end
 
 function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): { [string]: any }?

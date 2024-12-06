@@ -8,6 +8,20 @@ local Avatar = {
 	_Connections = {},
 }
 
+function Avatar:_UpdateEquippedBundles()
+	local EquippedAssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
+	local BundleIds = {}
+
+	for _, AssetId in ipairs(EquippedAssetIdsValue) do
+		local BundleId = CatalogSearch:GetBundleFromAsset(AssetId)
+		if BundleId then
+			table.insert(BundleIds, BundleId)
+		end
+	end
+
+	States.Avatar.EquippedBundleIds:set(BundleIds)
+end
+
 function Avatar:_UpdateEquippedAssetIds()
 	local AssetIdsValue = Fusion.peek(States.Avatar.AssetIds)
 	local UnequippedAssetIds = {}
@@ -35,12 +49,14 @@ function Avatar:_HandleAvatar()
 	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
 	States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 	self:_UpdateEquippedAssetIds()
+	self:_UpdateEquippedBundles()
 	States.Avatar.Character:set(LocalAvatar.Character)
 
 	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		States.Avatar.Data:set(NewData)
 		States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 		self:_UpdateEquippedAssetIds()
+		self:_UpdateEquippedBundles()
 	end)
 end
 

@@ -22,6 +22,7 @@ local States = {
 		Data = Scope:Value(nil),
 		AssetIds = Scope:Value({}),
 		EquippedAssetIds = Scope:Value({}),
+		EquippedBundleIds = Scope:Value({}),
 		Character = Scope:Value(nil),
 	},
 	Checkout = {

@@ -30,6 +30,7 @@ local LocalAvatar = {
 function LocalAvatar:PromptCheckout()
 	local Items = {}
 	local AssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
+	local BundleIdsValue = Fusion.peek(States.Avatar.EquippedBundleIds)
 
 	States.Checkout.Loading:set(true)
 
@@ -37,12 +38,27 @@ function LocalAvatar:PromptCheckout()
 		local AssetInfo = CatalogSearch:GetProductInfo(AssetId, Enum.InfoType.Asset)
 
 		if AssetInfo and not AssetInfo.Offsale then
-			local Owned = CatalogSearch:OwnsAsset(AssetId)
+			local Owned = CatalogSearch:OwnsItem(AssetId, Enum.AvatarItemType.Asset)
 
 			if Owned == false then
 				table.insert(Items, {
 					Id = tostring(AssetId),
 					Type = Enum.MarketplaceProductType.AvatarAsset,
+				})
+			end
+		end
+	end
+
+	for _, BundleId in ipairs(BundleIdsValue) do
+		local ItemInfo = CatalogSearch:GetProductInfo(BundleId, Enum.InfoType.Bundle)
+
+		if ItemInfo and not ItemInfo.Offsale then
+			local Owned = CatalogSearch:OwnsItem(BundleId, Enum.AvatarItemType.Bundle)
+
+			if Owned == false then
+				table.insert(Items, {
+					Id = tostring(BundleId),
+					Type = Enum.MarketplaceProductType.AvatarBundle,
 				})
 			end
 		end
