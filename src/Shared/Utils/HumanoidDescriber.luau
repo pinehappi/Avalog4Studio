@@ -12,12 +12,15 @@ export type CatalogItem = {
 	Type: string,
 	AssetType: string,
 }
-
 export type AccessorySpec = {
-	Order: number?,
 	AssetId: number,
 	AccessoryType: Enum.AccessoryType,
+	Order: number?,
 	Puffiness: number?,
+	IsLayered: boolean?,
+	Position: Vector3?,
+	Rotation: Vector3?,
+	Scale: Vector3?,
 }
 export type EquippedEmote = {
 	Name: string,
@@ -478,8 +481,8 @@ local function New(HumanoidDescription: HumanoidDescription)
 		return AssetIds
 	end
 
-	function HumanoidDescriber:ReadFromDescription(HumanoidDescription: HumanoidDescription)
-		self.HumanoidDescription = HumanoidDescription
+	function HumanoidDescriber:ReadFromDescription(NewHumanoidDescription: HumanoidDescription)
+		self.HumanoidDescription = NewHumanoidDescription
 
 		local NewData: Data = {
 			Face = self.HumanoidDescription.Face,
@@ -510,6 +513,7 @@ local function New(HumanoidDescription: HumanoidDescription)
 				Jump = self.HumanoidDescription.JumpAnimation,
 				Mood = self.HumanoidDescription.MoodAnimation,
 				Swim = self.HumanoidDescription.SwimAnimation,
+				Climb = self.HumanoidDescription.ClimbAnimation,
 			},
 			Clothing = {
 				Shirt = self.HumanoidDescription.Shirt,
@@ -517,12 +521,12 @@ local function New(HumanoidDescription: HumanoidDescription)
 				Pants = self.HumanoidDescription.Pants,
 			},
 			BodyPartColors = {
-				HeadColor = self.HumanoidDescription.HeadColor,
-				TorsoColor = self.HumanoidDescription.TorsoColor,
-				LeftLegColor = self.HumanoidDescription.LeftLegColor,
-				RightLegColor = self.HumanoidDescription.RightLegColor,
-				LeftArmColor = self.HumanoidDescription.LeftArmColor,
-				RightArmColor = self.HumanoidDescription.RightArmColor,
+				Head = self.HumanoidDescription.HeadColor,
+				Torso = self.HumanoidDescription.TorsoColor,
+				LeftLeg = self.HumanoidDescription.LeftLegColor,
+				RightLeg = self.HumanoidDescription.RightLegColor,
+				LeftArm = self.HumanoidDescription.LeftArmColor,
+				RightArm = self.HumanoidDescription.RightArmColor,
 			},
 		}
 
