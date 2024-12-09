@@ -1,5 +1,3 @@
-local AssetService = game:GetService("AssetService")
-local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
@@ -7,8 +5,6 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
-local AssetAccessoryTypes = require(Avalog.SourceCode.Shared.AssetAccessoryType)
-local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
