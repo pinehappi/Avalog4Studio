@@ -7,6 +7,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
 local Signal = require(Avalog.Parent.Signal)
+local AssetTypeFromId = require(Avalog.SourceCode.Shared.Utils.AssetTypeFromId)
 
 export type SearchParams = {
 	SearchKeyword: string?,
@@ -21,6 +22,14 @@ export type SearchParams = {
 	IncludeOffSale: boolean?,
 	CreatorName: string?,
 	Limit: number?,
+}
+export type CatalogItem = {
+	Id: number,
+	Name: string,
+	Type: Enum.AvatarItemType,
+	AssetType: Enum.AvatarAssetType?,
+	Price: number,
+	Offsale: boolean,
 }
 
 local CatalogSearch = {
@@ -93,7 +102,7 @@ function CatalogSearch:OwnsItem(Id: number, Type: Enum.AvatarItemType)
 	return false
 end
 
-function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): { [string]: any }?
+function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): CatalogItem?
 	local INFO_TYPE_TABLES = {
 		[Enum.InfoType.Asset] = self.KnownAssets,
 		[Enum.InfoType.Bundle] = self.KnownBundles,
@@ -115,10 +124,11 @@ function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): { [s
 			end):Await()
 			if Success then
 				local Item = {
-					Id = Result.Id,
+					Id = Result.AssetId,
 					Name = Result.Name,
 					Price = Result.PriceInRobux,
 					Type = AvatarItemType,
+					AssetType = AssetTypeFromId(Result.AssetTypeId),
 					Offsale = not Result.IsForSale,
 				}
 
@@ -167,7 +177,7 @@ function CatalogSearch.Search(Params: SearchParams)
 			local AppropriateTable = Tables[Entry.ItemType]
 
 			if AppropriateTable then
-				AppropriateTable[Entry.Id] = {
+				local Item: CatalogItem = {
 					Id = Entry.Id,
 					Name = Entry.Name,
 					Price = Entry.Price,
@@ -175,6 +185,8 @@ function CatalogSearch.Search(Params: SearchParams)
 					Type = Enum.AvatarItemType[Entry.ItemType],
 					AssetType = (Entry.AssetType and Enum.AvatarAssetType[Entry.AssetType]) or nil,
 				}
+
+				AppropriateTable[Entry.Id] = Item
 			end
 
 			table.insert(self.Results, Entry)
