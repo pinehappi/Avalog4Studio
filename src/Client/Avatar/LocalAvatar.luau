@@ -23,6 +23,18 @@ local LocalAvatar = {
 	Updated = Signal.new(),
 }
 
+function LocalAvatar:UpdateScale(Property: string, Value: number)
+	self.HumanoidDescriber:UpdateData(function(Data)
+		if Data.Scale[Property] ~= nil then
+			Data.Scale[Property] = Value
+		end
+
+		return Data
+	end)
+
+	self:Apply()
+end
+
 function LocalAvatar:SetColor(Color: Color3)
 	self.HumanoidDescriber:UpdateData(function(Data)
 		for PartName, _ in pairs(Data.BodyPartColors) do

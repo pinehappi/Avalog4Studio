@@ -2,7 +2,6 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -21,9 +20,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Theme = OnyxUI.Themer.Theme:now()
 
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
-
-	States.Catalog.Mode:set(3)
-	States.Catalog.Category:set(2)
 
 	local Hue = Scope:Value(1)
 	local Saturation = Scope:Value(1)
@@ -49,7 +45,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
-		ListWraps = true,
 		ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 		Visible = Shown,
 
