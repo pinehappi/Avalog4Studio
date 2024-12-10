@@ -7,7 +7,7 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.2"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 local SliderSetting = require(script.Parent.SliderSetting)
 

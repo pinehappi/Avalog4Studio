@@ -4,7 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.2"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
 
 export type Props = Button.Props & {

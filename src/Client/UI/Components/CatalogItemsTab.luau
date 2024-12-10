@@ -10,7 +10,7 @@ local Children = Fusion.Children
 local Out = Fusion.Out
 local OnChange = Fusion.OnChange
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.2"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 
 export type Props = Frame.Props & {
