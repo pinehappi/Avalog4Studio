@@ -6,7 +6,7 @@ local Categories = require(Avalog.SourceCode.Shared.Categories)
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.1"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 
 local MODES = { "Marketplace", "Inventory", "Customize" }

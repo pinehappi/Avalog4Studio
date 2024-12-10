@@ -7,7 +7,7 @@ local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.Cata
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.0"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.1"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
 
 export type Props = Button.Props & {
