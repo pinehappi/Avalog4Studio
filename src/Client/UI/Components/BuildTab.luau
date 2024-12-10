@@ -22,17 +22,17 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 
 	local ScaleProperties = {
-		BodyType = Scope:Value(1),
-		Proportion = Scope:Value(1),
-		Height = Scope:Value(1),
-		Width = Scope:Value(1),
-		Depth = Scope:Value(1),
-		Head = Scope:Value(1),
+		{ Name = "BodyType", Value = Scope:Value(1) },
+		{ Name = "Proportion", Value = Scope:Value(1) },
+		{ Name = "Height", Value = Scope:Value(1) },
+		{ Name = "Width", Value = Scope:Value(1) },
+		{ Name = "Depth", Value = Scope:Value(1) },
+		{ Name = "Head", Value = Scope:Value(1) },
 	}
 
-	for Name, Value in pairs(ScaleProperties) do
-		Scope:Observer(Value):onChange(function()
-			LocalAvatar:UpdateScale(Name, Fusion.peek(Value))
+	for _, ScaleProperty in ipairs(ScaleProperties) do
+		Scope:Observer(ScaleProperty.Value):onChange(function()
+			LocalAvatar:UpdateScale(ScaleProperty.Name, Fusion.peek(ScaleProperty.Value))
 		end)
 	end
 
@@ -50,10 +50,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		end),
 
 		[Children] = {
-			Scope:ForPairs(ScaleProperties, function(Use, Scope, Name, Value)
-				return Name, Scope:SliderSetting {
-					Label = Name,
-					Value = Value,
+			Scope:ForValues(ScaleProperties, function(Use, Scope, ScaleProperty)
+				return Scope:SliderSetting {
+					Label = ScaleProperty.Name,
+					Value = ScaleProperty.Value,
 				}
 			end),
 		},
