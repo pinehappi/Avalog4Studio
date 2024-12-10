@@ -16,6 +16,20 @@ export type CatalogItem = {
 	Name: string,
 }
 
+local SCALE_CLAMPS = {
+	BodyType = { Min = 0, Max = 1 },
+	Proportion = { Min = 0, Max = 1 },
+	Height = { Min = 0.9, Max = 1.05 },
+	Width = { Min = 0.7, Max = 1 },
+	Depth = { Min = 0.85, Max = 1 },
+	Head = { Min = 0.95, Max = 1 },
+}
+
+local function SquashValue(Value, Min, Max)
+	local Difference = Max - Min
+	return Min + (Value * Difference)
+end
+
 local LocalAvatar = {
 	Character = Instance.new("Model"),
 	Humanoid = Instance.new("Humanoid"),
@@ -24,6 +38,11 @@ local LocalAvatar = {
 }
 
 function LocalAvatar:UpdateScale(Property: string, Value: number)
+	local Clamp = SCALE_CLAMPS[Property]
+	if Clamp then
+		Value = SquashValue(Value, Clamp.Min, Clamp.Max)
+	end
+
 	self.HumanoidDescriber:UpdateData(function(Data)
 		if Data.Scale[Property] ~= nil then
 			Data.Scale[Property] = Value
