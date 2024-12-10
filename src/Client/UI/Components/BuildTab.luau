@@ -2,6 +2,8 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
+local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
+local StretchNumber = require(Avalog.SourceCode.Shared.Utils.StretchNumber)
 
 local Children = Fusion.Children
 
@@ -35,6 +37,18 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			LocalAvatar:UpdateScale(ScaleProperty.Name, Fusion.peek(ScaleProperty.Value))
 		end)
 	end
+
+	LocalAvatar.Updated:Connect(function()
+		local Data = LocalAvatar.HumanoidDescriber:GetData()
+
+		for _, ScaleProperty in ipairs(ScaleProperties) do
+			local ExistingScale = Data.Scale[ScaleProperty.Name]
+			local ScaleLimit = ScaleLimits[ScaleProperty.Name]
+			if ExistingScale then
+				ScaleProperty.Value:set(StretchNumber(ExistingScale, ScaleLimit.Min, ScaleLimit.Max))
+			end
+		end
+	end)
 
 	return Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
