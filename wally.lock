@@ -25,11 +25,11 @@ dependencies = []
 [[package]]
 name = "imavafe/avalog"
 version = "0.0.0"
-dependencies = [["ColorUtils", "csqrl/colour-utils@1.4.1"], ["Fetch", "red-blox/fetch@2.0.0"], ["Fusion", "elttob/fusion@0.3.0"], ["Future", "red-blox/future@1.0.1"], ["Knit", "sleitnick/knit@1.7.0"], ["Loader", "sleitnick/loader@2.0.0"], ["OnyxUI", "imavafe/onyx-ui@0.5.0"], ["RateLimit", "red-blox/ratelimit@1.0.1"], ["Signal", "sleitnick/signal@2.0.1"], ["t", "osyrisrblx/t@3.1.1"], ["ProfileService", "grilme99/profileservice@1.0.0"]]
+dependencies = [["ColorUtils", "csqrl/colour-utils@1.4.1"], ["Fetch", "red-blox/fetch@2.0.0"], ["Fusion", "elttob/fusion@0.3.0"], ["Future", "red-blox/future@1.0.1"], ["Knit", "sleitnick/knit@1.7.0"], ["Loader", "sleitnick/loader@2.0.0"], ["OnyxUI", "imavafe/onyx-ui@0.5.1"], ["RateLimit", "red-blox/ratelimit@1.0.1"], ["Signal", "sleitnick/signal@2.0.1"], ["t", "osyrisrblx/t@3.1.1"], ["ProfileService", "grilme99/profileservice@1.0.0"]]
 
 [[package]]
 name = "imavafe/onyx-ui"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [["ColorUtils", "csqrl/colour-utils@1.4.1"], ["Fusion", "elttob/fusion@0.3.0"], ["Signal", "sleitnick/signal@2.0.1"]]
 
 [[package]]
