@@ -30,6 +30,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		[Children] = {
 			Scope:Heading {
 				Text = Label,
+				HeadingSize = 1.25,
+				TextWrapped = false,
 			},
 			Scope:Slider {
 				Value = Value,

@@ -23,6 +23,16 @@ local LocalAvatar = {
 	Updated = Signal.new(),
 }
 
+function LocalAvatar:SetColor(Color: Color3)
+	self.HumanoidDescriber:UpdateData(function(Data)
+		for PartName, _ in pairs(Data.BodyPartColors) do
+			Data.BodyPartColors[PartName] = Color
+		end
+
+		return Data
+	end)
+end
+
 function LocalAvatar:PromptCheckout()
 	local Items = {}
 	local AssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
