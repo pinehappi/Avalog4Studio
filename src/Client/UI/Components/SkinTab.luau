@@ -1,6 +1,5 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
-local LocalAvatar = require(ReplicatedStorage.Avalog.Packages.Avalog.SourceCode.Client.Avatar.LocalAvatar)
+local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
@@ -29,16 +28,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Hue = Scope:Value(1)
 	local Saturation = Scope:Value(1)
 	local Brightness = Scope:Value(1)
-
-	-- Scope:Observer(States.Avatar.Data):onChange(function()
-	-- 	local DataValue = Fusion.peek(States.Avatar.Data)
-	-- 	local HeadColor: Color3 = DataValue.BodyPartColors.Head
-	-- 	local HueValue, SaturationValue, BrightnessValue = HeadColor:ToHSV()
-
-	-- 	Hue:set(HueValue)
-	-- 	Saturation:set(SaturationValue)
-	-- 	Brightness:set(BrightnessValue)
-	-- end)
 
 	local function UpdateColor()
 		local HueValue = Fusion.peek(Hue)

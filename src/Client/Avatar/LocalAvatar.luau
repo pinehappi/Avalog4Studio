@@ -31,6 +31,8 @@ function LocalAvatar:SetColor(Color: Color3)
 
 		return Data
 	end)
+
+	self:Apply()
 end
 
 function LocalAvatar:PromptCheckout()
