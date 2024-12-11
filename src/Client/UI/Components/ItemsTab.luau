@@ -45,6 +45,28 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					}
 				end)
 			end),
+			Scope:Card {
+				Name = "NoItemsCard",
+				FlexMode = Enum.UIFlexMode.Fill,
+				ListEnabled = true,
+				ListHorizontalAlignment = Enum.HorizontalAlignment.Center,
+				BackgroundTransparency = 1,
+				Visible = Scope:Computed(function(Use)
+					local ItemsValue = Use(Items)
+					return #ItemsValue == 0
+				end),
+
+				[Children] = {
+					Scope:Image {
+						Image = "rbxassetid://10480493542",
+						BackgroundTransparency = 1,
+					},
+					Scope:Text {
+						Text = "No items to show",
+						TextWrapped = false,
+					},
+				},
+			},
 		},
 	}))
 
