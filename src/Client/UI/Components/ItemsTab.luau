@@ -4,6 +4,8 @@ local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 
 local Children = Fusion.Children
+local Out = Fusion.Out
+local OnChange = Fusion.OnChange
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
@@ -11,6 +13,7 @@ local Frame = require(OnyxUIFolder.Components.Frame)
 export type Props = Frame.Props & {
 	Shown: Fusion.UsedAs<boolean>?,
 	Items: Fusion.UsedAs<{ [string]: any }>?,
+	OnReachedEnd: Fusion.UsedAs<() -> ()>?,
 }
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
@@ -21,8 +24,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 	local Items = OnyxUI.Util.Fallback(Props.Items, {})
+	local OnReachedEnd = OnyxUI.Util.Fallback(Props.OnReachedEnd, function() end)
 
-	local ItemsTab = Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
+	local AbsoluteCanvasSize = Scope:Value(Vector2.new())
+	local AbsoluteWindowSize = Scope:Value(Vector2.new())
+
+	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,
@@ -68,7 +75,21 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				},
 			},
 		},
-	}))
+	}))) {
+		[OnChange "CanvasPosition"] = function(CanvasPosition: Vector2)
+			local OnReachedEndValue = Fusion.peek(OnReachedEnd)
+			local AbsoluteCanvasSizeValue = Fusion.peek(AbsoluteCanvasSize)
+			local AbsoluteWindowSizeValue = Fusion.peek(AbsoluteWindowSize)
+
+			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
+
+			if CanvasPosition.Y >= CanvasHeight then
+				OnReachedEndValue()
+			end
+		end,
+		[Out "AbsoluteCanvasSize"] = AbsoluteCanvasSize,
+		[Out "AbsoluteWindowSize"] = AbsoluteWindowSize,
+	}
 
 	return ItemsTab
 end
