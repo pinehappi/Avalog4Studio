@@ -1,4 +1,5 @@
 local AvatarAssetTypes = require(script.Parent.AvatarAssetTypes)
+local DeepCopy = require(script.Parent.Utils.DeepCopy)
 
 export type Category = {
 	Name: string,
@@ -6,6 +7,30 @@ export type Category = {
 	AssetTypes: { Enum.AvatarAssetType }?,
 	BundleTypes: { Enum.BundleType }?,
 }
+
+local function PurgeBundleCategories(CategoriesToPurge: { Category })
+	local TrashIndexes = {}
+
+	for Index, Category in pairs(CategoriesToPurge) do
+		Category.BundleTypes = nil
+
+		if Category.SubCategories then
+			PurgeBundleCategories(Category.SubCategories)
+
+			if #Category.SubCategories == 0 then
+				table.insert(TrashIndexes, Index)
+			end
+		else
+			if not Category.AssetTypes then
+				table.insert(TrashIndexes, Index)
+			end
+		end
+	end
+
+	for _, Index in ipairs(TrashIndexes) do
+		table.remove(CategoriesToPurge, Index)
+	end
+end
 
 local Categories: { [string]: { Category } } = {
 	Marketplace = {
@@ -79,6 +104,8 @@ local Categories: { [string]: { Category } } = {
 	Customize = { { Name = "Equipped" }, { Name = "Skin" }, { Name = "Build" } },
 }
 
-Categories.Inventory = Categories.Marketplace
+Categories.Inventory = DeepCopy(Categories.Marketplace)
+
+PurgeBundleCategories(Categories.Inventory)
 
 return Categories
