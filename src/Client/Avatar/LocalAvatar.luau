@@ -7,9 +7,9 @@ local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
-local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
 local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
 
 export type CatalogItem = {
 	Id: number,
@@ -62,10 +62,10 @@ function LocalAvatar:PromptCheckout()
 	States.Checkout.Loading:set(true)
 
 	for _, AssetId in ipairs(AssetIdsValue) do
-		local AssetInfo = CatalogSearch:GetProductInfo(AssetId, Enum.InfoType.Asset)
+		local AssetInfo = CatalogItems:GetItem(AssetId, Enum.InfoType.Asset)
 
 		if AssetInfo and not AssetInfo.Offsale then
-			local Owned = CatalogSearch:OwnsItem(AssetId, Enum.AvatarItemType.Asset)
+			local Owned = CatalogItems:OwnsItem(AssetId, Enum.AvatarItemType.Asset)
 
 			if Owned == false then
 				table.insert(Items, {
@@ -77,10 +77,10 @@ function LocalAvatar:PromptCheckout()
 	end
 
 	for _, BundleId in ipairs(BundleIdsValue) do
-		local ItemInfo = CatalogSearch:GetProductInfo(BundleId, Enum.InfoType.Bundle)
+		local ItemInfo = CatalogItems:GetItem(BundleId, Enum.InfoType.Bundle)
 
 		if ItemInfo and not ItemInfo.Offsale then
-			local Owned = CatalogSearch:OwnsItem(BundleId, Enum.AvatarItemType.Bundle)
+			local Owned = CatalogItems:OwnsItem(BundleId, Enum.AvatarItemType.Bundle)
 
 			if Owned == false then
 				table.insert(Items, {
@@ -106,7 +106,7 @@ end
 
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 	if CatalogItem.Type == Enum.AvatarItemType.Bundle then
-		local BundleDetails = CatalogSearch:GetBundleDetails(CatalogItem.Id)
+		local BundleDetails = CatalogItems:GetBundle(CatalogItem.Id)
 		local UserOutfit
 
 		if BundleDetails then

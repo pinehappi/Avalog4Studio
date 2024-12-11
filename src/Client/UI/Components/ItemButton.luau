@@ -3,7 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
 
 local Children = Fusion.Children
 
@@ -30,9 +30,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local TypeValue = Fusion.peek(Type)
 
 		if TypeValue == Enum.AvatarItemType.Asset then
-			ItemInfo:set(CatalogSearch:GetProductInfo(IdValue, Enum.InfoType.Asset))
+			ItemInfo:set(CatalogItems:GetItem(IdValue, Enum.InfoType.Asset))
 		else
-			ItemInfo:set(CatalogSearch:GetProductInfo(IdValue, Enum.InfoType.Bundle))
+			ItemInfo:set(CatalogItems:GetItem(IdValue, Enum.InfoType.Bundle))
 		end
 	end
 	Scope:Observer(Id):onChange(function()

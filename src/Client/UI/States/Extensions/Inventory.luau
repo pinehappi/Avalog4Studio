@@ -5,10 +5,9 @@ local States = require(script.Parent.Parent)
 local Future = require(Avalog.Parent.Future)
 local Signal = require(Avalog.Parent.Signal)
 local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
+local CatalogItems = require(script.Parent.CatalogItems)
 
 local Inventory = {
-	KnownAssets = {},
-	KnownBundles = {},
 	Searches = {},
 }
 
@@ -40,13 +39,13 @@ function Inventory.Search(AssetTypes: { Enum.AvatarAssetType })
 	function Search:_LoadPage(Page: { [number]: any })
 		for _, Entry in ipairs(Page) do
 			local Tables = {
-				Asset = Inventory.KnownAssets,
-				Bundle = Inventory.KnownBundles,
+				Asset = CatalogItems.KnownAssets,
+				Bundle = CatalogItems.KnownBundles,
 			}
 			local AppropriateTable = Tables[Entry.ItemType]
 
 			if AppropriateTable then
-				local Item: CatalogItem = {
+				local Item: CatalogItems.CatalogItem = {
 					Id = Entry.Id,
 					Name = Entry.Name,
 					Price = Entry.Price,

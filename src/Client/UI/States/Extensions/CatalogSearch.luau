@@ -1,13 +1,10 @@
-local AssetService = game:GetService("AssetService")
 local AvatarEditorService = game:GetService("AvatarEditorService")
-local MarketplaceService = game:GetService("MarketplaceService")
-local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
 local Signal = require(Avalog.Parent.Signal)
-local AssetTypeFromId = require(Avalog.SourceCode.Shared.Utils.AssetTypeFromId)
+local CatalogItems = require(script.Parent.CatalogItems)
 
 export type SearchParams = {
 	SearchKeyword: string?,
@@ -23,125 +20,10 @@ export type SearchParams = {
 	CreatorName: string?,
 	Limit: number?,
 }
-export type CatalogItem = {
-	Id: number,
-	Name: string,
-	Type: Enum.AvatarItemType,
-	AssetType: Enum.AvatarAssetType?,
-	Price: number,
-	Offsale: boolean,
-}
 
 local CatalogSearch = {
 	Searches = {},
-	KnownAssets = {},
-	KnownBundles = {},
-	OwnedAssets = {},
-	OwnedBundles = {},
-	BundleDetails = {},
-	BundleAssets = {},
 }
-
-function CatalogSearch:GetBundleFromAsset(AssetId: number)
-	for BundleId, AssetIds in pairs(self.BundleAssets) do
-		if table.find(AssetIds, AssetId) ~= nil then
-			return BundleId
-		end
-	end
-
-	return nil
-end
-
-function CatalogSearch:GetBundleDetails(BundleId: number)
-	if self.BundleDetails[BundleId] == nil then
-		local Success, Result = Future.Try(function()
-			return AssetService:GetBundleDetailsAsync(BundleId)
-		end):Await()
-
-		if Success then
-			self.BundleAssets[BundleId] = {}
-			for _, Item in ipairs(Result.Items) do
-				if Item.Type == "Asset" then
-					table.insert(self.BundleAssets[BundleId], Item.Id)
-				end
-			end
-
-			self.BundleDetails[BundleId] = Result
-		end
-	end
-
-	return self.BundleDetails[BundleId]
-end
-
-function CatalogSearch:OwnsItem(Id: number, Type: Enum.AvatarItemType)
-	local ItemTypeTables = {
-		[Enum.AvatarItemType.Asset] = self.OwnedAssets,
-		[Enum.AvatarItemType.Bundle] = self.OwnedBundles,
-	}
-	local RelevantTable = ItemTypeTables[Type]
-
-	if RelevantTable then
-		if table.find(RelevantTable, Id) == nil then
-			local Success, Result = Future.Try(function()
-				if Type == Enum.AvatarItemType.Asset then
-					return MarketplaceService:PlayerOwnsAsset(Players.LocalPlayer, Id)
-				elseif Type == Enum.AvatarItemType.Bundle then
-					return MarketplaceService:PlayerOwnsBundle(Players.LocalPlayer, Id)
-				else
-					return nil
-				end
-			end):Await()
-			if Success and Result then
-				table.insert(RelevantTable, Id)
-			end
-		end
-
-		return table.find(RelevantTable, Id) ~= nil
-	end
-
-	return false
-end
-
-function CatalogSearch:GetProductInfo(Id: number, InfoType: Enum.InfoType): CatalogItem?
-	local INFO_TYPE_TABLES = {
-		[Enum.InfoType.Asset] = self.KnownAssets,
-		[Enum.InfoType.Bundle] = self.KnownBundles,
-	}
-	local INFO_TYPE_AVATAR_ITEM_TYPES = {
-		[Enum.InfoType.Asset] = Enum.AvatarItemType.Asset,
-		[Enum.InfoType.Bundle] = Enum.AvatarItemType.Bundle,
-	}
-	local RelevantTable = INFO_TYPE_TABLES[InfoType]
-	local AvatarItemType = INFO_TYPE_AVATAR_ITEM_TYPES[InfoType]
-
-	if RelevantTable and AvatarItemType then
-		local KnownEntry = RelevantTable[Id]
-		if KnownEntry then
-			return KnownEntry
-		else
-			local Success, Result = Future.Try(function()
-				return MarketplaceService:GetProductInfo(Id, InfoType)
-			end):Await()
-			if Success then
-				local Item = {
-					Id = Result.AssetId,
-					Name = Result.Name,
-					Price = Result.PriceInRobux,
-					Type = AvatarItemType,
-					AssetType = AssetTypeFromId(Result.AssetTypeId),
-					Offsale = not Result.IsForSale,
-				}
-
-				RelevantTable[Id] = Item
-				return Item
-			else
-				return nil
-			end
-		end
-	end
-
-	return nil
-end
 
 function CatalogSearch.Search(Params: SearchParams)
 	local ParamsHash = HashDictionary(Params)
@@ -171,13 +53,13 @@ function CatalogSearch.Search(Params: SearchParams)
 	function Search:_LoadPage(Page: { [number]: any })
 		for _, Entry in ipairs(Page) do
 			local Tables = {
-				Asset = CatalogSearch.KnownAssets,
-				Bundle = CatalogSearch.KnownBundles,
+				Asset = CatalogItems.KnownAssets,
+				Bundle = CatalogItems.KnownBundles,
 			}
 			local AppropriateTable = Tables[Entry.ItemType]
 
 			if AppropriateTable then
-				local Item: CatalogItem = {
+				local Item: CatalogItems.CatalogItem = {
 					Id = Entry.Id,
 					Name = Entry.Name,
 					Price = Entry.Price,

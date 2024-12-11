@@ -2,7 +2,7 @@ local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(script.Parent.Parent)
 local Fusion = require(Avalog.Parent.Fusion)
-local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogSearch)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
 
 local Avatar = {
 	_Connections = {},
@@ -13,7 +13,7 @@ function Avatar:_UpdateEquippedBundles()
 	local BundleIds = {}
 
 	for _, AssetId in ipairs(EquippedAssetIdsValue) do
-		local BundleId = CatalogSearch:GetBundleFromAsset(AssetId)
+		local BundleId = CatalogItems:GetBundleIdFromAsset(AssetId)
 		if BundleId then
 			table.insert(BundleIds, BundleId)
 		end
@@ -27,7 +27,7 @@ function Avatar:_UpdateEquippedAssetIds()
 	local UnequippedAssetIds = {}
 
 	for _, AssetId in ipairs(AssetIdsValue) do
-		local CatalogInfo = CatalogSearch:GetProductInfo(AssetId, Enum.InfoType.Asset)
+		local CatalogInfo = CatalogItems:GetItem(AssetId, Enum.InfoType.Asset)
 		if CatalogInfo and (CatalogInfo.AssetType == Enum.AvatarAssetType.EmoteAnimation) then
 			if LocalAvatar.HumanoidDescriber:GetEquippedEmote(CatalogInfo.Name) == nil then
 				table.insert(UnequippedAssetIds, AssetId)
