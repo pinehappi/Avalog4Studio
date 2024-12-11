@@ -32,10 +32,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
-		ListFillDirection = Enum.FillDirection.Horizontal,
-		ListWraps = true,
+		ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 		ListPadding = Scope:Computed(function(Use)
-			return UDim.new(0, Use(Theme.Spacing["0.75"]))
+			return UDim.new(0, Use(Theme.Spacing["1"]))
 		end),
 		ScrollBarImageColor3 = Theme.Colors.Neutral.Light,
 		ClipsDescendants = false,
@@ -43,21 +42,31 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		CanvasSize = UDim2.fromOffset(0, 0),
 
 		[Children] = {
-			Scope:ForValues(Items, function(Use, Scope, Item)
-				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
-					return Scope:ItemButton {
-						Id = Item.Id,
-						Type = Item.Type,
-						Visible = Item.Visible,
-					}
-				end)
-			end),
+			Scope:Frame {
+				Name = "Items",
+				ListEnabled = true,
+				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListWraps = true,
+				AutomaticSize = Enum.AutomaticSize.Y,
+
+				[Children] = {
+					Scope:ForValues(Items, function(Use, Scope, Item)
+						return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
+							return Scope:ItemButton {
+								Id = Item.Id,
+								Type = Item.Type,
+								Visible = Item.Visible,
+							}
+						end)
+					end),
+				},
+			},
 			Scope:Card {
 				Name = "NoItemsCard",
-				FlexMode = Enum.UIFlexMode.Fill,
 				ListEnabled = true,
 				ListHorizontalAlignment = Enum.HorizontalAlignment.Center,
 				BackgroundTransparency = 1,
+				AutomaticSize = Enum.AutomaticSize.Y,
 				Visible = Scope:Computed(function(Use)
 					local ItemsValue = Use(Items)
 					return #ItemsValue == 0
