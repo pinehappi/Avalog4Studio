@@ -15,6 +15,7 @@ local Components = {
 	ItemsTab = require(script.ItemsTab),
 	EquippedItemsTab = require(script.EquippedItemsTab),
 	SliderSetting = require(script.SliderSetting),
+	InventoryItemsTab = require(script.InventoryItemsTab),
 }
 
 for _, Child in ipairs(script:GetChildren()) do

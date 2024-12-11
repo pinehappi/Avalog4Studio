@@ -19,6 +19,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		SkinTab = require(script.Parent.SkinTab),
 		BuildTab = require(script.Parent.BuildTab),
 		EquippedItemsTab = require(script.Parent.EquippedItemsTab),
+		InventoryItemsTab = require(script.Parent.InventoryItemsTab),
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
@@ -36,8 +37,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local ActiveModeValue = Use(ActiveMode)
 		local CategoryValue = Use(ActiveCategory)
 
-		if (ActiveModeValue == "Marketplace") or (ActiveModeValue == "Inventory") then
+		if ActiveModeValue == "Marketplace" then
 			return "CatalogItemsTab"
+		elseif ActiveModeValue == "Inventory" then
+			return "InventoryItemsTab"
 		elseif ActiveModeValue == "Customize" then
 			if CategoryValue and CategoryValue.Name then
 				if CategoryValue.Name == "Skin" then
@@ -69,6 +72,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				Shown = Scope:Computed(function(Use)
 					local ActiveTabValue = Use(ActiveTab)
 					return ActiveTabValue == "CatalogItemsTab"
+				end),
+			},
+			Scope:InventoryItemsTab {
+				Shown = Scope:Computed(function(Use)
+					local ActiveTabValue = Use(ActiveTab)
+					return ActiveTabValue == "InventoryItemsTab"
 				end),
 			},
 			Scope:EquippedItemsTab {

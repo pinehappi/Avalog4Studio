@@ -28,6 +28,9 @@ local States = {
 	Checkout = {
 		Loading = Scope:Value(false),
 	},
+	Inventory = {
+		AccessAllowed = Scope:Value(false),
+	},
 	Open = Scope:Value(false),
 }
 
