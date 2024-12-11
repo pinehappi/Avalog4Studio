@@ -48,6 +48,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		if not Fusion.peek(Shown) then
 			return
 		end
+		if not Fusion.peek(States.Inventory.AccessAllowed) then
+			return
+		end
 
 		local AssetTypesValue = Fusion.peek(AssetTypes)
 
@@ -61,6 +64,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Results:set(SearchObject.Results)
 	end
 	Scope:Observer(AssetTypes):onChange(function()
+		UpdateSearch()
+	end)
+	Scope:Observer(States.Inventory.AccessAllowed):onChange(function()
 		UpdateSearch()
 	end)
 	UpdateSearch()

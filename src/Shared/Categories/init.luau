@@ -57,6 +57,7 @@ local Categories: { [string]: { Category } } = {
 				{
 					Name = "Heads",
 					BundleTypes = { Enum.BundleType.DynamicHead },
+					AssetTypes = { Enum.AvatarAssetType.DynamicHead, Enum.AvatarAssetType.Head },
 				},
 				{ Name = "Hair", AssetTypes = { Enum.AvatarAssetType.HairAccessory } },
 			},
@@ -95,7 +96,11 @@ local Categories: { [string]: { Category } } = {
 		{
 			Name = "Animation",
 			SubCategories = {
-				{ Name = "Bundles", BundleTypes = { Enum.BundleType.Animations } },
+				{
+					Name = "Bundles",
+					BundleTypes = { Enum.BundleType.Animations },
+					AssetTypes = AvatarAssetTypes.Types.Animations,
+				},
 				{ Name = "Emotes", AssetTypes = AvatarAssetTypes.Types.Emotes },
 			},
 		},
