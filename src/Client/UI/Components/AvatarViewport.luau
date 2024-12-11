@@ -1,4 +1,6 @@
+local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
+
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
@@ -20,8 +22,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		CFrame = CFrame.lookAt(Vector3.new(0, 0, -8), Vector3.new(0, 0, 0)),
 		CameraType = Enum.CameraType.Scriptable,
 	}
-
-	local CheckoutFailureShown = Scope:Value(false)
 
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
@@ -81,23 +81,27 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						[Children] = {
 							Scope:Button {
 								Name = "SaveButton",
-								Content = Scope:Computed(function(Use)
-									local CheckoutFailureShownValue = Use(CheckoutFailureShown)
-									if CheckoutFailureShownValue then
-										return { "rbxassetid://13852128781", "Save" }
-									else
-										return { "rbxassetid://13846738861", "Save" }
-									end
-								end),
+								Content = { "rbxassetid://13846738861", "Save" },
 								SizeVariant = "Large",
 								Disabled = States.Checkout.Loading,
 
 								OnActivated = function()
-									local Success = LocalAvatar:PromptCheckout()
-									if not Success then
-										CheckoutFailureShown:set(true)
-										task.wait(1)
-										CheckoutFailureShown:set(false)
+									States.Checkout.Loading:set(true)
+									local UnownedItems = LocalAvatar:GetUnownedItems()
+									States.Checkout.Loading:set(false)
+
+									if #UnownedItems > 0 then
+										local Success = LocalAvatar:PromptCheckout(UnownedItems)
+										if Success then
+											MarketplaceService.PromptBulkPurchaseFinished:Once(function(_, Status)
+												if Status == Enum.MarketplaceBulkPurchasePromptStatus.Completed then
+													task.wait(0.5)
+													LocalAvatar:SaveAvatar()
+												end
+											end)
+										end
+									else
+										LocalAvatar:SaveAvatar()
 									end
 								end,
 							},

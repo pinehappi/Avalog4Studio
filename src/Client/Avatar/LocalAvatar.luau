@@ -1,3 +1,4 @@
+local AvatarEditorService = game:GetService("AvatarEditorService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
@@ -24,6 +25,13 @@ local LocalAvatar = {
 	HumanoidDescriber = HumanoidDescriber(Instance.new("HumanoidDescription")),
 	Updated = Signal.new(),
 }
+
+function LocalAvatar:SaveAvatar()
+	AvatarEditorService:PromptSaveAvatar(
+		LocalAvatar.HumanoidDescriber.HumanoidDescription,
+		LocalAvatar.Humanoid.RigType
+	)
+end
 
 function LocalAvatar:UpdateScale(Property: string, Value: number)
 	local Clamp = ScaleLimits[Property]
@@ -54,12 +62,23 @@ function LocalAvatar:SetColor(Color: Color3)
 	self:Apply()
 end
 
-function LocalAvatar:PromptCheckout()
+function LocalAvatar:PromptCheckout(Items)
+	if #Items > 0 then
+		if next(States.Services.AvatarService) ~= nil then
+			States.Services.AvatarService:BulkPurchaseItems(Items)
+		end
+
+		return true
+	else
+		return false
+	end
+end
+
+function LocalAvatar:GetUnownedItems()
 	local Items = {}
+
 	local AssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
 	local BundleIdsValue = Fusion.peek(States.Avatar.EquippedBundleIds)
-
-	States.Checkout.Loading:set(true)
 
 	for _, AssetId in ipairs(AssetIdsValue) do
 		local AssetInfo = CatalogItems:GetItem(AssetId, Enum.InfoType.Asset)
@@ -91,17 +110,7 @@ function LocalAvatar:PromptCheckout()
 		end
 	end
 
-	States.Checkout.Loading:set(false)
-
-	if #Items > 0 then
-		if next(States.Services.AvatarService) ~= nil then
-			States.Services.AvatarService:BulkPurchaseItems(Items)
-		end
-
-		return true
-	else
-		return false
-	end
+	return Items
 end
 
 function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
