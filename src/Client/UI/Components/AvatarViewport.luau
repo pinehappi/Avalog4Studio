@@ -32,7 +32,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		BackgroundColor3 = Theme.Colors.Base.Dark,
 		Image = "rbxassetid://140363116814273",
 		ScaleType = Enum.ScaleType.Crop,
-		AutomaticSize = Enum.AutomaticSize.XY,
+		AutomaticSize = Enum.AutomaticSize.X,
 
 		[Children] = {
 			Scope:Frame {
