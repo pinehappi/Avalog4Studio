@@ -10,6 +10,11 @@ local Children = Fusion.Children
 local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
 
+local ITEM_TYPE_INFO_TYPES = {
+	[Enum.AvatarItemType.Asset] = Enum.InfoType.Asset,
+	[Enum.AvatarItemType.Bundle] = Enum.InfoType.Bundle,
+}
+
 export type Props = Button.Props & {
 	Id: Fusion.UsedAs<number>?,
 	Type: Fusion.UsedAs<Enum.AvatarItemType>?,
@@ -29,11 +34,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local IdValue = Fusion.peek(Id)
 		local TypeValue = Fusion.peek(Type)
 
-		if TypeValue == Enum.AvatarItemType.Asset then
-			ItemInfo:set(CatalogItems:GetItem(IdValue, Enum.InfoType.Asset))
-		else
-			ItemInfo:set(CatalogItems:GetItem(IdValue, Enum.InfoType.Bundle))
-		end
+		task.spawn(function()
+			local FetchedItemInfo = CatalogItems:GetItem(IdValue, ITEM_TYPE_INFO_TYPES[TypeValue])
+			if FetchedItemInfo then
+				ItemInfo:set(FetchedItemInfo)
+			end
+		end)
 	end
 	Scope:Observer(Id):onChange(function()
 		UpdateItemInfo()
