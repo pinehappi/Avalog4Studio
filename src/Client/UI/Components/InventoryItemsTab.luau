@@ -3,7 +3,6 @@ local AvatarEditorService = game:GetService("AvatarEditorService")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Inventory = require(Avalog.SourceCode.Client.UI.States.Extensions.Inventory)
@@ -86,12 +85,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		Items = Scope:ForValues(Results, function(Use, Scope, Result)
-			return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
-				return {
-					Id = Result.AssetId,
-					Type = Enum.AvatarItemType.Asset,
-				}
-			end)
+			return {
+				Id = Result.AssetId,
+				Type = Enum.AvatarItemType.Asset,
+			}
 		end),
 		OnReachedEnd = function()
 			local SearchValue = Fusion.peek(Search)
