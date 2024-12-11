@@ -37,15 +37,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			return CategoryValue
 		end
 	end)
-	local BundleTypes = Scope:Computed(function(Use)
-		local DeepestCategoryValue = Use(DeepestCategory)
-
-		if DeepestCategoryValue and DeepestCategoryValue.BundleTypes then
-			return DeepestCategoryValue.BundleTypes
-		else
-			return {}
-		end
-	end)
 	local AssetTypes = Scope:Computed(function(Use)
 		local DeepestCategoryValue = Use(DeepestCategory)
 
@@ -54,12 +45,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		else
 			return {}
 		end
-	end)
-	local SearchQuery = Scope:Computed(function(Use)
-		local SearchQueryValue = Use(States.Catalog.SearchQuery)
-		local SearchingValue = Use(States.Catalog.Searching)
-
-		return (SearchingValue and SearchQueryValue) or nil
 	end)
 
 	local Search = Scope:Value(nil)
@@ -81,13 +66,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Search:set(SearchObject)
 		Results:set(SearchObject.Results)
 	end
-	Scope:Observer(BundleTypes):onChange(function()
-		UpdateSearch()
-	end)
 	Scope:Observer(AssetTypes):onChange(function()
-		UpdateSearch()
-	end)
-	Scope:Observer(SearchQuery):onChange(function()
 		UpdateSearch()
 	end)
 	UpdateSearch()
