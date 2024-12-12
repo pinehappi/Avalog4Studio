@@ -89,7 +89,7 @@ local function UnpackInto(Target: { [number]: any }, Source: { [number]: any })
 	end
 end
 
-local function New(HumanoidDescription: HumanoidDescription): HumanoidDescriber
+local function New(HumanoidDescription: HumanoidDescription)
 	local HumanoidDescriber: HumanoidDescriber = {
 		Data = {
 			Accessories = {},
