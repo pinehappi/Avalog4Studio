@@ -89,8 +89,8 @@ local function UnpackInto(Target: { [number]: any }, Source: { [number]: any })
 	end
 end
 
-local function New(HumanoidDescription: HumanoidDescription)
-	local HumanoidDescriber = {
+local function New(HumanoidDescription: HumanoidDescription): HumanoidDescriber
+	local HumanoidDescriber: HumanoidDescriber = {
 		Data = {
 			Accessories = {},
 			Emotes = {},
@@ -619,5 +619,7 @@ local function New(HumanoidDescription: HumanoidDescription)
 
 	return HumanoidDescriber
 end
+
+export type HumanoidDescriber = typeof(New(Instance.new("HumanoidDescription")))
 
 return New
