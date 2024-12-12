@@ -14,23 +14,23 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, OnyxUI.Util, OnyxUI.Components, Components)
 	local Theme = OnyxUI.Themer.Theme:now()
 
-	local Enabled = Scope:Value(Fusion.peek(States.Open))
-	Scope:Observer(States.Open):onChange(function()
-		local OpenValue = Fusion.peek(States.Open)
-
-		if OpenValue then
-			Enabled:set(true)
-		else
-			task.delay(2, function()
-				Enabled:set(false)
-			end)
-		end
+	local GroupTransparency = Scope:Spring(
+		Scope:Computed(function(Use)
+			return (Use(States.Open) and 0) or 1
+		end),
+		Theme.SpringSpeed["1.5"],
+		Theme.SpringDampening["1.5"]
+	)
+	local Enabled = Scope:Computed(function(Use)
+		local GroupTransparencyValue = Use(GroupTransparency)
+		return GroupTransparencyValue < 1
 	end)
 
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
 		DisplayOrder = 100000,
+		Enabled = Enabled,
 
 		[Children] = {
 			Scope:New "ScreenGui" {
@@ -76,13 +76,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListPadding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0"]))
 				end),
-				GroupTransparency = Scope:Spring(
-					Scope:Computed(function(Use)
-						return (Use(States.Open) and 0) or 1
-					end),
-					Theme.SpringSpeed["1.5"],
-					Theme.SpringDampening["1.5"]
-				),
+				GroupTransparency = GroupTransparency,
 				Scale = Scope:Spring(
 					Scope:Computed(function(Use)
 						return (Use(States.Open) and 1) or 0.75

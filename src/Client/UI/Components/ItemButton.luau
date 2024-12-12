@@ -154,6 +154,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								AutomaticSize = Enum.AutomaticSize.None,
 								ClipsDescendants = true,
 								RichText = false,
+								AutoLocalize = false,
 							},
 							Scope:IconText {
 								Name = "Price",
@@ -170,6 +171,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								end),
 								ListWraps = false,
 								ContentWrapped = false,
+								AutoLocalize = false,
 							},
 						},
 					},
@@ -181,6 +183,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				AnchorPoint = Vector2.new(1, 0),
 				Position = UDim2.fromScale(1, 0),
 				Active = false,
+				Selectable = false,
 				Visible = Equippable,
 			},
 		},
