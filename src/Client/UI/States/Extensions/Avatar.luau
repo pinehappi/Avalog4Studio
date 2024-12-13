@@ -3,10 +3,30 @@ local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(script.Parent.Parent)
 local Fusion = require(Avalog.Parent.Fusion)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
+local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local DeepEquals = require(Avalog.SourceCode.Shared.Utils.DeepEquals)
 
 local Avatar = {
 	_Connections = {},
 }
+
+function Avatar:_LogHistoryEntry(NewData: HumanoidDescriber.Data)
+	local HistoryDataValue = Fusion.peek(States.Avatar.DataHistory)
+
+	local AlreadyExists = false
+	for _, DataEntry in ipairs(HistoryDataValue) do
+		if DeepEquals(DataEntry, NewData) then
+			AlreadyExists = true
+			break
+		end
+	end
+
+	if AlreadyExists == false then
+		table.insert(HistoryDataValue, NewData)
+	end
+
+	States.Avatar.DataHistory:set(HistoryDataValue)
+end
 
 function Avatar:_UpdateEquippedBundles()
 	local EquippedAssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
@@ -46,7 +66,11 @@ function Avatar:_UpdateEquippedAssetIds()
 end
 
 function Avatar:_HandleAvatar()
-	States.Avatar.Data:set(LocalAvatar.HumanoidDescriber:GetData())
+	local Data = LocalAvatar.HumanoidDescriber:GetData()
+
+	States.Avatar.Data:set(Data)
+	self:_LogHistoryEntry(Data)
+
 	States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 	self:_UpdateEquippedAssetIds()
 	self:_UpdateEquippedBundles()
@@ -54,6 +78,8 @@ function Avatar:_HandleAvatar()
 
 	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		States.Avatar.Data:set(NewData)
+		self:_LogHistoryEntry(NewData)
+
 		States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 		self:_UpdateEquippedAssetIds()
 		self:_UpdateEquippedBundles()

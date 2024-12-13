@@ -136,6 +136,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconButton {
 								Image = "rbxassetid://13846120661",
 								SizeVariant = "ExtraLarge",
+
+								OnActivated = function()
+									LocalAvatar:Undo()
+								end,
 							},
 							Scope:IconButton {
 								Image = "rbxassetid://13847364382",

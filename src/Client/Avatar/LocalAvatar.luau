@@ -26,6 +26,24 @@ local LocalAvatar = {
 	Updated = Signal.new(),
 }
 
+function LocalAvatar:Undo()
+	local HistoryDataValue = Fusion.peek(States.Avatar.DataHistory)
+	local EntryIndex = #HistoryDataValue - 1
+	local LastDataEntry = HistoryDataValue[EntryIndex]
+
+	if LastDataEntry then
+		self.HumanoidDescriber:UpdateData(function()
+			return LastDataEntry
+		end)
+
+		table.remove(HistoryDataValue, #HistoryDataValue)
+
+		States.Avatar.DataHistory:set(HistoryDataValue)
+
+		self:Apply()
+	end
+end
+
 function LocalAvatar:SaveAvatar()
 	AvatarEditorService:PromptSaveAvatar(
 		LocalAvatar.HumanoidDescriber.HumanoidDescription,
