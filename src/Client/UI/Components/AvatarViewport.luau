@@ -153,6 +153,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconButton {
 								Image = "rbxassetid://13846158505",
 								SizeVariant = "ExtraLarge",
+
+								OnActivated = function()
+									LocalAvatar:Redo()
+								end,
 							},
 						},
 					},

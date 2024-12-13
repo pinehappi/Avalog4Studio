@@ -1,3 +1,5 @@
+local Players = game:GetService("Players")
+
 local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(script.Parent.Parent)
@@ -23,6 +25,7 @@ function Avatar:_LogHistoryEntry(NewData: HumanoidDescriber.Data)
 
 	if AlreadyExists == false then
 		table.insert(HistoryDataValue, NewData)
+		States.Avatar.UndoHistory:set({})
 	end
 
 	States.Avatar.DataHistory:set(HistoryDataValue)
@@ -99,6 +102,8 @@ table.insert(
 	end)
 )
 
-Avatar:_HandleAvatar()
+if Players:GetPlayerFromCharacter(LocalAvatar.Character) ~= nil then
+	Avatar:_HandleAvatar()
+end
 
 return Avatar
