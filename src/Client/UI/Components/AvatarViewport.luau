@@ -121,7 +121,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							},
 						},
 					},
-					Scope:Frame {
+					Scope:Card {
 						Name = "BottomControls",
 						AnchorPoint = Vector2.new(0.5, 1),
 						Position = UDim2.fromScale(0.5, 1),
@@ -131,11 +131,21 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							return UDim.new(0, Use(Theme.Spacing["0.75"]))
 						end),
 						Scale = 1.25,
+						CornerRadius = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["0.75"]))
+						end),
+						Padding = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["0.5"]))
+						end),
 
 						[Children] = {
 							Scope:IconButton {
 								Image = "rbxassetid://13846120661",
 								SizeVariant = "ExtraLarge",
+								Disabled = Scope:Computed(function(Use)
+									local DataHistoryValue = Use(States.Avatar.DataHistory)
+									return #DataHistoryValue <= 1
+								end),
 
 								OnActivated = function()
 									LocalAvatar:Undo()
@@ -153,6 +163,10 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							Scope:IconButton {
 								Image = "rbxassetid://13846158505",
 								SizeVariant = "ExtraLarge",
+								Disabled = Scope:Computed(function(Use)
+									local UndoHistoryValue = Use(States.Avatar.UndoHistory)
+									return #UndoHistoryValue == 0
+								end),
 
 								OnActivated = function()
 									LocalAvatar:Redo()
