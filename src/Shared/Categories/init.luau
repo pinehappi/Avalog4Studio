@@ -35,6 +35,9 @@ end
 local Categories: { [string]: { Category } } = {
 	Marketplace = {
 		{
+			Name = "Featured",
+		},
+		{
 			Name = "All",
 			AssetTypes = AvatarAssetTypes.Types.All,
 			BundleTypes = {

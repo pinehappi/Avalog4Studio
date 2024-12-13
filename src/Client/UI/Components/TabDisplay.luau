@@ -20,6 +20,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		BuildTab = require(script.Parent.BuildTab),
 		EquippedItemsTab = require(script.Parent.EquippedItemsTab),
 		InventoryItemsTab = require(script.Parent.InventoryItemsTab),
+		FeaturedItemsTab = require(script.Parent.FeaturedItemsTab),
 	})
 	local Theme = OnyxUI.Themer.Theme:now()
 
@@ -38,7 +39,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		local CategoryValue = Use(ActiveCategory)
 
 		if ActiveModeValue == "Marketplace" then
-			return "CatalogItemsTab"
+			if CategoryValue.Name == "Featured" then
+				return "FeaturedItemsTab"
+			else
+				return "CatalogItemsTab"
+			end
 		elseif ActiveModeValue == "Inventory" then
 			return "InventoryItemsTab"
 		elseif ActiveModeValue == "Customize" then
@@ -68,6 +73,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ClipsDescendants = true,
 
 		[Children] = {
+			Scope:FeaturedItemsTab {
+				Shown = Scope:Computed(function(Use)
+					local ActiveTabValue = Use(ActiveTab)
+					return ActiveTabValue == "FeaturedItemsTab"
+				end),
+			},
 			Scope:CatalogItemsTab {
 				Shown = Scope:Computed(function(Use)
 					local ActiveTabValue = Use(ActiveTab)
