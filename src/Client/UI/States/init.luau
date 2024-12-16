@@ -26,6 +26,7 @@ local States = {
 		EquippedAssetIds = Scope:Value({}),
 		EquippedBundleIds = Scope:Value({}),
 		Character = Scope:Value(nil),
+		Loaded = Scope:Value(false),
 	},
 	Checkout = {
 		Loading = Scope:Value(false),

@@ -69,6 +69,8 @@ function Avatar:_UpdateEquippedAssetIds()
 end
 
 function Avatar:_HandleAvatar()
+	States.Avatar.Loaded:set(false)
+
 	local Data = LocalAvatar.HumanoidDescriber:GetData()
 
 	local function Update(NewData)
@@ -85,9 +87,9 @@ function Avatar:_HandleAvatar()
 	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		Update(NewData)
 	end)
-	task.spawn(function()
-		Update(Data)
-	end)
+	Update(Data)
+
+	States.Avatar.Loaded:set(true)
 end
 
 function Avatar:Stop()

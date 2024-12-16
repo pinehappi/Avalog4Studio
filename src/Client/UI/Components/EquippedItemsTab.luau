@@ -1,4 +1,6 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local LocalAvatar = require(ReplicatedStorage.Avalog.Packages.Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
@@ -17,9 +19,16 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	local AssetIds = Scope:Value({})
 
-	Scope:Observer(Shown):onChange(function()
+	local function UpdateAssetIds()
 		local EquippedAssetIdsValue = Fusion.peek(States.Avatar.EquippedAssetIds)
 		AssetIds:set(EquippedAssetIdsValue)
+	end
+
+	Scope:Observer(Shown):onChange(function()
+		UpdateAssetIds()
+	end)
+	Scope:Observer(States.Avatar.Loaded):onChange(function()
+		UpdateAssetIds()
 	end)
 
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
