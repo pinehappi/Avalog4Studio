@@ -6,6 +6,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
+local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 
 local Children = Fusion.Children
 
@@ -144,7 +145,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								SizeVariant = "ExtraLarge",
 								Disabled = Scope:Computed(function(Use)
 									local DataHistoryValue = Use(States.Avatar.DataHistory)
-									return #DataHistoryValue <= 1
+									local Category = Use(Navigation.Category)
+									return (#DataHistoryValue <= 1) or (Category.Name == "Equipped")
 								end),
 
 								OnActivated = function()
@@ -165,7 +167,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 								SizeVariant = "ExtraLarge",
 								Disabled = Scope:Computed(function(Use)
 									local UndoHistoryValue = Use(States.Avatar.UndoHistory)
-									return #UndoHistoryValue == 0
+									local Category = Use(Navigation.Category)
+									return (#UndoHistoryValue == 0) or (Category == "Equipped")
 								end),
 
 								OnActivated = function()
