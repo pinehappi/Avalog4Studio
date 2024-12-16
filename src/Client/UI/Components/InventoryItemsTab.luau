@@ -71,6 +71,19 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 	UpdateSearch()
 
+	local ShownResults = Scope:ForValues(Results, function(Use, Scope, Result)
+		local SearchQueryValue = Use(States.Catalog.SearchQuery)
+
+		if
+			(utf8.len(SearchQueryValue) > 0)
+			and (string.find(string.lower(Result.Name), string.lower(SearchQueryValue), 1, true) == nil)
+		then
+			return nil
+		else
+			return Result
+		end
+	end)
+
 	Scope:Observer(Shown):onChange(function()
 		local ShownValue = Fusion.peek(Shown)
 		local AccessAllowedValue = Fusion.peek(States.Inventory.AccessAllowed)
@@ -90,7 +103,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
-		Items = Scope:ForValues(Results, function(Use, Scope, Result)
+		Items = Scope:ForValues(ShownResults, function(Use, Scope, Result)
 			return {
 				Id = Result.AssetId,
 				Type = Enum.AvatarItemType.Asset,
