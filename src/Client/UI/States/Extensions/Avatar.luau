@@ -71,21 +71,22 @@ end
 function Avatar:_HandleAvatar()
 	local Data = LocalAvatar.HumanoidDescriber:GetData()
 
-	States.Avatar.Data:set(Data)
-	self:_LogHistoryEntry(Data)
-
-	States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
-	self:_UpdateEquippedAssetIds()
-	self:_UpdateEquippedBundles()
-	States.Avatar.Character:set(LocalAvatar.Character)
-
-	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
+	local function Update(NewData)
 		States.Avatar.Data:set(NewData)
 		self:_LogHistoryEntry(NewData)
 
 		States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 		self:_UpdateEquippedAssetIds()
 		self:_UpdateEquippedBundles()
+	end
+
+	States.Avatar.Character:set(LocalAvatar.Character)
+
+	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
+		Update(NewData)
+	end)
+	task.spawn(function()
+		Update(Data)
 	end)
 end
 
