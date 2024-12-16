@@ -1,4 +1,6 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local Navigation = require(ReplicatedStorage.Avalog.Packages.Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
@@ -101,6 +103,19 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						end),
 						PaddingBottom = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["1"]))
+						end),
+						Disabled = Scope:Computed(function(Use)
+							local CategoryValue = Use(Navigation.Category)
+							local ModeValue = Use(Navigation.Mode)
+							local AcceptedModes = { "Marketplace", "Inventory" }
+
+							if table.find(AcceptedModes, ModeValue) == nil then
+								return true
+							elseif CategoryValue.Name == "Featured" then
+								return true
+							else
+								return false
+							end
 						end),
 
 						OnActivated = function()
