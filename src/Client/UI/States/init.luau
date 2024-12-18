@@ -34,6 +34,10 @@ local States = {
 	Inventory = {
 		AccessAllowed = Scope:Value(false),
 	},
+	Featured = {
+		Items = Scope:Value({}),
+		Creators = Scope:Value({}),
+	},
 	Open = Scope:Value(false),
 }
 

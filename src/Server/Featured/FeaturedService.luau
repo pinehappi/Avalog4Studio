@@ -66,10 +66,29 @@ end
 
 function FeaturedService:GetData(): FeaturedData
 	if next(self.Data) ~= nil then
-		return self.Data
+		return {
+			Items = {
+				{
+					Id = 123123,
+					TransactionHash = "aaa",
+					Bid = 1023,
+					ItemType = Enum.AvatarItemType.Asset,
+					StartTime = 0,
+				},
+			},
+			Creators = {},
+		}
 	else
 		return {
-			Items = {},
+			Items = {
+				{
+					Id = 123123,
+					TransactionHash = "aaa",
+					Bid = 1023,
+					ItemType = Enum.AvatarItemType.Asset,
+					StartTime = 0,
+				},
+			},
 			Creators = {},
 		}
 	end
