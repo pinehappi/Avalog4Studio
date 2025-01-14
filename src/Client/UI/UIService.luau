@@ -10,14 +10,12 @@ local AvalogMenu = require(script.Parent.ScreenGuis.AvalogMenu)
 
 local Themer = OnyxUI.Themer
 
-local UIController = {
-	Name = "UIController",
-
+local UIService = {
 	Scope = Fusion.scoped(Fusion),
 	XPMultiplierDropdownIcons = {},
 }
 
-function UIController:Start()
+function UIService:Start()
 	StateExtensions:Initialize()
 	StateExtensions:Start()
 
@@ -28,4 +26,4 @@ function UIController:Start()
 	end)
 end
 
-return UIController
+return UIService
