@@ -5,7 +5,6 @@ local Future = require(Avalog.Parent.Future)
 local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
 local GetEntriesFromArray = require(Avalog.SourceCode.Shared.Utils.GetEntriesFromArray)
-local t = require(Avalog.Parent.t)
 
 export type FeaturedListing = {
 	TransactionHash: string,
