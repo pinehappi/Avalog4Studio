@@ -1,6 +1,6 @@
-/Packages
-/ServerPackages
+.pesde
+pesde.lock
+roblox_packages
+lune_packages
 
-/build
-
-/sourcemap.json
+sourcemap.json
