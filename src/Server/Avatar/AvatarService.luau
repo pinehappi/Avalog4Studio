@@ -3,6 +3,8 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local Zap = require(Avalog.SourceCode.Shared.Zap.server)
+local EnumSerde = require(Avalog.SourceCode.Shared.Utils.EnumSerde)
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
@@ -10,27 +12,8 @@ local RATE_LIMITS = {
 }
 
 local AvatarService = {
-	Name = script.Name,
-	Client = {},
-
 	Avatars = {},
 }
-
-function AvatarService.Client:BulkPurchaseItems(Player: Player, Items: { any })
-	if not RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
-		return
-	end
-
-	return AvatarService:BulkPurchaseItems(Player, Items)
-end
-
-function AvatarService.Client:Update(Player: Player, Data: HumanoidDescriber.Data)
-	if not RATE_LIMITS.Update(Player.UserId) then
-		return
-	end
-
-	return AvatarService:Update(Player, Data)
-end
 
 function AvatarService:BulkPurchaseItems(Player: Player, Items: { any })
 	return Future.Try(function()
@@ -81,6 +64,26 @@ function AvatarService:GetCharacterObjects(Player: Player): (Model?, Humanoid?, 
 	return nil
 end
 
-function AvatarService:Start() end
+function AvatarService:Start()
+	Zap.BulkPurchaseAvatarItems.SetCallback(function(Player, Items)
+		if not RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
+			return
+		end
+
+		local SafeItems: HumanoidDescriber.Data = EnumSerde.DeserializeTree(Items)
+
+		return AvatarService:BulkPurchaseItems(Player, SafeItems)
+	end)
+
+	Zap.UpdateAvatar.SetCallback(function(Player, Data): ()
+		if not RATE_LIMITS.Update(Player.UserId) then
+			return
+		end
+
+		local SafeData: HumanoidDescriber.Data = EnumSerde.DeserializeTree(Data)
+
+		return AvatarService:Update(Player, SafeData)
+	end)
+end
 
 return AvatarService

@@ -13,7 +13,10 @@
             "SourceCode": {
               "$className": "Folder",
               "Shared": {
-                "$path": "src/Shared"
+                "$path": "src/Shared",
+                "Zap": {
+                  "$path": "network"
+                }
               },
               "Storage": {
                 "$path": "src/Storage"

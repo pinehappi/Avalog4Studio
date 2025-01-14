@@ -11,6 +11,8 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
+local Zap = require(Avalog.SourceCode.Shared.Zap.client)
+local EnumSerde = require(Avalog.SourceCode.Shared.Utils.EnumSerde)
 
 export type CatalogItem = {
 	Id: number,
@@ -25,6 +27,10 @@ local LocalAvatar = {
 	HumanoidDescriber = HumanoidDescriber(Instance.new("HumanoidDescription")),
 	Updated = Signal.new(),
 }
+
+function LocalAvatar:UpdateServer(Data: HumanoidDescriber.Data): ()
+	Zap.UpdateAvatar.Fire(EnumSerde.SerializeTree(Data))
+end
 
 function LocalAvatar:Redo()
 	local UndoHistoryValue = Fusion.peek(States.Avatar.UndoHistory)
@@ -103,9 +109,7 @@ end
 
 function LocalAvatar:PromptCheckout(Items)
 	if #Items > 0 then
-		if next(States.Services.AvatarService) ~= nil then
-			States.Services.AvatarService:BulkPurchaseItems(Items)
-		end
+		Zap.BulkPurchaseAvatarItems.Fire(EnumSerde.SerializeTree(Items))
 
 		return true
 	else

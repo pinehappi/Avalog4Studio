@@ -30,9 +30,6 @@ local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
 
 local FeaturedService = {
-	Name = script.Name,
-	Client = {},
-
 	LastUpdated = nil,
 	Data = {
 		Items = {},
@@ -42,17 +39,17 @@ local FeaturedService = {
 	Updated = Signal.new(),
 }
 
-function FeaturedService.Client:GetCreators(Player: Player, Start: number, End: number): { FeaturedCreator }
-	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
+-- function FeaturedService.Client:GetCreators(Player: Player, Start: number, End: number): { FeaturedCreator }
+-- 	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
 
-	return FeaturedService:GetCreators(Start, End)
-end
+-- 	return FeaturedService:GetCreators(Start, End)
+-- end
 
-function FeaturedService.Client:GetItems(Player: Player, Start: number, End: number): { FeaturedItem }
-	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
+-- function FeaturedService.Client:GetItems(Player: Player, Start: number, End: number): { FeaturedItem }
+-- 	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
 
-	return FeaturedService:GetItems(Start, End)
-end
+-- 	return FeaturedService:GetItems(Start, End)
+-- end
 
 function FeaturedService:GetCreators(Start: number, End: number): { FeaturedCreator }
 	local Data = self:GetData()

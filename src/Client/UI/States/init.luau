@@ -3,14 +3,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 
 local Scope = Fusion.scoped(Fusion)
 
-local function UnloadedService(): { [any]: any }
-	return {}
-end
-
 local States = {
-	Services = {
-		AvatarService = UnloadedService(),
-	},
 	Catalog = {
 		Searching = Scope:Value(false),
 		SearchQuery = Scope:Value(""),
