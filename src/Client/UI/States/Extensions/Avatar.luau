@@ -37,7 +37,7 @@ function Avatar:_UpdateEquippedBundles()
 
 	for _, AssetId in ipairs(EquippedAssetIdsValue) do
 		local BundleId = CatalogItems:GetBundleIdFromAsset(AssetId)
-		if BundleId then
+		if BundleId and (table.find(BundleIds, BundleId) == nil) then
 			table.insert(BundleIds, BundleId)
 		end
 	end

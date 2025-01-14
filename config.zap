@@ -13,6 +13,11 @@ type AvatarItem = struct {
     Name: string,
 }
 
+type BulkPurchaseAvatarItem = struct {
+	Id: f64,
+	Type: SerEnumItem,
+}
+
 type CatalogItem = struct {
 	AssetId: f64,
 	Name: string,
@@ -85,7 +90,7 @@ event BulkPurchaseAvatarItems = {
     from: Client,
     type: Reliable,
     call: SingleAsync,
-    data: AvatarItem[1..20],
+    data: BulkPurchaseAvatarItem[1..20],
 }
 
 event UpdateAvatar = {
