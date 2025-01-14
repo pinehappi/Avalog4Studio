@@ -1,9 +1,9 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
-local Navigation = require(ReplicatedStorage.Avalog.Packages.Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
+
 local Children = Fusion.Children
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]

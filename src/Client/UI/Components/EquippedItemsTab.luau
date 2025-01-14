@@ -1,6 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
-local LocalAvatar = require(ReplicatedStorage.Avalog.Packages.Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)

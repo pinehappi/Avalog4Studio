@@ -12,8 +12,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ItemsTab = require(script.Parent.ItemsTab),
 	})
 
-	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
-
 	local FeaturedItems = Scope:Value({})
 
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {

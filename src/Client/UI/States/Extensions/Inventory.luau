@@ -5,7 +5,6 @@ local States = require(script.Parent.Parent)
 local Future = require(Avalog.Parent.Future)
 local Signal = require(Avalog.Parent.Signal)
 local HashDictionary = require(Avalog.SourceCode.Shared.Utils.HashDictionary)
-local CatalogItems = require(script.Parent.CatalogItems)
 
 local Inventory = {
 	Searches = {},
