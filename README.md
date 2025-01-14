@@ -24,6 +24,10 @@
 
 ---
 
+## Demo 📽️
+
+https://github.com/user-attachments/assets/c6765fb5-5a72-4fe9-a6a5-1178727d7fbf
+
 ## Unfinished ⚠️
 
 Avalog is in its early stages of rapid development, and not officially released or documented. Star the repo and follow the socials to keep up with it as it goes.
