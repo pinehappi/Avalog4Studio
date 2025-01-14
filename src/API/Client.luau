@@ -14,9 +14,12 @@ function AvalogClient:Start()
 	assert(not self.Started, "Avalog already started.")
 	self.Started = true
 
-	Loader.LoadDescendants(CLIENT, function(Descendant)
-		return Descendant:IsA("ModuleScript") and Descendant.Name:match("Service$") ~= nil
-	end)
+	Loader.SpawnAll(
+		Loader.LoadDescendants(CLIENT, function(Descendant)
+			return Descendant:IsA("ModuleScript") and (Descendant.Name:match("Service$") ~= nil)
+		end),
+		"Start"
+	)
 end
 
 function AvalogClient:ToggleOpen()
