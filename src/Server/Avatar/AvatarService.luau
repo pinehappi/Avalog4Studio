@@ -81,8 +81,6 @@ function AvatarService:GetCharacterObjects(Player: Player): (Model?, Humanoid?, 
 	return nil
 end
 
-function AvatarService:KnitStart() end
-
-function AvatarService:KnitInit() end
+function AvatarService:Start() end
 
 return AvatarService

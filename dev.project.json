@@ -1,5 +1,5 @@
 {
-  "name": "Avalog Testing",
+  "name": "Avalog",
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
@@ -7,7 +7,7 @@
       "Avalog": {
         "$path": "Include/Linking.luau",
         "Packages": {
-          "$path": "Packages",
+          "$path": "roblox_packages",
           "Avalog": {
             "$path": "src/API",
             "SourceCode": {
@@ -16,10 +16,7 @@
                 "$path": "src/Shared"
               },
               "Storage": {
-                "$path": "src/Storage",
-                "Packages": {
-                  "$path": "ServerPackages"
-                }
+                "$path": "src/Storage"
               },
               "Server": {
                 "$path": "src/Server"

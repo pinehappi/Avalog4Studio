@@ -17,7 +17,7 @@ local UIController = {
 	XPMultiplierDropdownIcons = {},
 }
 
-function UIController:KnitStart()
+function UIController:Start()
 	StateExtensions:Initialize()
 	StateExtensions:Start()
 

@@ -5,7 +5,7 @@ local CatalogSearch = require(Avalog.SourceCode.Client.UI.States.Extensions.Cata
 local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)
 
 export type Props = Frame.Props & {

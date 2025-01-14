@@ -3,31 +3,22 @@
   "tree": {
     "$path": "Include/Linking.luau",
     "Packages": {
-      "$path": "Packages",
+      "$path": "roblox_packages",
       "Avalog": {
-        "$path": "Include/Linking.luau",
-        "Packages": {
-          "$path": "Packages",
-          "Avalog": {
-            "$path": "src/API",
-            "SourceCode": {
-              "$className": "Folder",
-              "Shared": {
-                "$path": "src/Shared"
-              },
-              "Storage": {
-                "$path": "src/Storage",
-                "Packages": {
-                  "$path": "ServerPackages"
-                }
-              },
-              "Server": {
-                "$path": "src/Server"
-              },
-              "Client": {
-                "$path": "src/Client"
-              }
-            }
+        "$path": "src/API",
+        "SourceCode": {
+          "$className": "Folder",
+          "Shared": {
+            "$path": "src/Shared"
+          },
+          "Storage": {
+            "$path": "src/Storage"
+          },
+          "Server": {
+            "$path": "src/Server"
+          },
+          "Client": {
+            "$path": "src/Client"
           }
         }
       }

@@ -29,6 +29,7 @@ Future = { wally = "red-blox/future", version = "^1.0.1" }
 Fetch = { wally = "red-blox/fetch", version = "^2.0.0" }
 Signal = { wally = "sleitnick/signal", version = "^2.0.1" }
 Loader = { wally = "sleitnick/loader", version = "^2.0.0" }
+ColorUtils = { wally = "csqrl/colour-utils", version = "^1.4.1" }
 
 Fusion = { wally = "elttob/fusion", version = "^0.3.0" }
 ProfileService = { name = "avafe/profileservice", version = "^1.0.0" }

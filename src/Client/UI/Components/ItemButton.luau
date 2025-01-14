@@ -7,7 +7,7 @@ local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.Catal
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent._Index["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
+local OnyxUIFolder = Avalog.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Button = require(OnyxUIFolder.Components.Button)
 
 local ITEM_TYPE_INFO_TYPES = {

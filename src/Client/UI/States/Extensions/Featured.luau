@@ -1,5 +1,4 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
-local Knit = require(Avalog.Parent.Knit)
 local States = require(script.Parent.Parent)
 local Fusion = require(Avalog.Parent.Fusion)
 
@@ -72,8 +71,6 @@ function Featured:_FindInValues(Values: {}, Callback: (any) -> boolean?)
 end
 
 function Featured:Start()
-	FeaturedService = Knit.GetService("FeaturedService")
-
 	self:FetchItems(100)
 end
 

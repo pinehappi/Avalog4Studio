@@ -176,12 +176,10 @@ function FeaturedService:_FetchIsActive()
 	return true
 end
 
-function FeaturedService:KnitStart()
+function FeaturedService:Start()
 	if self:_FetchIsActive() then
 		self:SpawnUpdateLoop()
 	end
 end
-
-function FeaturedService:KnitInit() end
 
 return FeaturedService
