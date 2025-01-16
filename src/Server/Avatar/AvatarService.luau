@@ -1,10 +1,11 @@
 local MarketplaceService = game:GetService("MarketplaceService")
+
 local Avalog = script.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
-local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local Zap = require(Avalog.SourceCode.Shared.Zap.server)
-local EnumSerde = require(Avalog.SourceCode.Shared.Utils.EnumSerde)
+local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
@@ -70,7 +71,7 @@ function AvatarService:Start()
 			return
 		end
 
-		local SafeItems: HumanoidDescriber.Data = EnumSerde.DeserializeTree(Items)
+		local SafeItems: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Items)
 
 		return AvatarService:BulkPurchaseItems(Player, SafeItems)
 	end)
@@ -80,7 +81,7 @@ function AvatarService:Start()
 			return
 		end
 
-		local SafeData: HumanoidDescriber.Data = EnumSerde.DeserializeTree(Data)
+		local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
 
 		return AvatarService:Update(Player, SafeData)
 	end)

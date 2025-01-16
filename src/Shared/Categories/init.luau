@@ -1,5 +1,5 @@
 local AvatarAssetTypes = require(script.Parent.AvatarAssetTypes)
-local DeepCopy = require(script.Parent.Utils.DeepCopy)
+local TableUtil = require(script.Parent.Parent.Parent.Parent.TableUtil)
 
 export type Category = {
 	Name: string,
@@ -112,7 +112,7 @@ local Categories: { [string]: { Category } } = {
 	Customize = { { Name = "Equipped" }, { Name = "Skin" }, { Name = "Build" } },
 }
 
-Categories.Inventory = DeepCopy(Categories.Marketplace)
+Categories.Inventory = TableUtil.Copy(Categories.Marketplace, true)
 
 PurgeBundleCategories(Categories.Inventory)
 

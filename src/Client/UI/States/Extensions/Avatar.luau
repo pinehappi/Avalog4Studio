@@ -5,7 +5,7 @@ local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local States = require(script.Parent.Parent)
 local Fusion = require(Avalog.Parent.Fusion)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
-local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local DeepEquals = require(Avalog.SourceCode.Shared.Utils.DeepEquals)
 
 local Avatar = {

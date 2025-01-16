@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Avalog = script.Parent.Parent.Parent.Parent
-local HumanoidDescriber = require(Avalog.SourceCode.Shared.Utils.HumanoidDescriber)
+local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local Signal = require(Avalog.Parent.Signal)
 local Future = require(Avalog.Parent.Future)
 local Fusion = require(Avalog.Parent.Fusion)
@@ -12,7 +12,7 @@ local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
 local Zap = require(Avalog.SourceCode.Shared.Zap.client)
-local EnumSerde = require(Avalog.SourceCode.Shared.Utils.EnumSerde)
+local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 
 export type CatalogItem = {
 	Id: number,
@@ -29,7 +29,7 @@ local LocalAvatar = {
 }
 
 function LocalAvatar:UpdateServer(Data: HumanoidDescriber.Data): ()
-	Zap.UpdateAvatar.Fire(EnumSerde.SerializeTree(Data))
+	Zap.UpdateAvatar.Fire(EnumSerDes.SerializeTree(Data))
 end
 
 function LocalAvatar:Redo()
@@ -109,7 +109,7 @@ end
 
 function LocalAvatar:PromptCheckout(Items)
 	if #Items > 0 then
-		Zap.BulkPurchaseAvatarItems.Fire(EnumSerde.SerializeTree(Items))
+		Zap.BulkPurchaseAvatarItems.Fire(EnumSerDes.SerializeTree(Items))
 
 		return true
 	else
