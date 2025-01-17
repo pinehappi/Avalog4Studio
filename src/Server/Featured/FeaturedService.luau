@@ -1,10 +1,10 @@
 local HttpService = game:GetService("HttpService")
 
 local Avalog = script.Parent.Parent.Parent.Parent
+local TableUtil = require(script.Parent.Parent.Parent.Parent.Parent.TableUtil)
 local Future = require(Avalog.Parent.Future)
 local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
-local GetEntriesFromArray = require(Avalog.SourceCode.Shared.Utils.GetEntriesFromArray)
 
 export type FeaturedListing = {
 	TransactionHash: string,
@@ -52,12 +52,18 @@ local FeaturedService = {
 
 function FeaturedService:GetCreators(Start: number, End: number): { FeaturedCreator }
 	local Data = self:GetData()
-	return GetEntriesFromArray(Data.Creators, Start, End)
+
+	return TableUtil.Filter(TableUtil.Copy(Data.Creators, true), function(Key, _)
+		return Key > Start and Key < End
+	end)
 end
 
 function FeaturedService:GetItems(Start: number, End: number): { FeaturedItem }
 	local Data = self:GetData()
-	return GetEntriesFromArray(Data.Items, Start, End)
+
+	return TableUtil.Filter(TableUtil.Copy(Data.Items, true), function(Key, _)
+		return Key > Start and Key < End
+	end)
 end
 
 function FeaturedService:GetData(): FeaturedData
