@@ -32,10 +32,10 @@ Signal = { wally = "sleitnick/signal", version = "^2.0.1" }
 Loader = { wally = "sleitnick/loader", version = "^2.0.0" }
 ColorUtils = { wally = "csqrl/colour-utils", version = "^1.4.1" }
 TableUtil = { wally = "sleitnick/table-util", version = "^1.2.1" }
-HumanoidDescriber = { name = "avafe/humanoid_describer", version = "^0.1.0" }
-EnumSerDes = { name = "avafe/enum_ser_des", version = "^0.1.0" }
+HumanoidDescriber = { wally = "imavafe/humanoid-describer", version = "^0.1.1" }
+EnumSerDes = { wally = "imavafe/enum-ser-des", version = "^0.1.1" }
 
 Fusion = { wally = "elttob/fusion", version = "^0.3.0" }
-ProfileService = { name = "avafe/profileservice", version = "^1.0.0" }
+Lapis = { wally = "nezuo/lapis", version = "^0.3.3" }
 
 OnyxUI = { wally = "imavafe/onyx-ui", version = "^0.5.3" }
