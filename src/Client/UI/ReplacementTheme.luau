@@ -1,12 +1,17 @@
 local Avalog = script.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
+local Fusion = require(Avalog.Parent.Fusion)
+local ColorUtils = require(Avalog.Parent.ColorUtils)
 
 local Util = OnyxUI.Util
+local Themer = OnyxUI.Themer
 
-return {
+local Scope = Fusion.scoped(Fusion)
+
+return Themer.NewTheme(Scope, {
 	Colors = {
 		Primary = {
-			Main = Util.Colors.Violet["400"],
+			Main = Util.Colors.Blue["600"],
 		},
 		Secondary = {
 			Main = Util.Colors.White,
@@ -16,17 +21,18 @@ return {
 		},
 
 		Neutral = {
-			Main = Util.Colors.Slate["700"],
+			Main = Util.Colors.Gray["200"],
 		},
 		NeutralContent = {
-			Main = Util.Colors.Slate["300"],
+			Main = Util.Colors.Stone["800"],
+			Dark = ColorUtils.Darken(Util.Colors.Stone["800"], 0.2),
 		},
 
 		Base = {
-			Main = Util.Colors.Slate["950"],
+			Main = Util.Colors.White,
 		},
 		BaseContent = {
-			Main = Util.Colors.White,
+			Main = Util.Colors.Black,
 		},
 
 		Success = {
@@ -49,26 +55,49 @@ return {
 	},
 	FontWeight = {
 		Body = Enum.FontWeight.Regular,
-		Bold = Enum.FontWeight.Regular,
-		Heading = Enum.FontWeight.Regular,
+		Bold = Enum.FontWeight.SemiBold,
+		Heading = Enum.FontWeight.Bold,
 	},
 	TextSize = {
-		Base = 16,
+		Base = 20,
 	},
 	CornerRadius = {
-		Base = 10,
+		Base = 8,
 	},
 	StrokeThickness = {
-		Base = 2,
+		Base = 1,
 	},
 	Spacing = {
 		Base = 18,
 	},
 	SpringSpeed = {
-		Base = 25,
+		Base = 60,
 	},
 	SpringDampening = {
-		Base = 1,
+		Base = 1.25,
 	},
-	Sound = {},
-}
+	Sound = {
+		Hover = Scope:New "Sound" {
+			SoundId = "rbxassetid://10066936758",
+			Volume = 0,
+		},
+		Click = Scope:New "Sound" {
+			SoundId = "rbxassetid://16480549841",
+			Volume = 0,
+		},
+		Focus = Scope:New "Sound" {
+			SoundId = "rbxassetid://16480549841",
+			Volume = 0,
+		},
+		Switch = Scope:New "Sound" {
+			SoundId = "rbxassetid://9119713951",
+			Volume = 0,
+		},
+	},
+	Emphasis = {
+		Light = 0.1,
+		Regular = 0.15,
+		Strong = 0.5,
+		Contrast = 1,
+	},
+})
