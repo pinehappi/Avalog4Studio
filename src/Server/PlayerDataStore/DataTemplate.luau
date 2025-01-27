@@ -1,0 +1,5 @@
+return {
+	Avatar = {
+		Data = {},
+	},
+}
