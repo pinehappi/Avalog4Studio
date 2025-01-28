@@ -40,7 +40,7 @@ function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 
 			DocumentData.Avatar.Data = Data
 
-			PlayerDocument:write(DocumentData)
+			-- PlayerDocument:write(DocumentData)
 		end
 
 		self:Apply(Player, HumanoidDescription):Await()
