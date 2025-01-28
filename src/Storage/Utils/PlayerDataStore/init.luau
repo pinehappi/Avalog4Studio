@@ -2,11 +2,15 @@ local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent
 local Lapis = require(Avalog.Parent.Lapis)
+local Signal = require(Avalog.Parent.Signal)
 
 local function NewPlayerDataStore(Name: string, Options: Lapis.CollectionOptions<{}>)
 	local PlayerDataStore = {
 		Collection = Lapis.createCollection(Name, Options),
 		Documents = {},
+
+		Loaded = Signal.new(),
+		Unloaded = Signal.new(),
 	}
 
 	function PlayerDataStore:Load(Player: Player)
@@ -18,7 +22,13 @@ local function NewPlayerDataStore(Name: string, Options: Lapis.CollectionOptions
 					return
 				end
 
+				Document:beforeClose(function()
+					PlayerDataStore.Unloaded:Fire(Player)
+				end)
+
 				PlayerDataStore.Documents[Player] = Document
+
+				PlayerDataStore.Loaded:Fire(Player, Document)
 			end)
 			:catch(function()
 				warn(`Player {Player}'s data failed to load.`)

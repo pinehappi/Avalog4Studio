@@ -1,11 +1,14 @@
 local MarketplaceService = game:GetService("MarketplaceService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Avalog = script.Parent.Parent.Parent.Parent
+local TableUtil = require(ReplicatedStorage.Avalog.Packages.TableUtil)
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local Zap = require(Avalog.SourceCode.Shared.Zap.server)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
+local PlayerDataStore = require(Avalog.SourceCode.Server.PlayerDataStore.PlayerDataStore)
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
@@ -30,6 +33,15 @@ function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 		HumanoidDescriberObject:UpdateData(function()
 			return Data
 		end)
+
+		local PlayerDocument = PlayerDataStore:Get(Player)
+		if PlayerDocument ~= nil then
+			local DocumentData = TableUtil.Copy(PlayerDocument:read(), true)
+
+			DocumentData.Avatar.Data = Data
+
+			PlayerDocument:write(DocumentData)
+		end
 
 		self:Apply(Player, HumanoidDescription):Await()
 
@@ -84,6 +96,12 @@ function AvatarService:Start()
 		local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
 
 		return AvatarService:Update(Player, SafeData)
+	end)
+
+	PlayerDataStore.Loaded:Connect(function(Player, Document)
+		local Data = Document:read()
+
+		AvatarService:Update(Player, Data.Avatar.Data)
 	end)
 end
 
