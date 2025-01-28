@@ -21,7 +21,9 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Neutral = {
-			Main = Util.Colors.Gray["200"],
+			Main = Util.Colors.Stone["100"],
+			Light = Util.Colors.Stone["50"],
+			Dark = Util.Colors.Stone["200"],
 		},
 		NeutralContent = {
 			Main = Util.Colors.Stone["800"],
@@ -49,14 +51,14 @@ return Themer.NewTheme(Scope, {
 		},
 	},
 	Font = {
-		Body = "rbxasset://fonts/families/FredokaOne.json",
-		Heading = "rbxasset://fonts/families/FredokaOne.json",
-		Monospace = "rbxasset://fonts/families/FredokaOne.json",
+		Body = "rbxasset://fonts/families/Poppins.json",
+		Heading = "rbxasset://fonts/families/Poppins.json",
+		Monospace = "rbxasset://fonts/families/Poppins.json",
 	},
 	FontWeight = {
-		Body = Enum.FontWeight.Regular,
-		Bold = Enum.FontWeight.SemiBold,
-		Heading = Enum.FontWeight.Bold,
+		Body = Enum.FontWeight.SemiBold,
+		Bold = Enum.FontWeight.Bold,
+		Heading = Enum.FontWeight.ExtraBold,
 	},
 	TextSize = {
 		Base = 20,

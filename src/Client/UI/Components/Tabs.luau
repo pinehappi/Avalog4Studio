@@ -1,4 +1,5 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 
@@ -41,28 +42,30 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			Scope:ForValues(Options, function(Use, Scope, Option)
 				local OptionsValue = Use(Options)
 
-				return Scope:Button {
-					Name = "OptionButton",
-					Content = Scope:Computed(function(Use)
-						return { Option }
-					end),
-					Style = Scope:Computed(function(Use)
-						if Use(Options)[Use(Selection)] == Option then
-							return "Filled"
-						else
-							return "Ghost"
-						end
-					end),
-					Color = Theme.Colors.BaseContent.Main,
-					SizeVariant = "Medium",
-					LayoutOrder = Scope:Computed(function()
-						return table.find(OptionsValue, Option) or 0
-					end),
+				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
+					return Scope:Button {
+						Name = "OptionButton",
+						Content = Scope:Computed(function(Use)
+							return { Option }
+						end),
+						Style = Scope:Computed(function(Use)
+							if Use(Options)[Use(Selection)] == Option then
+								return "Filled"
+							else
+								return "Ghost"
+							end
+						end),
+						Color = Theme.Colors.BaseContent.Main,
+						SizeVariant = "Medium",
+						LayoutOrder = Scope:Computed(function()
+							return table.find(OptionsValue, Option) or 0
+						end),
 
-					OnActivated = function()
-						Selection:set(table.find(OptionsValue, Option))
-					end,
-				}
+						OnActivated = function()
+							Selection:set(table.find(OptionsValue, Option))
+						end,
+					}
+				end)
 			end),
 		},
 	}))

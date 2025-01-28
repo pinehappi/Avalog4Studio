@@ -4,6 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
 local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local StretchNumber = require(Avalog.SourceCode.Shared.Utils.StretchNumber)
+local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 
 local Children = Fusion.Children
 
@@ -65,10 +66,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 		[Children] = {
 			Scope:ForValues(ScaleProperties, function(Use, Scope, ScaleProperty)
-				return Scope:SliderSetting {
-					Label = ScaleProperty.Name,
-					Value = ScaleProperty.Value,
-				}
+				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
+					return Scope:SliderSetting {
+						Label = ScaleProperty.Name,
+						Value = ScaleProperty.Value,
+					}
+				end)
 			end),
 		},
 	}))
