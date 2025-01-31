@@ -1,10 +1,10 @@
 local Players = game:GetService("Players")
 
-local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local States = require(script.Parent.Parent)
+local States = require(script.Parent.Parent.States)
 local Fusion = require(Avalog.Parent.Fusion)
-local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogItems)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local DeepEquals = require(Avalog.SourceCode.Shared.Utils.DeepEquals)
 

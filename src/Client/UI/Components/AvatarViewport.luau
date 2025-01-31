@@ -6,7 +6,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
+local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigation)
 
 local Children = Fusion.Children
 

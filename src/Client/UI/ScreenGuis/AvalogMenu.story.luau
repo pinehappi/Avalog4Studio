@@ -3,7 +3,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local OnyxUITheme = require(script.Parent.Parent.ReplacementTheme)
 local States = require(Avalog.SourceCode.Client.UI.States)
-local StateExtensions = require(Avalog.SourceCode.Client.UI.States.Extensions)
+local StateExtensions = require(Avalog.SourceCode.Client.UI.StateExtensions)
 
 local AvalogMenu = require(script.Parent.AvalogMenu)
 

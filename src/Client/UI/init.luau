@@ -2,7 +2,7 @@ local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent
 local Fusion = require(Avalog.Parent.Fusion)
-local StateExtensions = require(Avalog.SourceCode.Client.UI.States.Extensions)
+local StateExtensions = require(Avalog.SourceCode.Client.UI.StateExtensions)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local OnyxUITheme = require(script.OnyxUITheme)
 

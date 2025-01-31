@@ -3,9 +3,9 @@ local AvatarEditorService = game:GetService("AvatarEditorService")
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
+local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
-local Inventory = require(Avalog.SourceCode.Client.UI.States.Extensions.Inventory)
+local Inventory = require(Avalog.SourceCode.Client.UI.StateExtensions.Inventory)
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)

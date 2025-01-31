@@ -3,7 +3,7 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local LocalAvatar = require(Avalog.SourceCode.Client.Avatar.LocalAvatar)
-local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogItems)
 
 local Children = Fusion.Children
 

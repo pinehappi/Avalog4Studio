@@ -1,5 +1,5 @@
-local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
-local States = require(script.Parent.Parent)
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local States = require(script.Parent.Parent.States)
 local Fusion = require(Avalog.Parent.Fusion)
 
 local FeaturedService

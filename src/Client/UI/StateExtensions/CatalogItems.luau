@@ -2,7 +2,7 @@ local AssetService = game:GetService("AssetService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 
-local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local Future = require(Avalog.Parent.Future)
 local AssetTypeFromId = require(Avalog.SourceCode.Shared.Utils.AssetTypeFromId)
 

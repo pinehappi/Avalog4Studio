@@ -1,5 +1,5 @@
-local Avalog = script.Parent.Parent.Parent.Parent.Parent.Parent
-local States = require(script.Parent.Parent)
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
+local States = require(script.Parent.Parent.States)
 local Categories = require(Avalog.SourceCode.Shared.Categories)
 local Fusion = require(Avalog.Parent.Fusion)
 

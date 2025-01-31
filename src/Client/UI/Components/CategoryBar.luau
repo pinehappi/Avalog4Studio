@@ -4,7 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Categories = require(Avalog.SourceCode.Shared.Categories)
 local CategoriesToNames = require(Avalog.SourceCode.Shared.Categories.CategoriesToNames)
-local Navigation = require(Avalog.SourceCode.Client.UI.States.Extensions.Navigation)
+local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigation)
 
 local Children = Fusion.Children
 

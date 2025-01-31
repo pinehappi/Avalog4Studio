@@ -10,7 +10,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
-local CatalogItems = require(Avalog.SourceCode.Client.UI.States.Extensions.CatalogItems)
+local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogItems)
 local Zap = require(Avalog.SourceCode.Shared.Zap.client)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 
