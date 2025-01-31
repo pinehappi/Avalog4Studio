@@ -1,31 +1,31 @@
 local MarketplaceService = game:GetService("MarketplaceService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Avalog = script.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent
 local TableUtil = require(ReplicatedStorage.Avalog.Packages.TableUtil)
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local Zap = require(Avalog.SourceCode.Shared.Zap.server)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
-local PlayerDataStore = require(Avalog.SourceCode.Server.PlayerDataStore.PlayerDataStore)
+local PlayerDataStore = require(Avalog.SourceCode.Server.PlayerDataStorage.PlayerDataStore)
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
 	BulkPurchaseItems = RateLimit(1, 2),
 }
 
-local AvatarService = {
+local Avatar = {
 	Avatars = {},
 }
 
-function AvatarService:BulkPurchaseItems(Player: Player, Items: { any })
+function Avatar:BulkPurchaseItems(Player: Player, Items: { any })
 	return Future.Try(function()
 		return MarketplaceService:PromptBulkPurchase(Player, Items, {})
 	end):Await()
 end
 
-function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
+function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data)
 	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
@@ -49,7 +49,7 @@ function AvatarService:Update(Player: Player, Data: HumanoidDescriber.Data)
 	end
 end
 
-function AvatarService:Apply(Player: Player, HumanoidDescription: HumanoidDescription)
+function Avatar:Apply(Player: Player, HumanoidDescription: HumanoidDescription)
 	local Character = Player.Character
 
 	if Character then
@@ -64,7 +64,7 @@ function AvatarService:Apply(Player: Player, HumanoidDescription: HumanoidDescri
 	return false
 end
 
-function AvatarService:GetCharacterObjects(Player: Player): (Model?, Humanoid?, HumanoidDescription?)
+function Avatar:GetCharacterObjects(Player: Player): (Model?, Humanoid?, HumanoidDescription?)
 	local Character = Player.Character
 
 	if Character then
@@ -77,7 +77,7 @@ function AvatarService:GetCharacterObjects(Player: Player): (Model?, Humanoid?, 
 	return nil
 end
 
-function AvatarService:Start()
+function Avatar:Start()
 	Zap.BulkPurchaseAvatarItems.SetCallback(function(Player, Items)
 		if not RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
 			return
@@ -85,7 +85,7 @@ function AvatarService:Start()
 
 		local SafeItems: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Items)
 
-		return AvatarService:BulkPurchaseItems(Player, SafeItems)
+		return Avatar:BulkPurchaseItems(Player, SafeItems)
 	end)
 
 	Zap.UpdateAvatar.SetCallback(function(Player, Data): ()
@@ -95,14 +95,14 @@ function AvatarService:Start()
 
 		local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
 
-		return AvatarService:Update(Player, SafeData)
+		return Avatar:Update(Player, SafeData)
 	end)
 
 	PlayerDataStore.Loaded:Connect(function(Player, Document)
 		local Data = Document:read()
 
-		AvatarService:Update(Player, Data.Avatar.Data)
+		Avatar:Update(Player, Data.Avatar.Data)
 	end)
 end
 
-return AvatarService
+return Avatar

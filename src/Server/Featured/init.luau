@@ -1,7 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
-local Avalog = script.Parent.Parent.Parent.Parent
-local TableUtil = require(script.Parent.Parent.Parent.Parent.Parent.TableUtil)
+local Avalog = script.Parent.Parent.Parent
+local TableUtil = require(Avalog.Parent.TableUtil)
 local Future = require(Avalog.Parent.Future)
 local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
@@ -28,7 +28,7 @@ local GITHUB_REPO = "UseAvalog/Featured"
 local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
 
-local FeaturedService = {
+local Featured = {
 	LastUpdated = nil,
 	Data = {
 		Items = {},
@@ -50,7 +50,7 @@ local FeaturedService = {
 -- 	return FeaturedService:GetItems(Start, End)
 -- end
 
-function FeaturedService:GetCreators(Start: number, End: number): { FeaturedCreator }
+function Featured:GetCreators(Start: number, End: number): { FeaturedCreator }
 	local Data = self:GetData()
 
 	return TableUtil.Filter(TableUtil.Copy(Data.Creators, true), function(Key, _)
@@ -58,7 +58,7 @@ function FeaturedService:GetCreators(Start: number, End: number): { FeaturedCrea
 	end)
 end
 
-function FeaturedService:GetItems(Start: number, End: number): { FeaturedItem }
+function Featured:GetItems(Start: number, End: number): { FeaturedItem }
 	local Data = self:GetData()
 
 	return TableUtil.Filter(TableUtil.Copy(Data.Items, true), function(Key, _)
@@ -66,7 +66,7 @@ function FeaturedService:GetItems(Start: number, End: number): { FeaturedItem }
 	end)
 end
 
-function FeaturedService:GetData(): FeaturedData
+function Featured:GetData(): FeaturedData
 	if next(self.Data) ~= nil then
 		return {
 			Items = {
@@ -96,7 +96,7 @@ function FeaturedService:GetData(): FeaturedData
 	end
 end
 
-function FeaturedService:SpawnUpdateLoop()
+function Featured:SpawnUpdateLoop()
 	return task.spawn(function()
 		while true do
 			local Success = self:Update()
@@ -110,7 +110,7 @@ function FeaturedService:SpawnUpdateLoop()
 	end)
 end
 
-function FeaturedService:Update()
+function Featured:Update()
 	local Success, Result = self:_FetchLatestVersion():Await()
 
 	if Success and (Result ~= nil) and (Result ~= self.LastUpdated) then
@@ -131,7 +131,7 @@ function FeaturedService:Update()
 	return false
 end
 
-function FeaturedService:_FetchLatestData()
+function Featured:_FetchLatestData()
 	return Future.Try(function()
 		local Success, Response =
 			Fetch(`https://github.com/{GITHUB_REPO}/releases/latest/download/featured.json`):Await()
@@ -151,7 +151,7 @@ function FeaturedService:_FetchLatestData()
 	end)
 end
 
-function FeaturedService:_FetchLatestVersion()
+function Featured:_FetchLatestVersion()
 	return Future.Try(function()
 		local Success, Response = Fetch(`https://api.github.com/repos/{GITHUB_REPO}/releases/latest`):Await()
 
@@ -166,7 +166,7 @@ function FeaturedService:_FetchLatestVersion()
 	end)
 end
 
-function FeaturedService:_FetchIsActive()
+function Featured:_FetchIsActive()
 	local Success, Response = Fetch(`https://api.github.com/repos/{GITHUB_REPO}/releases/latest`):Await()
 
 	if Success then
@@ -178,10 +178,10 @@ function FeaturedService:_FetchIsActive()
 	return true
 end
 
-function FeaturedService:Start()
+function Featured:Start()
 	if self:_FetchIsActive() then
 		self:SpawnUpdateLoop()
 	end
 end
 
-return FeaturedService
+return Featured
