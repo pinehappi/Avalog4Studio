@@ -34,6 +34,7 @@ ColorUtils = { wally = "csqrl/colour-utils", version = "^1.4.1" }
 TableUtil = { wally = "sleitnick/table-util", version = "^1.2.1" }
 HumanoidDescriber = { wally = "imavafe/humanoid-describer", version = "^0.1.1" }
 EnumSerDes = { wally = "imavafe/enum-ser-des", version = "^0.1.1" }
+Bootloader = { wally = "imavafe/bootloader", version = "^0.1.0" }
 
 Fusion = { wally = "elttob/fusion", version = "^0.3.0" }
 Lapis = { wally = "nezuo/lapis", version = "^0.3.3" }
