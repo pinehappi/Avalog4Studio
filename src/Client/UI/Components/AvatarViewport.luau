@@ -25,9 +25,29 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	}
 
 	local RotationAngle = 0
+	local Dragging = false
+	local LastDragPosition = Vector2.new()
+
+	local DragDetector = Scope:New "UIDragDetector" {
+		DragStyle = Enum.UIDragDetectorDragStyle.Scriptable,
+	}
+
+	DragDetector.DragStart:Connect(function(Position)
+		Dragging = true
+		LastDragPosition = Position
+	end)
+	DragDetector.DragEnd:Connect(function()
+		Dragging = false
+	end)
+	DragDetector.DragContinue:Connect(function(Position)
+		RotationAngle += (Position - LastDragPosition).X / 50
+		LastDragPosition = Position
+	end)
 
 	RunService.RenderStepped:Connect(function(DeltaTime)
-		RotationAngle += DeltaTime * math.rad(30)
+		if not Dragging then
+			RotationAngle += DeltaTime * math.rad(30)
+		end
 
 		ViewportCamera.CFrame = CFrame.lookAt(
 			Vector3.new(8 * math.cos(RotationAngle), 0, 8 * math.sin(RotationAngle)),
@@ -55,6 +75,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				end),
 
 				[Children] = {
+					DragDetector,
 					Scope:New "ViewportFrame" {
 						Name = "Viewport",
 						Size = UDim2.fromScale(1, 1),
