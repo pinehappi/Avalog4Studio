@@ -20,9 +20,20 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Theme = OnyxUI.Themer.Theme:now()
 
 	local ViewportCamera = Scope:New "Camera" {
-		CFrame = CFrame.lookAt(Vector3.new(0, 0, -8), Vector3.new(0, 0, 0)),
+		CFrame = CFrame.lookAt(Vector3.new(4, 0, -8), Vector3.new(0, 0, 0)),
 		CameraType = Enum.CameraType.Scriptable,
 	}
+
+	local RotationAngle = 0
+
+	RunService.RenderStepped:Connect(function(DeltaTime)
+		RotationAngle += DeltaTime * math.rad(30)
+
+		ViewportCamera.CFrame = CFrame.lookAt(
+			Vector3.new(8 * math.cos(RotationAngle), 0, 8 * math.sin(RotationAngle)),
+			Vector3.new(0, 0, 0)
+		)
+	end)
 
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
