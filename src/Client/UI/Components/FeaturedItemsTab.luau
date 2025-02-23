@@ -4,6 +4,8 @@ local Fusion = require(Avalog.Parent.Fusion)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogSearch)
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 
+local Children = Fusion.Children
+
 local ItemsTab = require(script.Parent.ItemsTab)
 
 export type Props = ItemsTab.Props & {}
@@ -12,7 +14,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
 		ItemButton = require(script.Parent.ItemButton),
 		ItemsTab = require(script.Parent.ItemsTab),
+		CustomButton = require(script.Parent.CustomButton),
 	})
+	local Theme = OnyxUI.Themer.Theme:now()
 
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 
@@ -50,6 +54,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	UpdateCatalogSearch()
 
+	local AdDisclaimerShown = Scope:Value(true)
+
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		Items = Scope:Computed(function(Use)
@@ -61,5 +67,27 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				table.unpack(CatalogResultItemsValue),
 			}
 		end),
+
+		[Children] = {
+			Scope:CustomButton {
+				AutomaticSize = Enum.AutomaticSize.Y,
+				Visible = AdDisclaimerShown,
+				ListHorizontalAlignment = Enum.HorizontalAlignment.Left,
+
+				OnActivated = function()
+					AdDisclaimerShown:set(false)
+				end,
+
+				[Children] = {
+					Scope:IconText {
+						Content = { "rbxassetid://13848466137", "Featured contains paid and curated listings." },
+						ListPadding = Scope:Computed(function(Use)
+							return UDim.new(0, Use(Theme.Spacing["0.5"]))
+						end),
+						ListVerticalAlignment = Enum.VerticalAlignment.Center,
+					},
+				},
+			},
+		},
 	}))
 end

@@ -40,6 +40,26 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		ClipsDescendants = false,
 		Visible = Shown,
 		CanvasSize = UDim2.fromOffset(0, 0),
+		Padding = Scope:Computed(function(Use)
+			return UDim.new(0, Use(Theme.Spacing["0"]))
+		end),
+		PaddingRight = Scope:Computed(function(Use)
+			return UDim.new(0, Use(Theme.Spacing["1"]))
+		end),
+	}))) {
+		[OnChange "CanvasPosition"] = function(CanvasPosition: Vector2)
+			local OnReachedEndValue = Fusion.peek(OnReachedEnd)
+			local AbsoluteCanvasSizeValue = Fusion.peek(AbsoluteCanvasSize)
+			local AbsoluteWindowSizeValue = Fusion.peek(AbsoluteWindowSize)
+
+			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
+
+			if CanvasPosition.Y >= CanvasHeight then
+				OnReachedEndValue()
+			end
+		end,
+		[Out "AbsoluteCanvasSize"] = AbsoluteCanvasSize,
+		[Out "AbsoluteWindowSize"] = AbsoluteWindowSize,
 
 		[Children] = {
 			Scope:Frame {
@@ -84,20 +104,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				},
 			},
 		},
-	}))) {
-		[OnChange "CanvasPosition"] = function(CanvasPosition: Vector2)
-			local OnReachedEndValue = Fusion.peek(OnReachedEnd)
-			local AbsoluteCanvasSizeValue = Fusion.peek(AbsoluteCanvasSize)
-			local AbsoluteWindowSizeValue = Fusion.peek(AbsoluteWindowSize)
-
-			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
-
-			if CanvasPosition.Y >= CanvasHeight then
-				OnReachedEndValue()
-			end
-		end,
-		[Out "AbsoluteCanvasSize"] = AbsoluteCanvasSize,
-		[Out "AbsoluteWindowSize"] = AbsoluteWindowSize,
 	}
 
 	return ItemsTab
