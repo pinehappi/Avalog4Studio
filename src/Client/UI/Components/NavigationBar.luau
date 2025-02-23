@@ -24,7 +24,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	return Scope:Frame(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
-		BackgroundColor3 = Theme.Colors.Neutral.Dark,
+		BackgroundColor3 = Theme.Colors.Base.Main,
 		BackgroundTransparency = 0,
 		ListEnabled = true,
 		ListFillDirection = Enum.FillDirection.Horizontal,

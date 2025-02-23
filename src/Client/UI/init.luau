@@ -4,7 +4,7 @@ local Avalog = script.Parent.Parent.Parent
 local Fusion = require(Avalog.Parent.Fusion)
 local StateExtensions = require(Avalog.SourceCode.Client.UI.StateExtensions)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
-local OnyxUITheme = require(script.OnyxUITheme)
+local States = require(script.States)
 
 local AvalogMenu = require(script.ScreenGuis.AvalogMenu)
 
@@ -12,14 +12,13 @@ local Themer = OnyxUI.Themer
 
 local UIService = {
 	Scope = Fusion.scoped(Fusion),
-	XPMultiplierDropdownIcons = {},
 }
 
 function UIService:Start()
 	StateExtensions:Initialize()
 	StateExtensions:Start()
 
-	Themer.Theme:is(OnyxUITheme):during(function()
+	Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
 		AvalogMenu(self.Scope, {
 			Parent = Players.LocalPlayer:WaitForChild("PlayerGui"),
 		})

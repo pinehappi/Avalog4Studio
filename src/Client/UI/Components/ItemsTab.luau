@@ -1,7 +1,7 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
-local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 local Out = Fusion.Out
@@ -51,7 +51,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 				[Children] = {
 					Scope:ForValues(Items, function(Use, Scope, Item)
-						return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
+						return OnyxUI.Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
 							return Scope:ItemButton {
 								Id = Item.Id,
 								Type = Item.Type,

@@ -4,7 +4,6 @@ local Fusion = require(Avalog.Parent.Fusion)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogSearch)
 local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigation)
 local States = require(Avalog.SourceCode.Client.UI.States)
-local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
 
 local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
 local Frame = require(OnyxUIFolder.Components.Frame)

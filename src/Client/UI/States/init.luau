@@ -4,6 +4,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local Scope = Fusion.scoped(Fusion)
 
 local States = {
+	Theme = Scope:Value(nil),
 	Catalog = {
 		Searching = Scope:Value(false),
 		SearchQuery = Scope:Value(""),

@@ -44,8 +44,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				Padding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0.75"]))
 				end),
-				BackgroundTransparency = 0,
-				BackgroundColor3 = Theme.Colors.Neutral.Dark,
 				AutomaticSize = Enum.AutomaticSize.Y,
 			},
 			Scope:Tabs {

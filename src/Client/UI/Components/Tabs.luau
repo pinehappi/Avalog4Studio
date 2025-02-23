@@ -1,5 +1,5 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
-local OnyxUITheme = require(Avalog.SourceCode.Client.UI.OnyxUITheme)
+local States = require(Avalog.SourceCode.Client.UI.States)
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 
@@ -42,7 +42,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			Scope:ForValues(Options, function(Use, Scope, Option)
 				local OptionsValue = Use(Options)
 
-				return OnyxUI.Themer.Theme:is(OnyxUITheme):during(function()
+				return OnyxUI.Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
 					return Scope:Button {
 						Name = "OptionButton",
 						Content = Scope:Computed(function(Use)

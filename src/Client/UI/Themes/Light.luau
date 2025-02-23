@@ -1,4 +1,4 @@
-local Avalog = script.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local ColorUtils = require(Avalog.Parent.ColorUtils)
@@ -11,7 +11,7 @@ local Scope = Fusion.scoped(Fusion)
 return Themer.NewTheme(Scope, {
 	Colors = {
 		Primary = {
-			Main = Util.Colors.White,
+			Main = Util.Colors.Black,
 		},
 		Secondary = {
 			Main = Util.Colors.White,
@@ -21,18 +21,20 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Neutral = {
-			Main = ColorUtils.Lighten(Util.Colors.Stone["800"], 0.05),
+			Main = Util.Colors.Stone["200"],
+			Light = Util.Colors.Stone["50"],
+			Dark = Util.Colors.White,
 		},
 		NeutralContent = {
-			Main = Util.Colors.Stone["100"],
-			Dark = ColorUtils.Darken(Util.Colors.Stone["100"], 0.2),
+			Main = Util.Colors.Stone["800"],
+			Dark = ColorUtils.Darken(Util.Colors.Stone["800"], 0.2),
 		},
 
 		Base = {
-			Main = Color3.fromHex("191b1d"),
+			Main = Util.Colors.White,
 		},
 		BaseContent = {
-			Main = Util.Colors.White,
+			Main = Util.Colors.Black,
 		},
 
 		Success = {

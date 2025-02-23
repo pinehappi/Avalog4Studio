@@ -1,4 +1,4 @@
-local Avalog = script.Parent.Parent.Parent.Parent
+local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local ColorUtils = require(Avalog.Parent.ColorUtils)
@@ -11,7 +11,7 @@ local Scope = Fusion.scoped(Fusion)
 return Themer.NewTheme(Scope, {
 	Colors = {
 		Primary = {
-			Main = Util.Colors.Blue["600"],
+			Main = Util.Colors.White,
 		},
 		Secondary = {
 			Main = Util.Colors.White,
@@ -21,20 +21,18 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Neutral = {
-			Main = Util.Colors.Stone["100"],
-			Light = Util.Colors.Stone["50"],
-			Dark = Util.Colors.Stone["200"],
+			Main = ColorUtils.Lighten(Util.Colors.Stone["800"], 0.05),
 		},
 		NeutralContent = {
-			Main = Util.Colors.Stone["800"],
-			Dark = ColorUtils.Darken(Util.Colors.Stone["800"], 0.2),
+			Main = Util.Colors.Stone["100"],
+			Dark = ColorUtils.Darken(Util.Colors.Stone["100"], 0.2),
 		},
 
 		Base = {
-			Main = Util.Colors.White,
+			Main = Color3.fromHex("191b1d"),
 		},
 		BaseContent = {
-			Main = Util.Colors.Black,
+			Main = Util.Colors.White,
 		},
 
 		Success = {
@@ -51,26 +49,26 @@ return Themer.NewTheme(Scope, {
 		},
 	},
 	Font = {
-		Body = "rbxasset://fonts/families/Poppins.json",
-		Heading = "rbxasset://fonts/families/Poppins.json",
-		Monospace = "rbxasset://fonts/families/Poppins.json",
+		Body = "rbxasset://fonts/families/Montserrat.json",
+		Heading = "rbxasset://fonts/families/Montserrat.json",
+		Monospace = "rbxasset://fonts/families/Montserrat.json",
 	},
 	FontWeight = {
 		Body = Enum.FontWeight.SemiBold,
 		Bold = Enum.FontWeight.Bold,
-		Heading = Enum.FontWeight.ExtraBold,
+		Heading = Enum.FontWeight.Bold,
 	},
 	TextSize = {
-		Base = 20,
+		Base = 18,
 	},
 	CornerRadius = {
-		Base = 8,
+		Base = 6,
 	},
 	StrokeThickness = {
 		Base = 1,
 	},
 	Spacing = {
-		Base = 18,
+		Base = 16,
 	},
 	SpringSpeed = {
 		Base = 60,
