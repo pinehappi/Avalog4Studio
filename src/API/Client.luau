@@ -5,6 +5,7 @@ local CLIENT = SOURCE.Client
 local States = require(SOURCE.Client.UI.States)
 local Fusion = require(PACKAGES.Fusion)
 local Bootloader = require(PACKAGES.Bootloader)
+local Config = require(script.Parent.Config)
 
 local function GetModules()
 	local Modules = {}
@@ -19,16 +20,17 @@ local function GetModules()
 end
 
 local AvalogClient = {
-	Bootloader = Bootloader(GetModules()),
+	Config = Config,
 	Started = false,
+	_Bootloader = Bootloader(GetModules()),
 }
 
 function AvalogClient:Start()
 	assert(not self.Started, "Avalog already started.")
 	self.Started = true
 
-	AvalogClient.Bootloader:Initialize()
-	AvalogClient.Bootloader:Start()
+	AvalogClient._Bootloader:Initialize()
+	AvalogClient._Bootloader:Start()
 end
 
 function AvalogClient:ToggleOpen()
