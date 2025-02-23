@@ -1,52 +1,55 @@
 local Players = game:GetService("Players")
 
 local Avalog = script.Parent.Parent.Parent.Parent
-local Lapis = require(Avalog.Parent.Lapis)
+local Skilift = require(Avalog.Parent.Skilift)
 local Signal = require(Avalog.Parent.Signal)
+local Stator = require(Avalog.Parent.Stator)
 
-local function NewPlayerDataStore(Name: string, Options: Lapis.CollectionOptions<{}>)
+local function NewPlayerDataStore(Options)
 	local PlayerDataStore = {
-		Collection = Lapis.createCollection(Name, Options),
-		Documents = {},
+		Store = Skilift.store(Options),
+
+		Profiles = {},
 
 		Loaded = Signal.new(),
 		Unloaded = Signal.new(),
 	}
 
 	function PlayerDataStore:Load(Player: Player)
-		PlayerDataStore.Collection
-			:load(`{Player.UserId}`, { Player.UserId })
-			:andThen(function(Document)
-				if Player.Parent == nil then
-					Document:close():catch(warn)
-					return
-				end
+		if PlayerDataStore.Profiles[Player] ~= nil then
+			return
+		end
 
-				Document:beforeClose(function()
-					PlayerDataStore.Unloaded:Fire(Player)
-				end)
+		local Session = PlayerDataStore.Store:load(`{Player.UserId}`)
 
-				PlayerDataStore.Documents[Player] = Document
+		local Profile = {
+			Session = Session,
+			Data = Stator(nil),
+		}
 
-				PlayerDataStore.Loaded:Fire(Player, Document)
+		Session:updated(function(Data)
+			Profile.Data:Update(function()
+				return Data
 			end)
-			:catch(function()
-				warn(`Player {Player}'s data failed to load.`)
-				Player:Kick("Data failed to load. Please rejoin.")
-			end)
+		end)
+
+		PlayerDataStore.Profiles[Player] = Profile
+		PlayerDataStore.Loaded:Fire(Player, Profile)
 	end
 
 	function PlayerDataStore:Unload(Player: Player)
-		local Document = PlayerDataStore:Get(Player)
+		local Profile = PlayerDataStore:Get(Player)
 
-		if Document ~= nil then
-			PlayerDataStore.Documents[Player] = nil
-			Document:close():catch(warn)
+		if Profile ~= nil then
+			PlayerDataStore.Profiles[Player] = nil
+			Profile.Session:stop()
+
+			PlayerDataStore.Unloaded:Fire(Player)
 		end
 	end
 
 	function PlayerDataStore:Get(Player: Player)
-		return PlayerDataStore.Documents[Player]
+		return PlayerDataStore.Profiles[Player]
 	end
 
 	function PlayerDataStore:Start()

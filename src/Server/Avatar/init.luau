@@ -1,8 +1,6 @@
 local MarketplaceService = game:GetService("MarketplaceService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Avalog = script.Parent.Parent.Parent
-local TableUtil = require(ReplicatedStorage.Avalog.Packages.TableUtil)
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
@@ -34,13 +32,9 @@ function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data)
 			return Data
 		end)
 
-		local PlayerDocument = PlayerDataStore:Get(Player)
-		if PlayerDocument ~= nil then
-			local DocumentData = TableUtil.Copy(PlayerDocument:read(), true)
-
-			DocumentData.Avatar.Data = Data
-
-			-- PlayerDocument:write(DocumentData)
+		local Profile = PlayerDataStore:Get(Player)
+		if Profile ~= nil then
+			Profile.Session:patch(PlayerDataStore.Actions.SetAvatarData, Data)
 		end
 
 		self:Apply(Player, HumanoidDescription):Await()
@@ -98,10 +92,12 @@ function Avatar:Start()
 		return Avatar:Update(Player, SafeData)
 	end)
 
-	PlayerDataStore.Loaded:Connect(function(Player, Document)
-		local Data = Document:read()
+	PlayerDataStore.Loaded:Connect(function(Player, Profile)
+		local Data = Profile.Data:Get()
 
-		Avatar:Update(Player, Data.Avatar.Data)
+		if Data.Avatar.Data ~= nil then
+			Avatar:Update(Player, Data.Avatar.Data)
+		end
 	end)
 end
 
