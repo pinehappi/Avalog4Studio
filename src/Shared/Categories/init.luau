@@ -1,5 +1,6 @@
+local Avalog = script.Parent.Parent.Parent
 local AvatarAssetTypes = require(script.Parent.AvatarAssetTypes)
-local TableUtil = require(script.Parent.Parent.Parent.Parent.TableUtil)
+local Sift = require(Avalog.Parent.Sift)
 
 export type Category = {
 	Name: string,
@@ -112,7 +113,7 @@ local Categories: { [string]: { Category } } = {
 	Customize = { { Name = "Equipped" }, { Name = "Skin" }, { Name = "Build" } },
 }
 
-Categories.Inventory = TableUtil.Copy(Categories.Marketplace, true)
+Categories.Inventory = Sift.Dictionary.copyDeep(Categories.Marketplace)
 
 PurgeBundleCategories(Categories.Inventory)
 

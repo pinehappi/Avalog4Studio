@@ -1,4 +1,4 @@
-local TableUtil = require(script.Parent.Parent.TableUtil)
+local Sift = require(script.Parent.Parent.Sift)
 local ThemeSpec = require(script.Parent.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"].Themer.ThemeSpec)
 local Stator = require(script.Parent.Parent.Stator)
 local DarkTheme = require(script.Parent.SourceCode.Client.UI.Themes.Dark)
@@ -11,4 +11,4 @@ local CONFIG_TEMPLATE: Config = {
 	Theme = DarkTheme,
 }
 
-return Stator(TableUtil.Copy(CONFIG_TEMPLATE, true))
+return Stator(Sift.Dictionary.copyDeep(CONFIG_TEMPLATE))

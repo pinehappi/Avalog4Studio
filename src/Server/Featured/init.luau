@@ -1,7 +1,7 @@
 local HttpService = game:GetService("HttpService")
 
 local Avalog = script.Parent.Parent.Parent
-local TableUtil = require(Avalog.Parent.TableUtil)
+local Sift = require(Avalog.Parent.Sift)
 local Future = require(Avalog.Parent.Future)
 local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
@@ -53,7 +53,7 @@ local Featured = {
 function Featured:GetCreators(Start: number, End: number): { FeaturedCreator }
 	local Data = self:GetData()
 
-	return TableUtil.Filter(TableUtil.Copy(Data.Creators, true), function(Key, _)
+	return Sift.Dictionary.filter(Sift.Dictionary.copyDeep(Data.Creators), function(Key, _)
 		return Key > Start and Key < End
 	end)
 end
@@ -61,7 +61,7 @@ end
 function Featured:GetItems(Start: number, End: number): { FeaturedItem }
 	local Data = self:GetData()
 
-	return TableUtil.Filter(TableUtil.Copy(Data.Items, true), function(Key, _)
+	return Sift.Dictionary.filter(Sift.Dictionary.copyDeep(Data.Items), function(Key, _)
 		return Key > Start and Key < End
 	end)
 end
