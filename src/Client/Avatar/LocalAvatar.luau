@@ -241,6 +241,11 @@ function LocalAvatar:SetCharacter(Character: Model)
 			self.Humanoid = Humanoid
 			self.HumanoidDescriber = HumanoidDescriberObject
 
+			Humanoid.ApplyDescriptionFinished:Connect(function()
+				HumanoidDescriberObject:ReadFromDescription(Humanoid:GetAppliedDescription())
+				LocalAvatar:Apply()
+			end)
+
 			self.Updated:Fire()
 		end
 	end
