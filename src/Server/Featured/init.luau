@@ -1,10 +1,13 @@
 local HttpService = game:GetService("HttpService")
 
 local Avalog = script.Parent.Parent.Parent
+local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 local Sift = require(Avalog.Parent.Sift)
 local Future = require(Avalog.Parent.Future)
 local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
+local Stator = require(Avalog.Parent.Stator)
+local Zap = require(Avalog.SourceCode.Shared.Zap.server)
 
 export type FeaturedListing = {
 	TransactionHash: string,
@@ -24,82 +27,46 @@ export type FeaturedData = {
 	Creators: { FeaturedCreator },
 }
 
+local function CamelToPascal(Dictionary: { [string]: any })
+	return Sift.Dictionary.map(Dictionary, function(Value, Key)
+		if typeof(Value) == "table" then
+			Value = CamelToPascal(Value)
+		end
+		if typeof(Key) == "string" then
+			Key = Key:gsub("(%l)(%w*)", function(a, b)
+				return a:upper() .. b
+			end)
+		end
+
+		return Value, Key
+	end)
+end
+
 local GITHUB_REPO = "UseAvalog/Featured"
 local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
 
 local Featured = {
 	LastUpdated = nil,
-	Data = {
+	Data = Stator({
 		Items = {},
-		Creators = {},
-	},
+	}),
 
 	Updated = Signal.new(),
 }
 
--- function FeaturedService.Client:GetCreators(Player: Player, Start: number, End: number): { FeaturedCreator }
--- 	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
-
--- 	return FeaturedService:GetCreators(Start, End)
--- end
-
--- function FeaturedService.Client:GetItems(Player: Player, Start: number, End: number): { FeaturedItem }
--- 	assert(t.tuple(t.instanceOf("Player")(Player), t.number(Start), t.number(End)))
-
--- 	return FeaturedService:GetItems(Start, End)
--- end
-
-function Featured:GetCreators(Start: number, End: number): { FeaturedCreator }
-	local Data = self:GetData()
-
-	return Sift.Dictionary.filter(Sift.Dictionary.copyDeep(Data.Creators), function(Key, _)
-		return Key > Start and Key < End
-	end)
-end
-
 function Featured:GetItems(Start: number, End: number): { FeaturedItem }
-	local Data = self:GetData()
+	local Data = Featured.Data:Get()
 
-	return Sift.Dictionary.filter(Sift.Dictionary.copyDeep(Data.Items), function(Key, _)
+	return Sift.Array.filter(Data.Items, function(_, Key)
 		return Key > Start and Key < End
 	end)
-end
-
-function Featured:GetData(): FeaturedData
-	if next(self.Data) ~= nil then
-		return {
-			Items = {
-				{
-					Id = 123123,
-					TransactionHash = "aaa",
-					Bid = 1023,
-					ItemType = Enum.AvatarItemType.Asset,
-					StartTime = 0,
-				},
-			},
-			Creators = {},
-		}
-	else
-		return {
-			Items = {
-				{
-					Id = 123123,
-					TransactionHash = "aaa",
-					Bid = 1023,
-					ItemType = Enum.AvatarItemType.Asset,
-					StartTime = 0,
-				},
-			},
-			Creators = {},
-		}
-	end
 end
 
 function Featured:SpawnUpdateLoop()
 	return task.spawn(function()
 		while true do
-			local Success = self:Update()
+			local Success = Featured:Update()
 
 			if Success then
 				task.wait(UPDATE_DELAY)
@@ -111,16 +78,18 @@ function Featured:SpawnUpdateLoop()
 end
 
 function Featured:Update()
-	local Success, Result = self:_FetchLatestVersion():Await()
+	local Success, Result = Featured:_FetchLatestVersion():Await()
 
-	if Success and (Result ~= nil) and (Result ~= self.LastUpdated) then
-		local Success2, Result2 = self:_FetchLatestData():Await()
+	if Success and (Result ~= nil) and (Result ~= Featured.LastUpdated) then
+		local Success2, Result2 = Featured:_FetchLatestData():Await()
 
 		if Success2 then
-			self.Data = Result2
-			self.LastUpdated = Result
+			Featured.Data:Update(function()
+				return Result2
+			end)
+			Featured.LastUpdated = Result
 
-			self.Updated:Fire(Result2)
+			Featured.Updated:Fire(Result2)
 
 			return true, Result2
 		else
@@ -140,13 +109,12 @@ function Featured:_FetchLatestData()
 			local Data = HttpService:JSONDecode(Response.Body)
 
 			if typeof(Data) == "table" then
-				return Data
+				return Featured.FixDataFormat(Data)
 			end
 		end
 
 		return {
 			Items = {},
-			Creators = {},
 		}
 	end)
 end
@@ -179,9 +147,27 @@ function Featured:_FetchIsActive()
 end
 
 function Featured:Start()
-	if self:_FetchIsActive() then
-		self:SpawnUpdateLoop()
+	if Featured:_FetchIsActive() then
+		Featured:SpawnUpdateLoop()
 	end
+
+	Zap.GetFeaturedItems.SetCallback(function(_Player: Player, Start: number, End: number): { Zap.FeaturedItem }
+		return EnumSerDes.SerializeTree(Featured:GetItems(Start, End))
+	end)
+end
+
+function Featured.FixDataFormat(Data: FeaturedData)
+	Data = CamelToPascal(Data)
+
+	for _, Item in ipairs(Data.Items) do
+		Item.ItemType = Enum.AvatarItemType[Item.ItemType]
+	end
+
+	for _, Creator in ipairs(Data.Creators) do
+		Creator.CreatorType = Enum.CreatorType[Creator.CreatorType]
+	end
+
+	return Data
 end
 
 return Featured

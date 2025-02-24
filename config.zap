@@ -85,6 +85,24 @@ type HumanoidDescriberData = struct {
 		Pants: f64,
 	},
 }
+type FeaturedItem = struct {
+	TransactionHash: string,
+	Bid: f64,
+	StartTime: f64,
+	Id: f64,
+	ItemType: SerEnumItem,
+}
+type FeaturedCreator = struct {
+	TransactionHash: string,
+	Bid: f64,
+	StartTime: f64,
+	Id: f64,
+	CreatorType: SerEnumItem,
+}
+type FeaturedData = struct {
+	Items: FeaturedItem[],
+	Creators: FeaturedCreator[],
+}
 
 event BulkPurchaseAvatarItems = {
     from: Client,
@@ -98,4 +116,10 @@ event UpdateAvatar = {
     type: Reliable,
     call: SingleAsync,
     data: HumanoidDescriberData
+}
+
+funct GetFeaturedItems = {
+	call: Async,
+	args: (u32, u32),
+	rets: (FeaturedItem[]),
 }

@@ -112,6 +112,9 @@ if not RunService:IsRunning() then
 		UpdateAvatar = table.freeze({
 			SetCallback = noop
 		}),
+		GetFeaturedItems = table.freeze({
+			SetCallback = noop
+		}),
 	}) :: Events
 end
 local Players = game:GetService("Players")
@@ -617,6 +620,109 @@ function types.read_HumanoidDescriberData()
 	value.Clothing.Pants = buffer.readf64(incoming_buff, read(8))
 	return value
 end
+export type FeaturedItem = ({
+	TransactionHash: (string),
+	Bid: (number),
+	StartTime: (number),
+	Id: (number),
+	ItemType: (SerEnumItem),
+})
+function types.write_FeaturedItem(value: FeaturedItem)
+	local len_1 = #value.TransactionHash
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	alloc(len_1)
+	buffer.writestring(outgoing_buff, outgoing_apos, value.TransactionHash, len_1)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Bid)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
+	types.write_SerEnumItem(value.ItemType)
+end
+function types.read_FeaturedItem()
+	local value;
+	value = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
+	value.Bid = buffer.readf64(incoming_buff, read(8))
+	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.Id = buffer.readf64(incoming_buff, read(8))
+	value.ItemType = types.read_SerEnumItem()
+	return value
+end
+export type FeaturedCreator = ({
+	TransactionHash: (string),
+	Bid: (number),
+	StartTime: (number),
+	Id: (number),
+	CreatorType: (SerEnumItem),
+})
+function types.write_FeaturedCreator(value: FeaturedCreator)
+	local len_1 = #value.TransactionHash
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	alloc(len_1)
+	buffer.writestring(outgoing_buff, outgoing_apos, value.TransactionHash, len_1)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Bid)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
+	types.write_SerEnumItem(value.CreatorType)
+end
+function types.read_FeaturedCreator()
+	local value;
+	value = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
+	value.Bid = buffer.readf64(incoming_buff, read(8))
+	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.Id = buffer.readf64(incoming_buff, read(8))
+	value.CreatorType = types.read_SerEnumItem()
+	return value
+end
+export type FeaturedData = ({
+	Items: ({ (FeaturedItem) }),
+	Creators: ({ (FeaturedCreator) }),
+})
+function types.write_FeaturedData(value: FeaturedData)
+	local len_1 = #value.Items
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	for i_1 = 1, len_1 do
+		local val_1 = value.Items[i_1]
+		types.write_FeaturedItem(val_1)
+	end
+	local len_2 = #value.Creators
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+	for i_2 = 1, len_2 do
+		local val_2 = value.Creators[i_2]
+		types.write_FeaturedCreator(val_2)
+	end
+end
+function types.read_FeaturedData()
+	local value;
+	value = {}
+	value.Items = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	for i_1 = 1, len_1 do
+		local val_1
+		val_1 = types.read_FeaturedItem()
+		value.Items[i_1] = val_1
+	end
+	value.Creators = {}
+	local len_2 = buffer.readu16(incoming_buff, read(2))
+	for i_2 = 1, len_2 do
+		local val_2
+		val_2 = types.read_FeaturedCreator()
+		value.Creators[i_2] = val_2
+	end
+	return value
+end
 
 local function SendEvents()
 	for player, outgoing in player_map do
@@ -636,7 +742,7 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local events = table.create(2)
+local events = table.create(3)
 reliable.OnServerEvent:Connect(function(player, buff, inst)
 	incoming_buff = buff
 	incoming_inst = inst
@@ -665,6 +771,29 @@ reliable.OnServerEvent:Connect(function(player, buff, inst)
 			if events[2] then
 				task.spawn(events[2], player, value)
 			end
+		elseif id == 3 then
+			local call_id = buffer.readu8(buff, read(1))
+			local value, value2
+			value = buffer.readu32(incoming_buff, read(4))
+			value2 = buffer.readu32(incoming_buff, read(4))
+			if events[3] then
+				task.spawn(function(player_2, call_id_2, value_1, value_2)
+					local rets, rets2 = events[3](player_2, value_1, value_2)
+					load_player(player_2)
+					alloc(1)
+					buffer.writeu8(outgoing_buff, outgoing_apos, 3)
+					alloc(1)
+					buffer.writeu8(outgoing_buff, outgoing_apos, call_id_2)
+					local len_1 = #rets
+					alloc(2)
+					buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+					for i_1 = 1, len_1 do
+						local val_1 = rets[i_1]
+						types.write_FeaturedItem(val_1)
+					end
+					player_map[player_2] = save()
+				end, player, call_id, value, value2)
+			end
 		else
 			error("Unknown event id")
 		end
@@ -685,6 +814,14 @@ local returns = {
 			events[2] = Callback
 			return function()
 				events[2] = nil
+			end
+		end,
+	},
+	GetFeaturedItems = {
+		SetCallback = function(Callback: (Player: Player, Value: (number), Value2: (number)) -> (({ (FeaturedItem) }))): () -> ()
+			events[3] = Callback
+			return function()
+				events[3] = nil
 			end
 		end,
 	},

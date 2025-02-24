@@ -3,6 +3,8 @@ local OnyxUI = require(Avalog.Parent.OnyxUI)
 local Fusion = require(Avalog.Parent.Fusion)
 local CatalogSearch = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogSearch)
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
+local Featured = require(Avalog.SourceCode.Client.UI.StateExtensions.Featured)
+local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
 
@@ -20,7 +22,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	local Shown = OnyxUI.Util.Fallback(Props.Shown, false)
 
-	local FeaturedItems = Scope:Value({})
+	local Search = Scope:Value(nil)
 	local CatalogResults = Scope:Value({})
 	local CatalogResultItems = Scope:ForValues(CatalogResults, function(Use, Scope, Result)
 		return {
@@ -50,16 +52,24 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		end)
 
 		CatalogResults:set(SearchObject.Results)
+		Search:set(SearchObject)
 	end
 
-	UpdateCatalogSearch()
+	task.spawn(function()
+		UpdateCatalogSearch()
+		Featured:FetchItems()
+	end)
+
+	Scope:Observer(States.Open):onChange(function()
+		Featured:FetchItems()
+	end)
 
 	local AdDisclaimerShown = Scope:Value(true)
 
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		Items = Scope:Computed(function(Use)
-			local FeaturedItemsValue = Use(FeaturedItems)
+			local FeaturedItemsValue = Use(States.Featured.Items)
 			local CatalogResultItemsValue = Use(CatalogResultItems)
 
 			return {
@@ -67,6 +77,15 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				table.unpack(CatalogResultItemsValue),
 			}
 		end),
+
+		OnReachedEnd = function()
+			local SearchValue = Fusion.peek(Search)
+			if SearchValue ~= nil then
+				SearchValue:LoadNextPage()
+			end
+
+			Featured:FetchItems()
+		end,
 
 		[Children] = {
 			Scope:CustomButton {

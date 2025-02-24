@@ -70,13 +70,16 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				AutomaticSize = Enum.AutomaticSize.Y,
 
 				[Children] = {
-					Scope:ForValues(Items, function(Use, Scope, Item)
+					Scope:ForPairs(Items, function(Use, Scope, Index, Item)
 						return OnyxUI.Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
-							return Scope:ItemButton {
-								Id = Item.Id,
-								Type = Item.Type,
-								Visible = Item.Visible,
-							}
+							print(Index, Item)
+							return Index,
+								Scope:ItemButton {
+									Id = Item.Id,
+									Type = Item.Type,
+									Visible = Item.Visible,
+									LayoutOrder = Index,
+								}
 						end)
 					end),
 				},

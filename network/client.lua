@@ -112,6 +112,9 @@ if not RunService:IsRunning() then
 		UpdateAvatar = table.freeze({
 			Fire = noop
 		}),
+		GetFeaturedItems = table.freeze({
+			Call = noop
+		}),
 	}) :: Events
 end
 if RunService:IsServer() then
@@ -587,6 +590,109 @@ function types.read_HumanoidDescriberData()
 	value.Clothing.Pants = buffer.readf64(incoming_buff, read(8))
 	return value
 end
+export type FeaturedItem = ({
+	TransactionHash: (string),
+	Bid: (number),
+	StartTime: (number),
+	Id: (number),
+	ItemType: (SerEnumItem),
+})
+function types.write_FeaturedItem(value: FeaturedItem)
+	local len_1 = #value.TransactionHash
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	alloc(len_1)
+	buffer.writestring(outgoing_buff, outgoing_apos, value.TransactionHash, len_1)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Bid)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
+	types.write_SerEnumItem(value.ItemType)
+end
+function types.read_FeaturedItem()
+	local value;
+	value = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
+	value.Bid = buffer.readf64(incoming_buff, read(8))
+	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.Id = buffer.readf64(incoming_buff, read(8))
+	value.ItemType = types.read_SerEnumItem()
+	return value
+end
+export type FeaturedCreator = ({
+	TransactionHash: (string),
+	Bid: (number),
+	StartTime: (number),
+	Id: (number),
+	CreatorType: (SerEnumItem),
+})
+function types.write_FeaturedCreator(value: FeaturedCreator)
+	local len_1 = #value.TransactionHash
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	alloc(len_1)
+	buffer.writestring(outgoing_buff, outgoing_apos, value.TransactionHash, len_1)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Bid)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
+	types.write_SerEnumItem(value.CreatorType)
+end
+function types.read_FeaturedCreator()
+	local value;
+	value = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
+	value.Bid = buffer.readf64(incoming_buff, read(8))
+	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.Id = buffer.readf64(incoming_buff, read(8))
+	value.CreatorType = types.read_SerEnumItem()
+	return value
+end
+export type FeaturedData = ({
+	Items: ({ (FeaturedItem) }),
+	Creators: ({ (FeaturedCreator) }),
+})
+function types.write_FeaturedData(value: FeaturedData)
+	local len_1 = #value.Items
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	for i_1 = 1, len_1 do
+		local val_1 = value.Items[i_1]
+		types.write_FeaturedItem(val_1)
+	end
+	local len_2 = #value.Creators
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+	for i_2 = 1, len_2 do
+		local val_2 = value.Creators[i_2]
+		types.write_FeaturedCreator(val_2)
+	end
+end
+function types.read_FeaturedData()
+	local value;
+	value = {}
+	value.Items = {}
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	for i_1 = 1, len_1 do
+		local val_1
+		val_1 = types.read_FeaturedItem()
+		value.Items[i_1] = val_1
+	end
+	value.Creators = {}
+	local len_2 = buffer.readu16(incoming_buff, read(2))
+	for i_2 = 1, len_2 do
+		local val_2
+		val_2 = types.read_FeaturedCreator()
+		value.Creators[i_2] = val_2
+	end
+	return value
+end
 
 local function SendEvents()
 	if outgoing_used ~= 0 then
@@ -604,8 +710,35 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local events = table.create(2)
-local event_queue: { [number]: { any } } = table.create(2)
+local events = table.create(3)
+local event_queue: { [number]: { any } } = table.create(3)
+local function_call_id = 0
+event_queue[3] = table.create(255)
+reliable.OnClientEvent:Connect(function(buff, inst)
+	incoming_buff = buff
+	incoming_inst = inst
+	incoming_read = 0
+	incoming_ipos = 0
+	local len = buffer.len(buff)
+	while incoming_read < len do
+		local id = buffer.readu8(buff, read(1))
+		if id == 3 then
+			local call_id = buffer.readu8(incoming_buff, read(1))
+			local value
+			value = {}
+			local len_1 = buffer.readu16(incoming_buff, read(2))
+			for i_1 = 1, len_1 do
+				local val_1
+				val_1 = types.read_FeaturedItem()
+				value[i_1] = val_1
+			end
+			task.spawn(event_queue[3][call_id], value)
+			event_queue[3][call_id] = nil
+		else
+			error("Unknown event id")
+		end
+	end
+end)
 local returns = {
 	SendEvents = SendEvents,
 	BulkPurchaseAvatarItems = {
@@ -628,6 +761,26 @@ local returns = {
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
 			types.write_HumanoidDescriberData(Value)
+		end,
+	},
+	GetFeaturedItems = {
+		Call = function(Value: (number), Value2: (number)): (({ (FeaturedItem) }))
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 3)
+			function_call_id += 1
+			function_call_id %= 256
+			if event_queue[3][function_call_id] then
+				function_call_id -= 1
+				error("Zap has more than 256 calls awaiting a response, and therefore this packet has been dropped")
+			end
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, function_call_id)
+			alloc(4)
+			buffer.writeu32(outgoing_buff, outgoing_apos, Value)
+			alloc(4)
+			buffer.writeu32(outgoing_buff, outgoing_apos, Value2)
+			event_queue[3][function_call_id] = coroutine.running()
+			return coroutine.yield()
 		end,
 	},
 }

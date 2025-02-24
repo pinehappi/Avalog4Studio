@@ -1,77 +1,40 @@
 local Avalog = script.Parent.Parent.Parent.Parent.Parent
 local States = require(script.Parent.Parent.States)
 local Fusion = require(Avalog.Parent.Fusion)
-
-local FeaturedService
+local Zap = require(Avalog.SourceCode.Shared.Zap.client)
+local Future = require(Avalog.Parent.Future)
+local Sift = require(Avalog.Parent.Sift)
+local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 
 local Featured = {}
 
-function Featured:FetchCreators(Count: number?)
+function Featured:FetchItems(Count: number?): boolean
 	if Count == nil then
-		Count = 1
+		Count = 90
 	end
 
-	if FeaturedService then
-		local StartIndex = #Fusion.peek(States.Featured.Creators)
+	local StartIndex = #Fusion.peek(States.Featured.Items)
 
-		local Success, Result = FeaturedService:GetCreators(StartIndex, StartIndex + Count)
+	Future.Try(function()
+		return Zap.GetFeaturedItems.Call(StartIndex, StartIndex + Count)
+	end):After(function(_, Result)
+		Featured:_AddEntries(EnumSerDes.DeserializeTree(Result), States.Featured.Items)
 
-		if Success and Result then
-			self:_AddEntries(Result, States.Featured.Creators)
-
-			return true
-		end
-	end
-
-	return false
-end
-
-function Featured:FetchItems(Count: number?)
-	if Count == nil then
-		Count = 1
-	end
-
-	if FeaturedService then
-		local StartIndex = #Fusion.peek(States.Featured.Items)
-
-		local Success, Result = FeaturedService:GetItems(StartIndex, StartIndex + Count)
-
-		if Success and Result then
-			self:_AddEntries(Result, States.Featured.Items)
-
-			return true
-		end
-	end
+		return true
+	end)
 
 	return false
 end
 
 function Featured:_AddEntries(Entries, EntriesState: Fusion.Value<Fusion.Scope<any>, any>)
 	local EntriesValue = Fusion.peek(EntriesState)
+	local WantedEntries = Sift.Array.difference(Entries, EntriesValue)
 
-	for _, Entry in ipairs(Entries) do
-		if self:_FindInValues(Entries, EntriesValue) ~= nil then
-			table.insert(EntriesValue, Entry)
-		end
+	for _, Entry in ipairs(WantedEntries) do
+		table.insert(EntriesValue, Entry)
 	end
 
 	EntriesState:set(EntriesValue)
-end
-
-function Featured:_FindInValues(Values: {}, Callback: (any) -> boolean?)
-	local FoundEntries = {}
-
-	for _, Entry in pairs(Values) do
-		if Callback(Entry) then
-			table.insert(FoundEntries, Entry)
-		end
-	end
-
-	return FoundEntries
-end
-
-function Featured:Start()
-	self:FetchItems(100)
 end
 
 return Featured
