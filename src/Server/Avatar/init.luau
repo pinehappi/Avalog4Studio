@@ -7,6 +7,8 @@ local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
 local Zap = require(Avalog.SourceCode.Shared.Zap.server)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 local PlayerDataStore = require(Avalog.SourceCode.Server.PlayerDataStorage.PlayerDataStore)
+local Squash = require(Avalog.Parent.Squash)
+local AvatarDataSerDes = require(Avalog.SourceCode.Server.PlayerDataStorage.SerDes.AvatarData)
 
 local RATE_LIMITS = {
 	Update = RateLimit(1, 1),
@@ -23,7 +25,11 @@ function Avatar:BulkPurchaseItems(Player: Player, Items: { any })
 	end):Await()
 end
 
-function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data)
+function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data, Save: boolean?)
+	if Save == nil then
+		Save = true
+	end
+
 	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
@@ -32,14 +38,16 @@ function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data)
 			return Data
 		end)
 
-		local Profile = PlayerDataStore:Get(Player)
-		if Profile ~= nil then
-			Profile.Session:patch(PlayerDataStore.Actions.SetAvatarData, Data)
-		end
-
 		self:Apply(Player, HumanoidDescription):Await()
 
 		HumanoidDescriberObject:Destroy()
+
+		if Save then
+			local Profile = PlayerDataStore:Get(Player)
+			if Profile ~= nil then
+				Profile.Session:patch(PlayerDataStore.Actions.SetAvatarData, Data)
+			end
+		end
 	end
 end
 
@@ -93,11 +101,14 @@ function Avatar:Start()
 	end)
 
 	PlayerDataStore.Loaded:Connect(function(Player, Profile)
-		local Data = Profile.Data:Get()
+		Profile.Data:Observe(function(_, Data)
+			if Data.Avatar.Data then
+				local Cursor = Squash.frombuffer(Data.Avatar.Data)
+				local AvatarData = AvatarDataSerDes.des(Cursor)
 
-		if Data.Avatar.Data ~= nil then
-			Avatar:Update(Player, Data.Avatar.Data)
-		end
+				Avatar:Update(Player, AvatarData, false)
+			end
+		end)
 	end)
 end
 

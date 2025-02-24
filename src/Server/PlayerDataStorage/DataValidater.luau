@@ -3,6 +3,6 @@ local t = require(Avalog.Parent.t)
 
 return t.strictInterface({
 	Avatar = t.strictInterface({
-		Data = t.table,
+		Data = t.optional(t.buffer),
 	}),
 })
