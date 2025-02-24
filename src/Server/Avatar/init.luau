@@ -25,11 +25,14 @@ function Avatar:BulkPurchaseItems(Player: Player, Items: { any })
 	end):Await()
 end
 
-function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data, Save: boolean?)
-	if Save == nil then
-		Save = true
+function Avatar:UpdateData(Player: Player, Data: HumanoidDescriber.Data)
+	local Profile = PlayerDataStore:Get(Player)
+	if Profile ~= nil then
+		Profile.Session:patch(PlayerDataStore.Actions.SetAvatarData, Data)
 	end
+end
 
+function Avatar:ApplyData(Player: Player, Data: HumanoidDescriber.Data)
 	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
@@ -41,13 +44,6 @@ function Avatar:Update(Player: Player, Data: HumanoidDescriber.Data, Save: boole
 		self:Apply(Player, HumanoidDescription):Await()
 
 		HumanoidDescriberObject:Destroy()
-
-		if Save then
-			local Profile = PlayerDataStore:Get(Player)
-			if Profile ~= nil then
-				Profile.Session:patch(PlayerDataStore.Actions.SetAvatarData, Data)
-			end
-		end
 	end
 end
 
@@ -97,16 +93,20 @@ function Avatar:Start()
 
 		local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
 
-		return Avatar:Update(Player, SafeData)
+		return Avatar:UpdateData(Player, SafeData)
 	end)
 
 	PlayerDataStore.Loaded:Connect(function(Player, Profile)
+		if not Player:HasAppearanceLoaded() then
+			Player.CharacterAppearanceLoaded:Wait()
+		end
+
 		Profile.Data:Observe(function(_, Data)
 			if Data.Avatar.Data then
 				local Cursor = Squash.frombuffer(Data.Avatar.Data)
 				local AvatarData = AvatarDataSerDes.des(Cursor)
 
-				Avatar:Update(Player, AvatarData, false)
+				Avatar:ApplyData(Player, AvatarData)
 			end
 		end)
 	end)
