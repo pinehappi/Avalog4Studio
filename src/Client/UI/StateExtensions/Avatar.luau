@@ -49,6 +49,8 @@ function Avatar:_UpdateEquippedAssetIds()
 	local AssetIdsValue = Fusion.peek(States.Avatar.AssetIds)
 	local UnequippedAssetIds = {}
 
+	States.Avatar.EquippedAssetIds:set(AssetIdsValue)
+
 	for _, AssetId in ipairs(AssetIdsValue) do
 		local CatalogInfo = CatalogItems:GetItem(AssetId, Enum.InfoType.Asset)
 		if CatalogInfo and (CatalogInfo.AssetType == Enum.AvatarAssetType.EmoteAnimation) then

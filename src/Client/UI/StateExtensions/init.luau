@@ -6,7 +6,7 @@ local function GetModules()
 
 	for _, Child in ipairs(script:GetChildren()) do
 		if Child:IsA("ModuleScript") then
-			Modules[Child.Name] = require(Child)
+			table.insert(Modules, Child)
 		end
 	end
 
