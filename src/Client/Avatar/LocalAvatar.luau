@@ -228,12 +228,15 @@ function LocalAvatar:SetCharacter(Character: Model)
 	end
 
 	if Character then
+		local OriginalCharacter = Character
+		local OriginalHumanoid = OriginalCharacter:FindFirstChildOfClass("Humanoid")
+
 		Character.Archivable = true
 		Character = Character:Clone()
 		Character:PivotTo(CFrame.new())
 
 		local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-		if Humanoid then
+		if Humanoid and OriginalHumanoid then
 			local HumanoidDescription = Humanoid:FindFirstChildOfClass("HumanoidDescription")
 			local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
 
@@ -241,8 +244,8 @@ function LocalAvatar:SetCharacter(Character: Model)
 			self.Humanoid = Humanoid
 			self.HumanoidDescriber = HumanoidDescriberObject
 
-			Humanoid.ApplyDescriptionFinished:Connect(function()
-				HumanoidDescriberObject:ReadFromDescription(Humanoid:GetAppliedDescription())
+			OriginalCharacter.Humanoid.ApplyDescriptionFinished:Connect(function()
+				HumanoidDescriberObject:ReadFromDescription(OriginalHumanoid:GetAppliedDescription())
 				LocalAvatar:Apply()
 			end)
 
