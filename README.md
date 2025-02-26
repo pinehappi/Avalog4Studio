@@ -44,22 +44,4 @@ Additionally, Avalog responds to external avatar changes, seamlessly integrating
 
 Earn **40%** on all items sold in your experience. And coming soon, list your own items inside Avalog. *(hi UGC creators 👋)*
 
-## Installation 📦
-
-<details>
-<summary>Expand instructions</summary>
-
-### Roblox Studio
-
-1. Get the [Easy Loader](https://create.roblox.com/store/asset/122214542643927)
-2. Insert it from the Toolbox
-3. Done! 🎉
-
-### Wally
-
-1. Copy details from [Wally](https://wally.run/package/imavafe/avalog)
-2. Paste into your `wally.toml`
-3. Run `wally install`
-4. Call `Avalog:Start()` on server and client
-
-</details>
+## [Documentation 📄](https://avafe.me/Avalog/)

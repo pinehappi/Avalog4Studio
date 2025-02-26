@@ -17,18 +17,35 @@ local function GetModules()
 	return Modules
 end
 
+--[=[
+	@class AvalogServer
+
+	The server-side module of Avalog.
+]=]
 local AvalogServer = {
 	Config = Config,
 	Bootloader = Bootloader(GetModules()),
 	Started = false,
 }
 
+--[=[
+	Starts Avalog on the server.
+]=]
 function AvalogServer:Start()
 	assert(not self.Started, "Avalog already started.")
 	self.Started = true
 
 	AvalogServer.Bootloader:Initialize()
 	AvalogServer.Bootloader:Start()
+end
+
+--[=[
+	Configures Avalog with the given config.
+
+	@param NewConfig Config
+]=]
+function AvalogServer:Configure(NewConfig: Config.Config)
+	AvalogServer.Config:Update(NewConfig)
 end
 
 return AvalogServer

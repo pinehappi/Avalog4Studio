@@ -19,12 +19,20 @@ local function GetModules()
 	return Modules
 end
 
+--[=[
+	@class AvalogClient
+
+	The client-side module of Avalog.
+]=]
 local AvalogClient = {
 	Config = Config,
 	Started = false,
 	_Bootloader = Bootloader(GetModules()),
 }
 
+--[=[
+	Starts Avalog on the client.
+]=]
 function AvalogClient:Start()
 	assert(not self.Started, "Avalog already started.")
 	self.Started = true
@@ -33,10 +41,27 @@ function AvalogClient:Start()
 	AvalogClient._Bootloader:Start()
 end
 
+--[=[
+	Configures Avalog with the given config.
+
+	@param NewConfig Config
+]=]
+function AvalogClient:Configure(NewConfig: Config.Config)
+	AvalogClient.Config:Update(NewConfig)
+end
+
+--[=[
+	Toggles whether or not Avalog is open.
+]=]
 function AvalogClient:ToggleOpen()
 	States.Open:set(not Fusion.peek(States.Open))
 end
 
+--[=[
+	Sets whether or not Avalog is open.
+
+	@param Open boolean
+]=]
 function AvalogClient:SetOpen(Open: boolean)
 	States.Open:set(Open)
 end

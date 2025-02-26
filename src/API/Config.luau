@@ -10,6 +10,21 @@ local CONFIG_TEMPLATE: Config = {
 	Theme = DarkTheme,
 }
 
+--[=[
+	@class Config
+]=]
+--[=[
+	@interface Config
+	@within Config
+
+	@field Theme Theme
+]=]
+--[=[
+	@type Theme Theme
+	@within Config
+
+	The default dark theme can be [found here](https://github.com/UseAvalog/Avalog/blob/main/src/Client/UI/Themes/Dark.luau) for reference.
+]=]
 local Config = {
 	Data = CONFIG_TEMPLATE,
 }

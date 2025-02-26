@@ -1,0 +1,25 @@
+[docusaurus]
+title = "Avalog"
+tagline = "Easy, themable avatar catalog for Roblox"
+url = "https://avafe.me/"
+favicon = "/favicon.svg"
+
+[home]
+enabled = true
+includeReadme = false
+
+[[home.features]]
+title = "Simplicity 😌"
+description = "Striving to match Roblox's default UI, Avalog doesn't bombard you with excessive branding, advertising, or sign-up."
+
+[[home.features]]
+title = "Customization 🖌️"
+description = "Powered by OnyxUI, Avalog offers extensive theming capabilities, allowing you to design it however you like with ease."
+
+[[home.features]]
+title = "Monetization 💸"
+description = "Earn 40% on all items sold in your experience. And coming soon, list your own items inside Avalog."
+
+[footer]
+style = "dark"
+copyright = "Copyright © 2025 Avafe. Built with Moonwave and Docusaurus"
