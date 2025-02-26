@@ -5,6 +5,7 @@ local CatalogSearch = require(Avalog.SourceCode.Client.UI.StateExtensions.Catalo
 local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 local Featured = require(Avalog.SourceCode.Client.UI.StateExtensions.Featured)
 local States = require(Avalog.SourceCode.Client.UI.States)
+local Sift = require(Avalog.Parent.Sift)
 
 local Children = Fusion.Children
 
@@ -72,10 +73,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 			local FeaturedItemsValue = Use(States.Featured.Items)
 			local CatalogResultItemsValue = Use(CatalogResultItems)
 
-			return {
-				table.unpack(FeaturedItemsValue),
-				table.unpack(CatalogResultItemsValue),
-			}
+			return Sift.Array.merge(FeaturedItemsValue, CatalogResultItemsValue)
 		end),
 
 		OnReachedEnd = function()
