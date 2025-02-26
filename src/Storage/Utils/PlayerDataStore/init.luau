@@ -24,7 +24,7 @@ local function NewPlayerDataStore(Options)
 
 		local Profile = {
 			Session = Session,
-			Data = Stator(nil),
+			Data = Stator(nil, {}),
 		}
 
 		Session:updated(function(Data)

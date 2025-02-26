@@ -13,6 +13,7 @@ local PlayerDataStore = NewPlayerDataStore {
 		return DataTemplate
 	end,
 	schema = DataValidater,
+	pull_delay = 60 * 2,
 }
 
 local Actions = {

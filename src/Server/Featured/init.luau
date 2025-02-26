@@ -50,7 +50,7 @@ local Featured = {
 	LastUpdated = nil,
 	Data = Stator({
 		Items = {},
-	}),
+	}, {}),
 
 	Updated = Signal.new(),
 }
