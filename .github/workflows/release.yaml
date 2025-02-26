@@ -35,7 +35,7 @@ jobs:
         run: rojo build -o Avalog.rbxm pack.project.json
 
       - name: Upload package rbxm as build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: Avalog
           path: Avalog.rbxm
