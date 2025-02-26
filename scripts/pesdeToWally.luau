@@ -44,7 +44,7 @@ local function convertProject(path: string)
 		local pesdeToml = serde.decode("toml", fs.readFile(`{path}/pesde.toml`))
 		local wallyToml = serde.encode("toml", convertManifest(pesdeToml), true)
 
-		fs.writeFile(`{path}/src/wally.toml`, wallyToml)
+		fs.writeFile(`{path}/wally.toml`, wallyToml)
 	else
 		assert(false, `pesde.toml does not exist for {path}`)
 	end

@@ -1,5 +1,5 @@
 name = "avafe/avalog"
-version = "0.1.0"
+version = "0.1.1"
 private = true
 
 [target]
@@ -41,3 +41,16 @@ Fusion = { wally = "elttob/fusion", version = "^0.3.0" }
 Skilift = { wally = "alicesaidhi/skilift", version = "^0.2.3" }
 
 OnyxUI = { wally = "imavafe/onyx-ui", version = "^0.5.3" }
+
+
+# For wally
+
+# exclude = ["**"]
+# include = [
+#   "src",
+#   "src/*",
+#   "default.project.json",
+#   "wally.lock",
+#   "wally.toml",
+#   "network",
+# ]
