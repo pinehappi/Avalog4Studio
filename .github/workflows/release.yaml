@@ -93,7 +93,7 @@ jobs:
         run: rojo build -o test-pack.rbxm pack.project.json
 
       - name: Upload test-pack.rbxm as build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: Avalog
           path: test-pack.rbxm
