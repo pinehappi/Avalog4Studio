@@ -1,0 +1,32 @@
+[dependencies]
+Bootloader = "imavafe/bootloader@^0.1.0"
+ColorUtils = "csqrl/colour-utils@^1.4.1"
+EnumSerDes = "imavafe/enum-ser-des@^0.1.1"
+Fetch = "red-blox/fetch@^2.0.0"
+Fusion = "elttob/fusion@^0.3.0"
+Future = "red-blox/future@^1.0.1"
+HumanoidDescriber = "imavafe/humanoid-describer@^0.1.1"
+OnyxUI = "imavafe/onyx-ui@^0.5.3"
+RateLimit = "red-blox/ratelimit@^1.0.1"
+Sift = "csqrl/sift@^0.0.9"
+Signal = "sleitnick/signal@^2.0.1"
+Skilift = "alicesaidhi/skilift@^0.2.3"
+Squash = "data-oriented-house/squash@^2.5.0"
+Stator = "imavafe/stator@^0.1.1"
+t = "osyrisrblx/t@^3.1.1"
+
+[package]
+name = "imavafe/avalog"
+realm = "shared"
+registry = "https://github.com/UpliftGames/wally-index"
+version = "0.1.1"
+
+exclude = ["**"]
+include = [
+  "src",
+  "src/*",
+  "default.project.json",
+  "wally.lock",
+  "wally.toml",
+  "network",
+]
