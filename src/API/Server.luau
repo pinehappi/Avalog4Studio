@@ -2,6 +2,7 @@ local SOURCE = script.Parent.SourceCode
 local PACKAGES = script.Parent.Parent
 local SERVER = SOURCE.Server
 
+local Config = require(script.Parent.Config)
 local Bootloader = require(PACKAGES.Bootloader)
 
 local function GetModules()
@@ -17,6 +18,7 @@ local function GetModules()
 end
 
 local AvalogServer = {
+	Config = Config,
 	Bootloader = Bootloader(GetModules()),
 	Started = false,
 }

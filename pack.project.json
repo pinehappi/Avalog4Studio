@@ -5,20 +5,38 @@
     "Packages": {
       "$path": "roblox_packages",
       "Avalog": {
-        "$path": "src/API",
-        "SourceCode": {
-          "$className": "Folder",
-          "Shared": {
-            "$path": "src/Shared"
-          },
-          "Storage": {
-            "$path": "src/Storage"
-          },
-          "Server": {
-            "$path": "src/Server"
-          },
-          "Client": {
-            "$path": "src/Client"
+        "$className": "Folder",
+        "ThumbnailCamera": {
+          "$path": "Include/ThumbnailCamera.rbxm"
+        },
+        "EasyLoader": {
+          "$path": "Include/EasyLoader"
+        },
+        "Avalog": {
+          "$path": "Include/Linking.luau",
+          "Packages": {
+            "$path": "roblox_packages",
+            "Avalog": {
+              "$path": "src/API",
+              "SourceCode": {
+                "$className": "Folder",
+                "Shared": {
+                  "$path": "src/Shared",
+                  "Zap": {
+                    "$path": "network"
+                  }
+                },
+                "Storage": {
+                  "$path": "src/Storage"
+                },
+                "Server": {
+                  "$path": "src/Server"
+                },
+                "Client": {
+                  "$path": "src/Client"
+                }
+              }
+            }
           }
         }
       }
