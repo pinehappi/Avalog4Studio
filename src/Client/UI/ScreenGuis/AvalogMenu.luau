@@ -29,13 +29,13 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
-		DisplayOrder = 100000,
+		DisplayOrder = 9,
 		Enabled = Enabled,
 
 		[Children] = {
 			Scope:New "ScreenGui" {
 				Name = "Backdrop",
-				DisplayOrder = 100000 - 1,
+				DisplayOrder = 9 - 1,
 				ScreenInsets = Enum.ScreenInsets.None,
 
 				[Children] = {
