@@ -77,7 +77,7 @@ end
 
 function Avatar:Start()
 	Zap.BulkPurchaseAvatarItems.SetCallback(function(Player, Items)
-		if not RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
+		if RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
 			return
 		end
 
@@ -87,7 +87,7 @@ function Avatar:Start()
 	end)
 
 	Zap.UpdateAvatar.SetCallback(function(Player, Data): ()
-		if not RATE_LIMITS.Update(Player.UserId) then
+		if RATE_LIMITS.Update(Player.UserId) then
 			return
 		end
 

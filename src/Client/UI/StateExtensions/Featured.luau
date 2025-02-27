@@ -10,7 +10,7 @@ local Featured = {}
 
 function Featured:FetchItems(Count: number?): boolean
 	if Count == nil then
-		Count = 90
+		Count = 3 * 10
 	end
 
 	local StartIndex = #Fusion.peek(States.Featured.Items)
@@ -18,9 +18,11 @@ function Featured:FetchItems(Count: number?): boolean
 	Future.Try(function()
 		return Zap.GetFeaturedItems.Call(StartIndex, StartIndex + Count)
 	end):After(function(_, Result)
-		Featured:_AddEntries(EnumSerDes.DeserializeTree(Result), States.Featured.Items)
+		if Result ~= nil then
+			Featured:_AddEntries(EnumSerDes.DeserializeTree(Result), States.Featured.Items)
 
-		return true
+			return true
+		end
 	end)
 
 	return false

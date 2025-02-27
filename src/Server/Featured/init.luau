@@ -47,7 +47,7 @@ local GITHUB_REPO = "UseAvalog/Featured"
 local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
 local RATE_LIMITS = {
-	GetFeaturedItems = RateLimit(1, 2),
+	GetFeaturedItems = RateLimit(1, 1),
 }
 
 local Featured = {
@@ -156,7 +156,9 @@ function Featured:Start()
 	end
 
 	Zap.GetFeaturedItems.SetCallback(function(Player: Player, Start: number, End: number): { Zap.FeaturedItem }?
-		if not RATE_LIMITS.GetFeaturedItems(Player.UserId) then
+		assert((End - Start) <= 3 * 10, `Client requested too many ({End - Start}) items`)
+
+		if RATE_LIMITS.GetFeaturedItems(Player.UserId) then
 			return EnumSerDes.SerializeTree(Featured:GetItems(Start, End))
 		end
 
@@ -174,6 +176,13 @@ function Featured.FixDataFormat(Data: FeaturedData)
 	for _, Creator in ipairs(Data.Creators) do
 		Creator.CreatorType = Enum.CreatorType[Creator.CreatorType]
 	end
+
+	Data.Items = Sift.Array.sort(Data.Items, function(ItemA, ItemB)
+		return ItemA.Bid > ItemB.Bid
+	end)
+	Data.Creators = Sift.Array.sort(Data.Creators, function(CreatorA, CreatorB)
+		return CreatorA.Bid > CreatorB.Bid
+	end)
 
 	return Data
 end

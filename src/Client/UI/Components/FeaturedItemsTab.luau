@@ -56,13 +56,15 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Search:set(SearchObject)
 	end
 
-	task.spawn(function()
-		UpdateCatalogSearch()
-		Featured:FetchItems()
-	end)
+	local AlreadyOpened = false
 
 	Scope:Observer(States.Open):onChange(function()
-		Featured:FetchItems()
+		if not AlreadyOpened then
+			AlreadyOpened = true
+
+			UpdateCatalogSearch()
+			Featured:FetchItems()
+		end
 	end)
 
 	local AdDisclaimerShown = Scope:Value(true)
@@ -77,12 +79,14 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		end),
 
 		OnReachedEnd = function()
+			task.spawn(function()
+				Featured:FetchItems()
+			end)
+
 			local SearchValue = Fusion.peek(Search)
 			if SearchValue ~= nil then
 				SearchValue:LoadNextPage()
 			end
-
-			Featured:FetchItems()
 		end,
 
 		[Children] = {
