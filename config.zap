@@ -121,5 +121,5 @@ event UpdateAvatar = {
 funct GetFeaturedItems = {
 	call: Async,
 	args: (u32, u32),
-	rets: (FeaturedItem[]),
+	rets: (FeaturedItem[]?),
 }

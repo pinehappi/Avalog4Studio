@@ -8,6 +8,7 @@ local Fetch = require(Avalog.Parent.Fetch)
 local Signal = require(Avalog.Parent.Signal)
 local Stator = require(Avalog.Parent.Stator)
 local Zap = require(Avalog.SourceCode.Shared.Zap.server)
+local RateLimit = require(Avalog.Parent.RateLimit)
 
 export type FeaturedListing = {
 	TransactionHash: string,
@@ -45,6 +46,9 @@ end
 local GITHUB_REPO = "UseAvalog/Featured"
 local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
+local RATE_LIMITS = {
+	GetFeaturedItems = RateLimit(1, 2),
+}
 
 local Featured = {
 	LastUpdated = nil,
@@ -151,8 +155,12 @@ function Featured:Start()
 		Featured:SpawnUpdateLoop()
 	end
 
-	Zap.GetFeaturedItems.SetCallback(function(_Player: Player, Start: number, End: number): { Zap.FeaturedItem }
-		return EnumSerDes.SerializeTree(Featured:GetItems(Start, End))
+	Zap.GetFeaturedItems.SetCallback(function(Player: Player, Start: number, End: number): { Zap.FeaturedItem }?
+		if not RATE_LIMITS.GetFeaturedItems(Player.UserId) then
+			return EnumSerDes.SerializeTree(Featured:GetItems(Start, End))
+		end
+
+		return nil
 	end)
 end
 
