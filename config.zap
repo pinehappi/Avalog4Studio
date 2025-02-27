@@ -89,6 +89,8 @@ type FeaturedItem = struct {
 	TransactionHash: string,
 	Bid: f64,
 	StartTime: f64,
+	EndTime: f64,
+	Power: f64,
 	Id: f64,
 	ItemType: SerEnumItem,
 }
@@ -96,6 +98,8 @@ type FeaturedCreator = struct {
 	TransactionHash: string,
 	Bid: f64,
 	StartTime: f64,
+	EndTime: f64,
+	Power: f64,
 	Id: f64,
 	CreatorType: SerEnumItem,
 }

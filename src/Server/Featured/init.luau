@@ -14,6 +14,8 @@ export type FeaturedListing = {
 	TransactionHash: string,
 	Bid: number,
 	StartTime: number,
+	EndTime: number,
+	Power: number?,
 }
 export type FeaturedItem = FeaturedListing & {
 	Id: number,
@@ -46,6 +48,7 @@ end
 local GITHUB_REPO = "UseAvalog/Featured"
 local UPDATE_DELAY = 30 * 60
 local FAILED_UPDATE_DELAY = 1 * 60
+local SECONDS_PER_DAY = 86400
 local RATE_LIMITS = {
 	GetFeaturedItems = RateLimit(1, 1),
 }
@@ -113,7 +116,7 @@ function Featured:_FetchLatestData()
 			local Data = HttpService:JSONDecode(Response.Body)
 
 			if typeof(Data) == "table" then
-				return Featured.FixDataFormat(Data)
+				return Featured.FixData(Data)
 			end
 		end
 
@@ -166,7 +169,7 @@ function Featured:Start()
 	end)
 end
 
-function Featured.FixDataFormat(Data: FeaturedData)
+function Featured.FixData(Data: FeaturedData)
 	Data = CamelToPascal(Data)
 
 	for _, Item in ipairs(Data.Items) do
@@ -177,11 +180,19 @@ function Featured.FixDataFormat(Data: FeaturedData)
 		Creator.CreatorType = Enum.CreatorType[Creator.CreatorType]
 	end
 
+	for _, Item in ipairs(Data.Items) do
+		Item.Power = Item.Bid / ((Item.EndTime - Item.StartTime) / SECONDS_PER_DAY)
+	end
+
+	for _, Creator in ipairs(Data.Creators) do
+		Creator.Power = Creator.Bid / ((Creator.EndTime - Creator.StartTime) / SECONDS_PER_DAY)
+	end
+
 	Data.Items = Sift.Array.sort(Data.Items, function(ItemA, ItemB)
-		return ItemA.Bid > ItemB.Bid
+		return ItemA.Power > ItemB.Power
 	end)
 	Data.Creators = Sift.Array.sort(Data.Creators, function(CreatorA, CreatorB)
-		return CreatorA.Bid > CreatorB.Bid
+		return CreatorA.Power > CreatorB.Power
 	end)
 
 	return Data
