@@ -49,4 +49,4 @@ Earn **40%** on all items sold in your experience, and list **your own** UGC ite
 
 ##
 
-[![By Avafe](/gh-assets/watermark.svg)](https://avafe.me)
+[![By Avafe](/gh-assets/Watermark.svg)](https://avafe.me)
