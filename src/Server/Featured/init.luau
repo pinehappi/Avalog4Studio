@@ -163,9 +163,9 @@ function Featured:Start()
 
 		if RATE_LIMITS.GetFeaturedItems(Player.UserId) then
 			return EnumSerDes.SerializeTree(Featured:GetItems(Start, End))
+		else
+			return nil
 		end
-
-		return nil
 	end)
 end
 

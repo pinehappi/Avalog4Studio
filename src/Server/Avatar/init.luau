@@ -78,22 +78,18 @@ end
 function Avatar:Start()
 	Zap.BulkPurchaseAvatarItems.SetCallback(function(Player, Items)
 		if RATE_LIMITS.BulkPurchaseItems(Player.UserId) then
-			return
+			local SafeItems: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Items)
+
+			return Avatar:BulkPurchaseItems(Player, SafeItems)
 		end
-
-		local SafeItems: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Items)
-
-		return Avatar:BulkPurchaseItems(Player, SafeItems)
 	end)
 
 	Zap.UpdateAvatar.SetCallback(function(Player, Data): ()
 		if RATE_LIMITS.Update(Player.UserId) then
-			return
+			local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
+
+			return Avatar:UpdateData(Player, SafeData)
 		end
-
-		local SafeData: HumanoidDescriber.Data = EnumSerDes.DeserializeTree(Data)
-
-		return Avatar:UpdateData(Player, SafeData)
 	end)
 
 	PlayerDataStore.Loaded:Connect(function(Player, Profile)
