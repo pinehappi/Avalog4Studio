@@ -10,7 +10,7 @@ Make use of [`Avalog:ToggleOpen()`](/api/AvalogClient#ToggleOpen) and [`Avalog:S
 
 ## Featuring Items
 
-Call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in a `Featured.Items` array like so:
+If you're a UGC creator, you may want to feature items within your homestore or game. Simply call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in your items like so:
 
 ```lua
 local Avalog = require(PATH_TO_AVALOG)
@@ -26,6 +26,8 @@ Avalog:Configure({
   }
 })
 ```
+
+To advertise items across Avalog, see [Sponsoring](/docs/sponsoring).
 
 ## Theming
 

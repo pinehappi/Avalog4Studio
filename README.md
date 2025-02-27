@@ -44,6 +44,6 @@ Additionally, Avalog responds to external avatar changes, seamlessly integrating
 
 ### Monetization 💸
 
-Earn **40%** on all items sold in your experience. And coming soon, list your own items inside Avalog. *(hi UGC creators 👋)*
+Earn **40%** on all items sold in your experience, and list **your own** UGC items inside Avalog.
 
 ## [Documentation 📄](https://useavalog.github.io/Avalog/)
