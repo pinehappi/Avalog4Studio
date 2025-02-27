@@ -86,6 +86,8 @@ function Avatar:_HandleAvatar()
 		States.Avatar.AssetIds:set(LocalAvatar.HumanoidDescriber:GetAssets())
 		self:_UpdateEquippedAssetIds()
 		self:_UpdateEquippedBundles()
+
+		LocalAvatar:GetUnownedItems()
 	end
 
 	States.Avatar.Character:set(LocalAvatar.Character)
@@ -93,7 +95,9 @@ function Avatar:_HandleAvatar()
 	LocalAvatar.HumanoidDescriber.Updated:Connect(function(_, NewData)
 		Update(NewData)
 	end)
-	Update(Data)
+	task.spawn(function()
+		Update(Data)
+	end)
 
 	States.Avatar.Loaded:set(true)
 end
