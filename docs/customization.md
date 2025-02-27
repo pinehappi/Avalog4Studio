@@ -8,6 +8,25 @@ sidebar_position: 2
 
 Make use of [`Avalog:ToggleOpen()`](/api/AvalogClient#ToggleOpen) and [`Avalog:SetOpen()`](/api/AvalogClient#SetOpen) as necessary.
 
+## Featuring Items
+
+Call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in a `Featured.Items` array like so:
+
+```lua
+local Avalog = require(PATH_TO_AVALOG)
+
+Avalog:Configure({
+  Featured = {
+    Items = {
+      { -- An item entry
+        Id = 14353423348, -- The item's AssetId
+        ItemType = Enum.AvatarItemType.Asset, -- The item's type - Asset or Bundle
+      },
+    }
+  }
+})
+```
+
 ## Theming
 
 Call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in a theme property like so:
