@@ -6,6 +6,7 @@ local AvatarAssetTypes = require(Avalog.SourceCode.Shared.AvatarAssetTypes)
 local Featured = require(Avalog.SourceCode.Client.UI.StateExtensions.Featured)
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Sift = require(Avalog.Parent.Sift)
+local Config = require(Avalog.Config)
 
 local Children = Fusion.Children
 
@@ -74,8 +75,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Items = Scope:Computed(function(Use)
 			local FeaturedItemsValue = Use(States.Featured.Items)
 			local CatalogResultItemsValue = Use(CatalogResultItems)
+			local DeveloperFeaturedItems = Config:Get().Featured.Items
 
-			return Sift.Array.merge(FeaturedItemsValue, CatalogResultItemsValue)
+			return Sift.Array.merge(DeveloperFeaturedItems, FeaturedItemsValue, CatalogResultItemsValue)
 		end),
 
 		OnReachedEnd = function()

@@ -2,12 +2,22 @@ local Sift = require(script.Parent.Parent.Sift)
 local ThemeSpec = require(script.Parent.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"].Themer.ThemeSpec)
 local DarkTheme = require(script.Parent.SourceCode.Client.UI.Themes.Dark)
 
+export type Item = {
+	Id: number,
+	ItemType: Enum.AvatarItemType,
+}
 export type Config = {
 	Theme: ThemeSpec.ThemeSpec?,
+	Featured: {
+		Items: { Item }?,
+	}?,
 }
 
 local CONFIG_TEMPLATE: Config = {
 	Theme = DarkTheme,
+	Featured = {
+		Items = {},
+	},
 }
 
 --[=[
@@ -30,7 +40,7 @@ local Config = {
 }
 
 function Config:Update(Data)
-	return Sift.Dictionary.merge(Config.Data, Data)
+	Config.Data = Sift.Dictionary.merge(Config.Data, Data)
 end
 
 function Config:Get()
