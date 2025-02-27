@@ -71,6 +71,10 @@ function Avatar:_UpdateEquippedAssetIds()
 end
 
 function Avatar:_HandleAvatar()
+	if (LocalAvatar.Character == nil) or (Players:FindFirstChild(LocalAvatar.Character.Name) == nil) then
+		return
+	end
+
 	States.Avatar.Loaded:set(false)
 
 	local Data = LocalAvatar.HumanoidDescriber:GetData()
@@ -100,14 +104,14 @@ function Avatar:Stop()
 	end
 end
 
-table.insert(
-	Avatar._Connections,
-	LocalAvatar.Updated:Connect(function()
-		Avatar:_HandleAvatar()
-	end)
-)
+function Avatar:Start()
+	table.insert(
+		Avatar._Connections,
+		LocalAvatar.Updated:Connect(function()
+			Avatar:_HandleAvatar()
+		end)
+	)
 
-if Players:GetPlayerFromCharacter(LocalAvatar.Character) ~= nil then
 	Avatar:_HandleAvatar()
 end
 

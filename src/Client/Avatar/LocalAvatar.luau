@@ -29,7 +29,9 @@ local LocalAvatar = {
 }
 
 function LocalAvatar:UpdateServer(Data: HumanoidDescriber.Data): ()
-	Zap.UpdateAvatar.Fire(EnumSerDes.SerializeTree(Data))
+	if Data then
+		Zap.UpdateAvatar.Fire(EnumSerDes.SerializeTree(Data))
+	end
 end
 
 function LocalAvatar:Redo()
@@ -261,7 +263,9 @@ if RunService:IsRunning() then
 
 	local ExistingCharacter = Players.LocalPlayer.Character
 	if ExistingCharacter then
-		LocalAvatar:SetCharacter(ExistingCharacter)
+		task.spawn(function()
+			LocalAvatar:SetCharacter(ExistingCharacter)
+		end)
 	end
 end
 

@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  Easy, themable catalog avatar editor for Roblox
+  Easy, themable avatar catalog for Roblox
 </p>
 
 <p align="center">
@@ -28,6 +28,8 @@
 
 https://github.com/user-attachments/assets/c6765fb5-5a72-4fe9-a6a5-1178727d7fbf
 
+[Try it out in-game! 🎮](https://www.roblox.com/games/95426183703947)
+
 ## Priorities ✨
 
 ### Simplicity 😌
@@ -44,4 +46,4 @@ Additionally, Avalog responds to external avatar changes, seamlessly integrating
 
 Earn **40%** on all items sold in your experience. And coming soon, list your own items inside Avalog. *(hi UGC creators 👋)*
 
-## [Documentation 📄](https://avafe.me/Avalog/)
+## [Documentation 📄](https://useavalog.github.io/Avalog/)
