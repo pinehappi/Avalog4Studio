@@ -12,7 +12,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/imavafe/Avalog/actions"><img src="https://img.shields.io/github/actions/workflow/status/imavafe/Avalog/ci.yaml?branch=main" alt="Build Status"></img></a>
   <img title="MIT licensed" alt="License" src="https://img.shields.io/github/license/imavafe/Avalog"></img>
 </p>
 
@@ -47,3 +46,7 @@ Additionally, Avalog responds to external avatar changes, seamlessly integrating
 Earn **40%** on all items sold in your experience, and list **your own** UGC items inside Avalog.
 
 ## [Documentation 📄](https://useavalog.github.io/Avalog/)
+
+##
+
+[![By Avafe](/gh-assets/watermark.svg)](https://avafe.me)
