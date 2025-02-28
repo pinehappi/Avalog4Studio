@@ -57,9 +57,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 	return Scope:Image(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
-		MaxSize = Scope:Computed(function(Use)
-			return Vector2.new(Use(Theme.Spacing["24"]), math.huge)
-		end),
+		MaxSize = Vector2.new(16 * 24, math.huge),
 		BackgroundTransparency = 0,
 		BackgroundColor3 = Theme.Colors.Base.Dark,
 		Image = "rbxassetid://140363116814273",
@@ -163,7 +161,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						end),
 						Scale = 1.25,
 						CornerRadius = Scope:Computed(function(Use)
-							return UDim.new(0, Use(Theme.Spacing["0.75"]))
+							return UDim.new(0, Use(Theme.CornerRadius["0.75"]))
 						end),
 						Padding = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.Spacing["0.5"]))

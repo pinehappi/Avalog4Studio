@@ -107,7 +107,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						Disabled = Scope:Computed(function(Use)
 							local CategoryValue = Use(Navigation.Category)
 							local ModeValue = Use(Navigation.Mode)
-							local AcceptedModes = { "Marketplace", "Inventory" }
+							local AcceptedModes = { "Marketplace" }
 
 							if table.find(AcceptedModes, ModeValue) == nil then
 								return true
