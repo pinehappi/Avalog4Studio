@@ -19,10 +19,14 @@ local Avatar = {
 	Avatars = {},
 }
 
-function Avatar:BulkPurchaseItems(Player: Player, Items: { any })
-	return Future.Try(function()
+function Avatar:BulkPurchaseItems(Player: Player, Items: { { Id: string, Type: Enum.AvatarItemType } })
+	Future.Try(function()
 		return MarketplaceService:PromptBulkPurchase(Player, Items, {})
-	end):Await()
+	end):After(function(Success, Result)
+		if not Success then
+			warn(Result)
+		end
+	end)
 end
 
 function Avatar:UpdateData(Player: Player, Data: HumanoidDescriber.Data)

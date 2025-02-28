@@ -14,7 +14,7 @@ type AvatarItem = struct {
 }
 
 type BulkPurchaseAvatarItem = struct {
-	Id: f64,
+	Id: string,
 	Type: SerEnumItem,
 }
 

@@ -201,18 +201,22 @@ function types.read_AvatarItem()
 	return value
 end
 export type BulkPurchaseAvatarItem = ({
-	Id: (number),
+	Id: (string),
 	Type: (SerEnumItem),
 })
 function types.write_BulkPurchaseAvatarItem(value: BulkPurchaseAvatarItem)
-	alloc(8)
-	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
+	local len_1 = #value.Id
+	alloc(2)
+	buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+	alloc(len_1)
+	buffer.writestring(outgoing_buff, outgoing_apos, value.Id, len_1)
 	types.write_SerEnumItem(value.Type)
 end
 function types.read_BulkPurchaseAvatarItem()
 	local value;
 	value = {}
-	value.Id = buffer.readf64(incoming_buff, read(8))
+	local len_1 = buffer.readu16(incoming_buff, read(2))
+	value.Id = buffer.readstring(incoming_buff, read(len_1), len_1)
 	value.Type = types.read_SerEnumItem()
 	return value
 end
@@ -619,6 +623,8 @@ export type FeaturedItem = ({
 	TransactionHash: (string),
 	Bid: (number),
 	StartTime: (number),
+	EndTime: (number),
+	Power: (number),
 	Id: (number),
 	ItemType: (SerEnumItem),
 })
@@ -633,6 +639,10 @@ function types.write_FeaturedItem(value: FeaturedItem)
 	alloc(8)
 	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
 	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.EndTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Power)
+	alloc(8)
 	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
 	types.write_SerEnumItem(value.ItemType)
 end
@@ -643,6 +653,8 @@ function types.read_FeaturedItem()
 	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
 	value.Bid = buffer.readf64(incoming_buff, read(8))
 	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.EndTime = buffer.readf64(incoming_buff, read(8))
+	value.Power = buffer.readf64(incoming_buff, read(8))
 	value.Id = buffer.readf64(incoming_buff, read(8))
 	value.ItemType = types.read_SerEnumItem()
 	return value
@@ -651,6 +663,8 @@ export type FeaturedCreator = ({
 	TransactionHash: (string),
 	Bid: (number),
 	StartTime: (number),
+	EndTime: (number),
+	Power: (number),
 	Id: (number),
 	CreatorType: (SerEnumItem),
 })
@@ -665,6 +679,10 @@ function types.write_FeaturedCreator(value: FeaturedCreator)
 	alloc(8)
 	buffer.writef64(outgoing_buff, outgoing_apos, value.StartTime)
 	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.EndTime)
+	alloc(8)
+	buffer.writef64(outgoing_buff, outgoing_apos, value.Power)
+	alloc(8)
 	buffer.writef64(outgoing_buff, outgoing_apos, value.Id)
 	types.write_SerEnumItem(value.CreatorType)
 end
@@ -675,6 +693,8 @@ function types.read_FeaturedCreator()
 	value.TransactionHash = buffer.readstring(incoming_buff, read(len_1), len_1)
 	value.Bid = buffer.readf64(incoming_buff, read(8))
 	value.StartTime = buffer.readf64(incoming_buff, read(8))
+	value.EndTime = buffer.readf64(incoming_buff, read(8))
+	value.Power = buffer.readf64(incoming_buff, read(8))
 	value.Id = buffer.readf64(incoming_buff, read(8))
 	value.CreatorType = types.read_SerEnumItem()
 	return value
