@@ -90,6 +90,8 @@ function CatalogSearch.Search(Params: SearchParams)
 		if Success then
 			Search.Pages = Result
 			Search:_LoadPage(Result:GetCurrentPage())
+		else
+			CatalogSearch.Searches[ParamsHash] = nil
 		end
 	end)
 
