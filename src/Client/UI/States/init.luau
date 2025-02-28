@@ -32,6 +32,9 @@ local States = {
 		Items = Scope:Value({}),
 		Creators = Scope:Value({}),
 	},
+	Screen = {
+		Resolution = Scope:Value(Vector2.new()),
+	},
 	Open = Scope:Value(false),
 }
 
