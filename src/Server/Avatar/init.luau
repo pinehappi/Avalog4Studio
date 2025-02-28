@@ -1,6 +1,7 @@
 local MarketplaceService = game:GetService("MarketplaceService")
 
 local Avalog = script.Parent.Parent.Parent
+local PlayerDataStorage = require(script.Parent.PlayerDataStorage)
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
@@ -18,6 +19,32 @@ local RATE_LIMITS = {
 local Avatar = {
 	Avatars = {},
 }
+
+function Avatar:HandleProfile(Player: Player, Profile)
+	if not Player:HasAppearanceLoaded() then
+		Player.CharacterAppearanceLoaded:Wait()
+	end
+
+	Player.CharacterAppearanceLoaded:Connect(function()
+		local Data = Profile.Data:Get()
+
+		if Data.Avatar.Data ~= nil then
+			local Cursor = Squash.frombuffer(Data.Avatar.Data)
+			local AvatarData = AvatarDataSerDes.des(Cursor)
+
+			Avatar:ApplyData(Player, AvatarData)
+		end
+	end)
+
+	Profile.Data:Observe(function(_, Data)
+		if Data.Avatar.Data then
+			local Cursor = Squash.frombuffer(Data.Avatar.Data)
+			local AvatarData = AvatarDataSerDes.des(Cursor)
+
+			Avatar:ApplyData(Player, AvatarData)
+		end
+	end)
+end
 
 function Avatar:BulkPurchaseItems(Player: Player, Items: { { Id: string, Type: Enum.AvatarItemType } })
 	Future.Try(function()
@@ -97,19 +124,12 @@ function Avatar:Start()
 	end)
 
 	PlayerDataStore.Loaded:Connect(function(Player, Profile)
-		if not Player:HasAppearanceLoaded() then
-			Player.CharacterAppearanceLoaded:Wait()
-		end
-
-		Profile.Data:Observe(function(_, Data)
-			if Data.Avatar.Data then
-				local Cursor = Squash.frombuffer(Data.Avatar.Data)
-				local AvatarData = AvatarDataSerDes.des(Cursor)
-
-				Avatar:ApplyData(Player, AvatarData)
-			end
-		end)
+		Avatar:HandleProfile(Player, Profile)
 	end)
+
+	for Player, Profile in pairs(PlayerDataStore.Profiles) do
+		Avatar:HandleProfile(Player, Profile)
+	end
 end
 
 return Avatar
