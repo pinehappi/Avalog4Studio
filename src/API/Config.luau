@@ -13,12 +13,18 @@ export type Config = {
 		Items: { Item }?,
 	}?,
 	HiddenCoreGui: { CoreGuiItem }?,
+	Limits: {
+		Accessories: number?,
+	}?,
 }
 
 local CONFIG_TEMPLATE: Config = {
 	Theme = DarkTheme,
 	Featured = {
 		Items = {},
+	},
+	Limits = {
+		Accessories = 10,
 	},
 	HiddenCoreGui = { "PlayerList", "Captures", "Emotes", "TouchControls" },
 }
@@ -33,6 +39,7 @@ local CONFIG_TEMPLATE: Config = {
 	@field Theme Theme?
 	@field Featured { Items: { Item }? }?
 	@field HiddenCoreGui { CoreGuiItem }?
+	@field Limits { Accessories: number? }?
 ]=]
 --[=[
 	@type CoreGuiItem string

@@ -13,6 +13,8 @@ local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogItems)
 local Zap = require(Avalog.SourceCode.Shared.Zap.client)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
+local Sift = require(Avalog.Parent.Sift)
+local Config = require(Avalog.Config)
 
 export type CatalogItem = {
 	Id: number,
@@ -21,12 +23,24 @@ export type CatalogItem = {
 	Name: string,
 }
 
+local CONFIG = Config:Get()
+
 local LocalAvatar = {
 	Character = Instance.new("Model"),
 	Humanoid = Instance.new("Humanoid"),
 	HumanoidDescriber = HumanoidDescriber(Instance.new("HumanoidDescription")),
 	Updated = Signal.new(),
 }
+
+function LocalAvatar:ApplyLimits()
+	LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
+		if #Data.Accessories > CONFIG.Limits.Accessories then
+			Data.Accessories = Sift.Array.slice(Data.Accessories, 1, CONFIG.Limits.Accessories)
+		end
+
+		return Data
+	end)
+end
 
 function LocalAvatar:UpdateServer(Data: HumanoidDescriber.Data): ()
 	if Data then
@@ -203,6 +217,8 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 		local Equipped = self.HumanoidDescriber:IsAssetEquipped(CatalogItem.Id, CatalogItem.AssetType)
 		self.HumanoidDescriber:SetAssetEquipped(CatalogItem.Id, CatalogItem.AssetType, not Equipped)
 	end
+
+	LocalAvatar:ApplyLimits()
 
 	self:Apply()
 end
