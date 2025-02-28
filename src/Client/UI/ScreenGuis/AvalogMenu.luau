@@ -14,23 +14,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, OnyxUI.Util, OnyxUI.Components, Components)
 	local Theme = OnyxUI.Themer.Theme:now()
 
-	local GroupTransparency = Scope:Spring(
-		Scope:Computed(function(Use)
-			return (Use(States.Open) and 0) or 1
-		end),
-		Theme.SpringSpeed["1.5"],
-		Theme.SpringDampening["1.5"]
-	)
-	local Enabled = Scope:Computed(function(Use)
-		local GroupTransparencyValue = Use(GroupTransparency)
-		return GroupTransparencyValue < 1
-	end)
-
 	return Scope:New "ScreenGui" {
 		Name = script.Name,
 		Parent = Props.Parent,
 		DisplayOrder = 9,
-		Enabled = Enabled,
+		Enabled = States.Open,
 
 		[Children] = {
 			Scope:New "ScreenGui" {
@@ -56,10 +44,20 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 					},
 				},
 			},
-			Scope:Group {
+			Scope:Frame {
 				Name = "Menu",
 				AnchorPoint = Vector2.new(0.5, 0.5),
-				Position = UDim2.fromScale(0.5, 0.5),
+				Position = Scope:Spring(
+					Scope:Computed(function(Use)
+						if Use(States.Open) then
+							return UDim2.fromScale(0.5, 0.5)
+						else
+							return UDim2.fromScale(0.5, 0.5) + UDim2.fromOffset(0, Use(Theme.Spacing["4"]))
+						end
+					end),
+					Theme.SpringSpeed["0.5"],
+					Theme.SpringDampening["1.5"]
+				),
 				Size = UDim2.fromScale(1, 1),
 				AutomaticSize = Enum.AutomaticSize.None,
 				ListEnabled = true,
@@ -69,7 +67,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListPadding = Scope:Computed(function(Use)
 					return UDim.new(0, Use(Theme.Spacing["0"]))
 				end),
-				GroupTransparency = GroupTransparency,
 				Active = States.Open,
 				Interactable = States.Open,
 
