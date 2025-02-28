@@ -6,11 +6,13 @@ export type Item = {
 	Id: number,
 	ItemType: Enum.AvatarItemType,
 }
+export type CoreGuiItem = "Chat" | "PlayerList" | "Backpack" | "Captures" | "Emotes" | "TouchControls"
 export type Config = {
 	Theme: ThemeSpec.ThemeSpec?,
 	Featured: {
 		Items: { Item }?,
 	}?,
+	HiddenCoreGui: { CoreGuiItem }?,
 }
 
 local CONFIG_TEMPLATE: Config = {
@@ -18,6 +20,7 @@ local CONFIG_TEMPLATE: Config = {
 	Featured = {
 		Items = {},
 	},
+	HiddenCoreGui = { "PlayerList", "Captures", "Emotes", "TouchControls" },
 }
 
 --[=[
@@ -27,7 +30,15 @@ local CONFIG_TEMPLATE: Config = {
 	@interface Config
 	@within Config
 
-	@field Theme Theme
+	@field Theme Theme?
+	@field Featured { Items: { Item }? }?
+	@field HiddenCoreGui { CoreGuiItem }?
+]=]
+--[=[
+	@type CoreGuiItem string
+	@within Config
+
+	Valid CoreGui strings: "Chat" | "PlayerList" | "Backpack" | "Captures" | "Emotes" | "TouchControls"
 ]=]
 --[=[
 	@type Theme Theme

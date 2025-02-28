@@ -9,8 +9,6 @@ local Config = require(Avalog.Config)
 
 local AvalogMenu = require(script.ScreenGuis.AvalogMenu)
 
-local Themer = OnyxUI.Themer
-
 local UIService = {
 	Scope = Fusion.scoped(Fusion),
 }
@@ -21,7 +19,7 @@ function UIService:Start()
 
 	States.Theme:set(Config:Get().Theme)
 
-	Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
+	OnyxUI.Themer.Theme:is(Fusion.peek(States.Theme)):during(function()
 		AvalogMenu(self.Scope, {
 			Parent = Players.LocalPlayer:WaitForChild("PlayerGui"),
 		})
