@@ -1,5 +1,0 @@
-return {
-	Avatar = {
-		Data = nil,
-	},
-}

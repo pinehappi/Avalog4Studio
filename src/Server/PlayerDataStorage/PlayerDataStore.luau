@@ -2,28 +2,38 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Skilift = require(Avalog.Parent.Skilift)
 local Squash = require(Avalog.Parent.Squash)
 local DataValidater = require(script.Parent.DataValidater)
-local DataTemplate = require(script.Parent.DataTemplate)
 local NewPlayerDataStore = require(Avalog.SourceCode.Storage.Utils.PlayerDataStore)
 local AvatarDataSerDes = require(script.Parent.SerDes.AvatarData)
+local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
+
+export type PlayerData = {
+	Avatar: {
+		Data: buffer?,
+	},
+}
 
 local PlayerDataStore = NewPlayerDataStore {
 	name = "AvalogPlayerData",
 	migrations = {},
 	default_data = function()
-		return DataTemplate
+		return {
+			Avatar = {
+				Data = nil,
+			},
+		}
 	end,
 	schema = DataValidater,
 	pull_delay = 60 * 2,
 }
 
 local Actions = {
-	SetAvatarData = function(OldData, AvatarData)
+	SetAvatarData = function(Data: PlayerData, AvatarData: HumanoidDescriber.Data)
 		local Cursor = Squash.cursor()
 		AvatarDataSerDes.ser(Cursor, AvatarData)
 
-		OldData.Avatar.Data = Squash.tobuffer(Cursor)
+		Data.Avatar.Data = Squash.tobuffer(Cursor)
 
-		return OldData
+		return Data
 	end,
 }
 

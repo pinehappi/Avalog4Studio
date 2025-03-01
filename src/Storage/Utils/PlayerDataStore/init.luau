@@ -20,14 +20,14 @@ local function NewPlayerDataStore(Options)
 			return
 		end
 
-		local Session = PlayerDataStore.Store:load(`{Player.UserId}`)
-
 		local Profile = {
-			Session = Session,
+			Session = PlayerDataStore.Store:load(`{Player.UserId}`),
 			Data = Stator(nil, {}),
 		}
 
-		Session:updated(function(Data)
+		Profile.Session:userid(Player.UserId)
+
+		Profile.Session:updated(function(Data)
 			Profile.Data:Update(function()
 				return Data
 			end)
@@ -41,8 +41,8 @@ local function NewPlayerDataStore(Options)
 		local Profile = PlayerDataStore:Get(Player)
 
 		if Profile ~= nil then
-			PlayerDataStore.Profiles[Player] = nil
 			Profile.Session:stop()
+			PlayerDataStore.Profiles[Player] = nil
 
 			PlayerDataStore.Unloaded:Fire(Player)
 		end

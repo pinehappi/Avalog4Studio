@@ -1,7 +1,6 @@
 local MarketplaceService = game:GetService("MarketplaceService")
 
 local Avalog = script.Parent.Parent.Parent
-local PlayerDataStorage = require(script.Parent.PlayerDataStorage)
 local Future = require(Avalog.Parent.Future)
 local RateLimit = require(Avalog.Parent.RateLimit)
 local HumanoidDescriber = require(Avalog.Parent.HumanoidDescriber)
@@ -64,7 +63,7 @@ function Avatar:UpdateData(Player: Player, Data: HumanoidDescriber.Data)
 end
 
 function Avatar:ApplyData(Player: Player, Data: HumanoidDescriber.Data)
-	local _, Humanoid, HumanoidDescription = self:GetCharacterObjects(Player)
+	local _, Humanoid, HumanoidDescription = Avatar:GetCharacterObjects(Player)
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
 
@@ -72,7 +71,7 @@ function Avatar:ApplyData(Player: Player, Data: HumanoidDescriber.Data)
 			return Data
 		end)
 
-		self:Apply(Player, HumanoidDescription):Await()
+		Avatar:Apply(Player, HumanoidDescription):Await()
 
 		HumanoidDescriberObject:Destroy()
 	end
