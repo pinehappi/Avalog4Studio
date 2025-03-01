@@ -28,6 +28,8 @@ local PlayerDataStore = NewPlayerDataStore {
 
 local Actions = {
 	SetAvatarData = function(Data: PlayerData, AvatarData: HumanoidDescriber.Data)
+		assert(AvatarData ~= nil, "Given AvatarData is nil")
+
 		local Cursor = Squash.cursor()
 		AvatarDataSerDes.ser(Cursor, AvatarData)
 

@@ -4,6 +4,7 @@ local Avalog = script.Parent.Parent.Parent.Parent
 local Skilift = require(Avalog.Parent.Skilift)
 local Signal = require(Avalog.Parent.Signal)
 local Stator = require(Avalog.Parent.Stator)
+local Sift = require(Avalog.Parent.Sift)
 
 local function NewPlayerDataStore(Options)
 	local PlayerDataStore = {
@@ -29,7 +30,7 @@ local function NewPlayerDataStore(Options)
 
 		Profile.Session:updated(function(Data)
 			Profile.Data:Update(function()
-				return Data
+				return Sift.Dictionary.copyDeep(Data)
 			end)
 		end)
 
