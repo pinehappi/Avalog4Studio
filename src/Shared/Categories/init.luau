@@ -63,6 +63,10 @@ local Categories: { [string]: { Category } } = {
 					BundleTypes = { Enum.BundleType.DynamicHead },
 					AssetTypes = { Enum.AvatarAssetType.DynamicHead, Enum.AvatarAssetType.Head },
 				},
+				{
+					Name = "Faces",
+					AssetTypes = { Enum.AvatarAssetType.Face },
+				},
 				{ Name = "Hair", AssetTypes = { Enum.AvatarAssetType.HairAccessory } },
 			},
 		},
