@@ -51,7 +51,7 @@ local CONFIG_TEMPLATE: Config = {
 	@type Theme Theme
 	@within Config
 
-	The default dark theme can be [found here](https://github.com/UseAvalog/Avalog/blob/main/src/Client/UI/Themes/Dark.luau) for reference.
+	The default dark theme can be [found here](https://github.com/Loneka/Avalog/blob/main/src/Client/UI/Themes/Dark.luau) for reference.
 ]=]
 local Config = {
 	Data = CONFIG_TEMPLATE,

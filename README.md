@@ -41,7 +41,7 @@ Powered by [OnyxUI](https://github.com/ImAvafe/OnyxUI), Avalog offers extensive 
 
 Earn **40%** on all items sold in your experience, and list your own UGC items inside Avalog.
 
-## [Documentation 📄](https://useavalog.github.io/Avalog/)
+## [Documentation 📄](https://loneka.com/Avalog/)
 
 ##
 
