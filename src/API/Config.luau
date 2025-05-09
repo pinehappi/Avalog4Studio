@@ -1,5 +1,4 @@
 local Sift = require(script.Parent.Parent.Sift)
-local ThemeSpec = require(script.Parent.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"].Themer.ThemeSpec)
 local DarkTheme = require(script.Parent.SourceCode.Client.UI.Themes.Dark)
 
 export type Item = {
@@ -8,7 +7,7 @@ export type Item = {
 }
 export type CoreGuiItem = "Chat" | "PlayerList" | "Backpack" | "Captures" | "Emotes" | "TouchControls"
 export type Config = {
-	Theme: ThemeSpec.ThemeSpec?,
+	Theme: any?,
 	Featured: {
 		Items: { Item }?,
 	}?,
