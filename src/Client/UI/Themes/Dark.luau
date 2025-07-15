@@ -21,7 +21,7 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Neutral = {
-			Main = ColorUtils.Lighten(Util.Colors.Stone["800"], 0.05),
+			Main = Util.Colors.Zinc["800"],
 		},
 		NeutralContent = {
 			Main = Util.Colors.Stone["100"],
@@ -29,7 +29,7 @@ return Themer.NewTheme(Scope, {
 		},
 
 		Base = {
-			Main = Color3.fromHex("191b1d"),
+			Main = Color3.fromHex("121215"),
 		},
 		BaseContent = {
 			Main = Util.Colors.White,
