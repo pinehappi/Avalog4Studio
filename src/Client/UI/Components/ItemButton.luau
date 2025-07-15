@@ -125,6 +125,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 							return `rbxthumb://id={SafeItemInfoValue.Id}&type={(ItemTypeToType[SafeItemInfoValue.Type] or "Asset")}&w=150&h=150`
 						end),
+						ScaleType = Enum.ScaleType.Fit,
 						CornerRadius = Scope:Computed(function(Use)
 							return UDim.new(0, Use(Theme.CornerRadius["1"]))
 						end),

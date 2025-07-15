@@ -66,6 +66,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				Name = "Items",
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 				ListWraps = true,
 				AutomaticSize = Enum.AutomaticSize.Y,
 
@@ -78,6 +79,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 									Type = Item.Type,
 									Visible = Item.Visible,
 									LayoutOrder = Index,
+									Size = UDim2.fromScale(1 / 8, 0),
+									AutomaticSize = Enum.AutomaticSize.Y,
+									MinSize = Scope:Computed(function(Use)
+										return Vector2.new(Use(Theme.Spacing["8"]), 0)
+									end),
 								}
 							end)
 					end),
