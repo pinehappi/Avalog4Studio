@@ -54,7 +54,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
 
-			if CanvasPosition.Y >= CanvasHeight then
+			if CanvasPosition.Y >= (CanvasHeight - 500) then
 				OnReachedEndValue()
 			end
 		end,
@@ -95,9 +95,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListHorizontalAlignment = Enum.HorizontalAlignment.Center,
 				BackgroundTransparency = 1,
 				AutomaticSize = Enum.AutomaticSize.Y,
-				Visible = Scope:Computed(function(Use)
-					local ItemsValue = Use(Items)
-					return #ItemsValue == 0
+				PaddingTop = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["8"]))
+				end),
+				PaddingBottom = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["8"]))
 				end),
 
 				[Children] = {
@@ -106,8 +108,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						BackgroundTransparency = 1,
 					},
 					Scope:Text {
-						Text = "No items to show",
+						Text = "No more items to show!\nRate limits may have been hit.",
 						TextWrapped = false,
+						TextXAlignment = Enum.TextXAlignment.Center,
 					},
 				},
 			},

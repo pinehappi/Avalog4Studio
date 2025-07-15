@@ -26,11 +26,6 @@ local CatalogSearch = {
 }
 
 function CatalogSearch.Search(Params: SearchParams)
-	local ParamsHash = HashDictionary(Params)
-	if CatalogSearch.Searches[ParamsHash] ~= nil then
-		return CatalogSearch.Searches[ParamsHash]
-	end
-
 	local Search = {
 		Results = {},
 		Pages = nil,
@@ -42,6 +37,7 @@ function CatalogSearch.Search(Params: SearchParams)
 			assert(self.Pages ~= nil, "Pages does not exist.")
 
 			self.Pages:AdvanceToNextPageAsync()
+
 			return self.Pages:GetCurrentPage()
 		end):After(function(Success, Result)
 			if Success and Result then
@@ -90,12 +86,8 @@ function CatalogSearch.Search(Params: SearchParams)
 		if Success then
 			Search.Pages = Result
 			Search:_LoadPage(Result:GetCurrentPage())
-		else
-			CatalogSearch.Searches[ParamsHash] = nil
 		end
 	end)
-
-	CatalogSearch.Searches[ParamsHash] = Search
 
 	return Search
 end
