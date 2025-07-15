@@ -10,4 +10,4 @@ As a UGC creator, you can advertise across Roblox using Avalog. Your items will 
 
 If you're interested in sponsoring, please [open a server ticket](https://avafe.me/discord). 💌
 
-![Avalog's featured page](img/featuredPage.png)
+![Featured page](img/featured-tab.png)

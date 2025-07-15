@@ -29,6 +29,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local AbsoluteCanvasSize = Scope:Value(Vector2.new())
 	local AbsoluteWindowSize = Scope:Value(Vector2.new())
 
+	local LastUpdated = 0
+
 	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
@@ -54,7 +56,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
 
-			if CanvasPosition.Y >= CanvasHeight then
+			if (CanvasPosition.Y >= (CanvasHeight - 500)) and ((os.time() - LastUpdated) > 0.5) then
+				LastUpdated = os.time()
+
 				OnReachedEndValue()
 			end
 		end,
@@ -66,6 +70,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				Name = "Items",
 				ListEnabled = true,
 				ListFillDirection = Enum.FillDirection.Horizontal,
+				ListHorizontalFlex = Enum.UIFlexAlignment.Fill,
 				ListWraps = true,
 				AutomaticSize = Enum.AutomaticSize.Y,
 
@@ -78,6 +83,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 									Type = Item.Type,
 									Visible = Item.Visible,
 									LayoutOrder = Index,
+									Size = UDim2.fromScale(1 / 8, 0),
+									AutomaticSize = Enum.AutomaticSize.Y,
+									MinSize = Scope:Computed(function(Use)
+										return Vector2.new(Use(Theme.Spacing["8"]), 0)
+									end),
 								}
 							end)
 					end),
@@ -89,9 +99,11 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 				ListHorizontalAlignment = Enum.HorizontalAlignment.Center,
 				BackgroundTransparency = 1,
 				AutomaticSize = Enum.AutomaticSize.Y,
-				Visible = Scope:Computed(function(Use)
-					local ItemsValue = Use(Items)
-					return #ItemsValue == 0
+				PaddingTop = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["8"]))
+				end),
+				PaddingBottom = Scope:Computed(function(Use)
+					return UDim.new(0, Use(Theme.Spacing["8"]))
 				end),
 
 				[Children] = {
@@ -100,8 +112,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						BackgroundTransparency = 1,
 					},
 					Scope:Text {
-						Text = "No items to show",
+						Text = "No more items to show!\nRate limits may have been hit.",
 						TextWrapped = false,
+						TextXAlignment = Enum.TextXAlignment.Center,
 					},
 				},
 			},

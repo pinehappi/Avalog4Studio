@@ -1,5 +1,5 @@
 name = "avafe/avalog"
-version = "0.1.5"
+version = "0.1.6"
 private = true
 
 [target]
@@ -38,7 +38,7 @@ Squash = { wally = "data-oriented-house/squash", version = "^2.5.0" }
 Sift = { wally = "csqrl/sift", version = "^0.0.9" }
 
 Fusion = { wally = "elttob/fusion", version = "^0.3.0" }
-Skilift = { wally = "alicesaidhi/skilift", version = "^0.2.3" }
+Skilift = { wally = "alicesaidhi/skilift", version = "^0.3.1" }
 
 OnyxUI = { wally = "imavafe/onyx-ui", version = "^0.5.3" }
 

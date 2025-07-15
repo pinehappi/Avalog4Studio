@@ -70,6 +70,12 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 						Visible = Scope:Computed(function(Use)
 							return not Use(States.Catalog.Searching)
 						end),
+						AutomaticSize = Enum.AutomaticSize.XY,
+						FlexMode = Enum.UIFlexMode.Fill,
+						ClipsDescendants = true,
+						MaxSize = Scope:Computed(function(Use)
+							return Vector2.new(Use(Theme.Spacing["16"]), Use(Theme.TextSize["3"]))
+						end),
 					},
 					Scope:TextInput {
 						Name = "SearchBar",

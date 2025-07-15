@@ -39,7 +39,7 @@ local Actions = {
 	end,
 }
 
-Skilift.action.normal(Actions.SetAvatarData)
+PlayerDataStore.Store:action(Actions.SetAvatarData)
 
 PlayerDataStore.Actions = Actions
 

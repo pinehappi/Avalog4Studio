@@ -100,6 +100,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		end),
 		OnReachedEnd = function()
 			local SearchValue = Fusion.peek(Search)
+
 			if SearchValue ~= nil then
 				SearchValue:LoadNextPage()
 			end

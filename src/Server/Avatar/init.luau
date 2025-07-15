@@ -67,6 +67,13 @@ function Avatar:ApplyData(Player: Player, Data: HumanoidDescriber.Data)
 	if Humanoid and HumanoidDescription then
 		local HumanoidDescriberObject = HumanoidDescriber(HumanoidDescription)
 
+		if Data.Clothing.Shirt == 0 then
+			Data.Clothing.Shirt = 855777286
+		end
+		if Data.Clothing.Pants == 0 then
+			Data.Clothing.Pants = 855782781
+		end
+
 		HumanoidDescriberObject:UpdateData(function()
 			return Data
 		end)
