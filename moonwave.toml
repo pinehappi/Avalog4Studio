@@ -3,24 +3,44 @@ title = "Avalog"
 tagline = "Easy, themable avatar catalog for Roblox"
 url = "https://loneka.com/"
 baseUrl = "/avalog"
-favicon = "/favicon.svg"
+favicon = "svg/LogoGlyph.svg"
 
 [home]
 enabled = true
 includeReadme = false
+bannerImage = "img/BannerBackground.png"
 
 [[home.features]]
 title = "Simplicity 😌"
-description = "Striving to match Roblox's default UI, Avalog doesn't bombard you with excessive branding, advertising, or sign-up."
+description = "Avalog prioritizes your experience, and doesn't bombard you with ads or sign-up."
 
 [[home.features]]
 title = "Customization 🖌️"
-description = "Powered by OnyxUI, Avalog offers extensive theming capabilities, allowing you to design it however you like with ease."
+description = "Comprehensive theming properties allow you to match your game's mood and style with ease."
 
 [[home.features]]
 title = "Monetization 💸"
-description = "Earn 40% on all items sold in your experience, and list your own UGC items inside Avalog."
+description = "Earn 40% on all items sold in your game, and list your own UGC items."
 
 [footer]
-style = "dark"
+style = "light"
 copyright = "Copyright © 2025 Avafe. Built with Moonwave and Docusaurus"
+
+[[footer.links]]
+title = "Loneka Suite"
+
+[[footer.links.items]]
+label = "Home"
+href = "https://suite.loneka.com"
+
+[[footer.links.items]]
+label = "Discord"
+href = "https://loneka.com/suite/discord"
+
+[[footer.links.items]]
+label = "X"
+href = "https://loneka.com/x"
+
+[[footer.links.items]]
+label = "GitHub"
+href = "https://loneka.com/github"

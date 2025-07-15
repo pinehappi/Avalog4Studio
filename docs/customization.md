@@ -4,11 +4,11 @@ sidebar_position: 2
 
 # Customization
 
-## Opening and Closing
+## Opening and closing
 
 Make use of [`Avalog:ToggleOpen()`](/api/AvalogClient#ToggleOpen) and [`Avalog:SetOpen()`](/api/AvalogClient#SetOpen) as necessary.
 
-## Featuring Items
+## Featuring items
 
 If you're a UGC creator, you may want to feature items within your homestore or game. Simply call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in your items like so:
 
@@ -31,83 +31,57 @@ To advertise items across Avalog, see [Sponsoring](/docs/sponsoring).
 
 ## Theming
 
-Call the [`Avalog:Configure()`](/api/AvalogClient#Configure) method and pass in a theme property like so:
+Avalog supports a variety of UI theming properties, empowering you to match your world's unique mood and style.
 
 ```lua
-local Avalog = require(PATH_TO_AVALOG)
-
 Avalog:Configure({
   Theme = {
-    Colors = {
-      Primary = {
-        Main = Util.Colors.Violet["500"],
-      },
-      Secondary = {
-        Main = Util.Colors.White,
-      },
-      Accent = {
-        Main = Util.Colors.White,
-      },
+    -- Colors = {
+    --   Primary = {
+    --     Main = Color3.fromRGB(255, 255, 255),
+    --   },
 
-      Neutral = {
-        Main = Util.Colors.Stone["800"],
-      },
-      NeutralContent = {
-        Main = Util.Colors.Stone["300"],
-      },
+    --   Base = {
+    --     Main = Color3.fromRGB(0, 0, 0),
+    --   },
+    --   BaseContent = {
+    --     Main = Color3.fromRGB(255, 255, 255),
+    --   },
 
-      Base = {
-        Main = Util.Colors.Stone["900"],
-      },
-      BaseContent = {
-        Main = Util.Colors.White,
-      },
-
-      Success = {
-        Main = Util.Colors.Green["500"],
-      },
-      Error = {
-        Main = Util.Colors.Red["500"],
-      },
-      Warning = {
-        Main = Util.Colors.Amber["500"],
-      },
-      Info = {
-        Main = Util.Colors.Cyan["400"],
-      },
-    },
-    Font = {
-      Body = "rbxasset://fonts/families/Montserrat.json",
-      Heading = "rbxasset://fonts/families/Montserrat.json",
-      Monospace = "rbxasset://fonts/families/Montserrat.json",
-    },
-    FontWeight = {
-      Body = Enum.FontWeight.SemiBold,
-      Bold = Enum.FontWeight.Bold,
-      Heading = Enum.FontWeight.Bold,
-    },
-    TextSize = {
-      Base = 19,
-    },
-    CornerRadius = {
-      Base = 6,
-    },
-    StrokeThickness = {
-      Base = 2,
-    },
-    Spacing = {
-      Base = 16,
-    },
-    SpringSpeed = {
-      Base = 50,
-    },
-    SpringDampening = {
-      Base = 1,
-    },
-    Sound = {},
-    Emphasis = {},
+    --   Neutral = {
+    --     Main = Color3.fromRGB(51, 47, 46),
+    --   },
+    --   NeutralContent = {
+    --     Main = Color3.fromRGB(196, 196, 195),
+    --   },
+    -- },
+    -- Font = {
+    --   Body = "rbxasset://fonts/families/Montserrat.json",
+    --   Heading = "rbxasset://fonts/families/Montserrat.json",
+    --   Monospace = "rbxasset://fonts/families/Montserrat.json",
+    -- },
+    -- FontWeight = {
+    --   Body = Enum.FontWeight.SemiBold,
+    --   Bold = Enum.FontWeight.Bold,
+    --   Heading = Enum.FontWeight.Bold,
+    -- },
+    -- TextSize = {
+    --   Base = 17,
+    -- },
+    -- CornerRadius = {
+    --   Base = 6,
+    -- },
+    -- StrokeThickness = {
+    --   Base = 1,
+    -- },
+    -- SpringSpeed = {
+    --   Base = 60,
+    -- },
+    -- SpringDampening = {
+    --   Base = 1.25,
+    -- },
   }
 })
 ```
 
-Color properties shown here make use of OnyxUI's `Util.Color` utility, but can be any `Color3` value.
+See the full list of theme properties [here](https://github.com/loneka/onyx-ui/blob/main/src/Themer/ThemeSpec.luau).
