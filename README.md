@@ -21,7 +21,7 @@
 
 ## Demo 📽️
 
-https://github.com/user-attachments/assets/c6765fb5-5a72-4fe9-a6a5-1178727d7fbf
+https://github.com/user-attachments/assets/4f278391-142b-46b9-bed0-8018e638d70c
 
 [Or try it out in-game! 🎮](https://www.roblox.com/games/95426183703947)
 
