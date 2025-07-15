@@ -29,6 +29,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	local AbsoluteCanvasSize = Scope:Value(Vector2.new())
 	local AbsoluteWindowSize = Scope:Value(Vector2.new())
 
+	local LastUpdated = 0
+
 	local ItemsTab = Scope:Hydrate(Scope:Scroller(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		ListEnabled = true,
@@ -54,7 +56,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 
 			local CanvasHeight = AbsoluteCanvasSizeValue.Y - AbsoluteWindowSizeValue.Y
 
-			if CanvasPosition.Y >= (CanvasHeight - 500) then
+			if (CanvasPosition.Y >= (CanvasHeight - 500)) and ((os.time() - LastUpdated) > 0.5) then
+				LastUpdated = os.time()
+
 				OnReachedEndValue()
 			end
 		end,

@@ -57,15 +57,9 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		Search:set(SearchObject)
 	end
 
-	local AlreadyOpened = false
-
 	Scope:Observer(States.Open):onChange(function()
-		if not AlreadyOpened then
-			AlreadyOpened = true
-
-			UpdateCatalogSearch()
-			Featured:FetchItems()
-		end
+		UpdateCatalogSearch()
+		Featured:FetchItems()
 	end)
 
 	local AdDisclaimerShown = Scope:Value(true)

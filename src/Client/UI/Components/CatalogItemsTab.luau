@@ -90,8 +90,6 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end)
 	UpdateSearch()
 
-	local LastUpdated = 0
-
 	return Scope:ItemsTab(OnyxUI.Util.CombineProps(Props, {
 		Name = script.Name,
 		Items = Scope:ForValues(Results, function(Use, Scope, Result)
@@ -103,9 +101,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 		OnReachedEnd = function()
 			local SearchValue = Fusion.peek(Search)
 
-			if (SearchValue ~= nil) and ((os.time() - LastUpdated) > 1) then
-				LastUpdated = os.time()
-
+			if SearchValue ~= nil then
 				SearchValue:LoadNextPage()
 			end
 		end,
