@@ -241,10 +241,6 @@ function LocalAvatar:Apply()
 end
 
 function LocalAvatar:SetCharacter(Character: Model)
-	if not Players.LocalPlayer:HasAppearanceLoaded() then
-		Players.LocalPlayer:GetPropertyChangedSignal("HasAppearanceLoaded"):Wait()
-	end
-
 	if Character then
 		local OriginalCharacter = Character
 		local OriginalHumanoid = OriginalCharacter:FindFirstChildOfClass("Humanoid")
@@ -272,17 +268,27 @@ function LocalAvatar:SetCharacter(Character: Model)
 	end
 end
 
+local function LoadExistingCharacter()
+	local ExistingCharacter = Players.LocalPlayer.Character
+
+	if ExistingCharacter then
+		LocalAvatar:SetCharacter(ExistingCharacter)
+	end
+end
+
 if RunService:IsRunning() then
 	Players.LocalPlayer.CharacterAdded:Connect(function(Character)
 		LocalAvatar:SetCharacter(Character)
 	end)
+	Players.LocalPlayer.CharacterAppearanceLoaded:Connect(function(Character)
+		LocalAvatar:SetCharacter(Character)
+	end)
 
-	local ExistingCharacter = Players.LocalPlayer.Character
-	if ExistingCharacter then
-		task.spawn(function()
-			LocalAvatar:SetCharacter(ExistingCharacter)
-		end)
-	end
+	task.spawn(function()
+		LoadExistingCharacter()
+		task.wait(3)
+		LoadExistingCharacter()
+	end)
 end
 
 return LocalAvatar
