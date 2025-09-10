@@ -5,10 +5,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Button = require(OnyxUIFolder.Components.Button)
-
-export type Props = Button.Props & {
+export type Props = { [string]: any } & {
 	Options: Fusion.UsedAs<{ string }>?,
 	Selection: Fusion.UsedAs<number>?,
 }

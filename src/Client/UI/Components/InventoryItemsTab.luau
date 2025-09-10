@@ -7,10 +7,7 @@ local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigatio
 local States = require(Avalog.SourceCode.Client.UI.States)
 local Inventory = require(Avalog.SourceCode.Client.UI.StateExtensions.Inventory)
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Frame = require(OnyxUIFolder.Components.Frame)
-
-export type Props = Frame.Props & {
+export type Props = {
 	Shown: Fusion.UsedAs<boolean>?,
 }
 

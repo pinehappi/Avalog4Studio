@@ -5,10 +5,7 @@ local Fusion = require(Avalog.Parent.Fusion)
 local Util = OnyxUI.Util
 local Themer = OnyxUI.Themer
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Button = require(OnyxUIFolder.Components.Button)
-
-export type Props = Button.Props & {}
+export type Props = {} & { [string]: any }
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components)

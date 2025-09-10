@@ -7,12 +7,9 @@ local StretchNumber = require(Avalog.SourceCode.Shared.Utils.StretchNumber)
 local States = require(Avalog.SourceCode.Client.UI.States)
 
 local Children = Fusion.Children
-
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Frame = require(OnyxUIFolder.Components.Frame)
 local SliderSetting = require(script.Parent.SliderSetting)
 
-export type Props = Frame.Props & {
+export type Props = {
 	Shown: Fusion.UsedAs<boolean>?,
 }
 
