@@ -6,12 +6,9 @@ local Navigation = require(Avalog.SourceCode.Client.UI.StateExtensions.Navigatio
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent.OnyxUI.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Frame = require(OnyxUIFolder.Components.Frame)
-
 local MODES = { "Marketplace", "Inventory", "Customize" }
 
-export type Props = Frame.Props & {}
+export type Props = { [string]: any } & {}
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {

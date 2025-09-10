@@ -7,15 +7,12 @@ local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.Catalog
 
 local Children = Fusion.Children
 
-local OnyxUIFolder = Avalog.Parent[".pesde"]["imavafe_onyx-ui@0.5.3"]["onyx-ui"]
-local Button = require(OnyxUIFolder.Components.Button)
-
 local ITEM_TYPE_INFO_TYPES = {
 	[Enum.AvatarItemType.Asset] = Enum.InfoType.Asset,
 	[Enum.AvatarItemType.Bundle] = Enum.InfoType.Bundle,
 }
 
-export type Props = Button.Props & {
+export type Props = { [string]: any } & {
 	Id: Fusion.UsedAs<number>?,
 	Type: Fusion.UsedAs<Enum.AvatarItemType>?,
 }
