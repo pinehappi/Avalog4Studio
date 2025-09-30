@@ -73,7 +73,7 @@ end
 
 function Avatar:_HandleAvatar()
 	local AvatarManager = ServiceProvider:GetAvatarManager()
-	if (AvatarManager.Character == nil) or (Players:FindFirstChild(AvatarManager.Character.Name) == nil) then
+	if (AvatarManager.Character == nil) or (AvatarManager.Character.Parent == nil) then
 		return
 	end
 
