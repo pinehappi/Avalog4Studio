@@ -28,6 +28,7 @@ export type AvatarManager = {
     Reset: () -> (AvatarManager),
     Apply: () -> (AvatarManager),
     SetCharacter: (AvatarManager, Character: Model) -> (),
+    Clear: (AvatarManager) -> (),
 
     --[[ The follow methods are only used on the client (not plugin) ]]
 

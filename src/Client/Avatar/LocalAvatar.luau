@@ -292,4 +292,12 @@ if RunService:IsRunning() then
 	end)
 end
 
+function LocalAvatar:Clear()
+	self.Character = nil
+	self.Humanoid = nil
+	self.HumanoidDescriber = nil
+
+	self.Updated:Fire()
+end
+
 return LocalAvatar :: AvatarManager.AvatarManager
