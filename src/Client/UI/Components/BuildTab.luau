@@ -38,6 +38,8 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 	end
 
 	AvatarManager.Updated:Connect(function()
+		if AvatarManager.HumanoidDescriber == nil then return end
+
 		local Data = AvatarManager.HumanoidDescriber:GetData()
 
 		for _, ScaleProperty in ipairs(ScaleProperties) do

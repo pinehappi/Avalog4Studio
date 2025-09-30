@@ -74,6 +74,15 @@ end
 function Avatar:_HandleAvatar()
 	local AvatarManager = ServiceProvider:GetAvatarManager()
 	if (AvatarManager.Character == nil) or (AvatarManager.Character.Parent == nil) then
+		-- Reset all states
+		States.Avatar.Character:set(nil)
+		States.Avatar.Loaded:set(false)
+		States.Avatar.Data:set(nil)
+		States.Avatar.DataHistory:set({})
+		States.Avatar.UndoHistory:set({})
+		States.Avatar.AssetIds:set({})
+		States.Avatar.EquippedAssetIds:set({})
+		States.Avatar.EquippedBundleIds:set({})
 		return
 	end
 

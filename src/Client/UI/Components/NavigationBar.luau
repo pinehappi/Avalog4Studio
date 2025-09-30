@@ -8,7 +8,9 @@ local Children = Fusion.Children
 
 local MODES = { "Marketplace", "Inventory", "Customize" }
 
-export type Props = { [string]: any } & {}
+export type Props = { [string]: any } & {
+	OnExit: () -> (),
+}
 
 return function(Scope: Fusion.Scope<any>, Props: Props)
 	local Scope = Fusion.innerScope(Scope, Fusion, OnyxUI.Util, OnyxUI.Components, {
@@ -56,9 +58,7 @@ return function(Scope: Fusion.Scope<any>, Props: Props)
 							return UDim.new(0, Use(Theme.Spacing["1"]))
 						end),
 
-						OnActivated = function()
-							States.Open:set(false)
-						end,
+						OnActivated = Props.OnExit,
 					},
 					Scope:SwapInput {
 						Name = "ModeSwapper",
