@@ -11,6 +11,7 @@ local States = require(Avalog.SourceCode.Client.UI.States)
 local ScaleLimits = require(Avalog.SourceCode.Shared.ScaleLimits)
 local SquashNumber = require(Avalog.SourceCode.Shared.Utils.SquashNumber)
 local CatalogItems = require(Avalog.SourceCode.Client.UI.StateExtensions.CatalogItems)
+local AvatarManager = require(Avalog.SourceCode.Client.Avatar.AvatarManager)
 local Zap = require(Avalog.SourceCode.Shared.Zap.client)
 local EnumSerDes = require(Avalog.Parent.EnumSerDes)
 local Sift = require(Avalog.Parent.Sift)
@@ -33,7 +34,7 @@ local LocalAvatar = {
 }
 
 function LocalAvatar:ApplyLimits()
-	LocalAvatar.HumanoidDescriber:UpdateData(function(Data)
+	self.HumanoidDescriber:UpdateData(function(Data)
 		if #Data.Accessories > CONFIG.Limits.Accessories then
 			Data.Accessories = Sift.Array.slice(Data.Accessories, 1, CONFIG.Limits.Accessories)
 		end
@@ -89,8 +90,8 @@ end
 
 function LocalAvatar:SaveAvatar()
 	AvatarEditorService:PromptSaveAvatar(
-		LocalAvatar.HumanoidDescriber.HumanoidDescription,
-		LocalAvatar.Humanoid.RigType
+		self.HumanoidDescriber.HumanoidDescription,
+		self.Humanoid.RigType
 	)
 end
 
@@ -218,7 +219,7 @@ function LocalAvatar:ToggleCatalogItem(CatalogItem: CatalogItem)
 		self.HumanoidDescriber:SetAssetEquipped(CatalogItem.Id, CatalogItem.AssetType, not Equipped)
 	end
 
-	LocalAvatar:ApplyLimits()
+	self:ApplyLimits()
 
 	self:Apply()
 end
@@ -229,14 +230,14 @@ function LocalAvatar:Reset()
 	end):Await()
 
 	if Success then
-		LocalAvatar.HumanoidDescriber:ReadFromDescription(Result)
+		self.HumanoidDescriber:ReadFromDescription(Result)
 		self:Apply()
 	end
 end
 
 function LocalAvatar:Apply()
 	return Future.Try(function()
-		LocalAvatar.Humanoid:ApplyDescriptionReset(LocalAvatar.HumanoidDescriber.HumanoidDescription)
+		self.Humanoid:ApplyDescriptionReset(self.HumanoidDescriber.HumanoidDescription)
 	end):Await()
 end
 
@@ -260,7 +261,7 @@ function LocalAvatar:SetCharacter(Character: Model)
 
 			OriginalCharacter.Humanoid.ApplyDescriptionFinished:Connect(function()
 				HumanoidDescriberObject:ReadFromDescription(OriginalHumanoid:GetAppliedDescription())
-				LocalAvatar:Apply()
+				self:Apply()
 			end)
 
 			self.Updated:Fire()
@@ -291,4 +292,4 @@ if RunService:IsRunning() then
 	end)
 end
 
-return LocalAvatar
+return LocalAvatar :: AvatarManager.AvatarManager
