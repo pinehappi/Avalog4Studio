@@ -1,6 +1,8 @@
 local Avalog = script.Parent.Parent.Parent
 local AvatarManager = require(Avalog.SourceCode.Client.Avatar.AvatarManager)
 
+export type AvatarManager = AvatarManager.AvatarManager
+
 --[=[
     Provides some service. Must call `Setup` to setup services before getting any.
     This is how the plugin swaps its implementations.
