@@ -40,7 +40,7 @@ function AvalogClient:Start()
 	assert(not self.Started, "Avalog already started.")
 	self.Started = true
 
-	ServiceProvider:Setup({
+	AvalogClient._ServiceProvider:Setup({
 		AvatarManager = LocalAvatar,
 	})
 
